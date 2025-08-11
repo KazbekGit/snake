@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -7,17 +7,17 @@ import {
   Dimensions,
   Animated,
   Image,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from '@/constants/colors';
-import { NavigationProp } from '@react-navigation/native';
-import { NavigationParams } from '@/types';
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { colors } from "../constants/colors";
+import { NavigationProp } from "@react-navigation/native";
+import { NavigationParams } from "../types";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 interface WelcomeScreenProps {
-  navigation: NavigationProp<NavigationParams, 'Welcome'>;
+  navigation: NavigationProp<NavigationParams, "Welcome">;
 }
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
@@ -47,29 +47,23 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   }, []);
 
   const handleStartLearning = () => {
-    navigation.navigate('GradeSelection');
+    navigation.navigate("GradeSelection");
   };
 
   const handleLogin = () => {
     // TODO: Реализовать вход для существующих пользователей
-    console.log('Вход в приложение');
+    console.log("Вход в приложение");
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient
-        colors={colors.gradients.primary}
-        style={styles.gradient}
-      >
+      <LinearGradient colors={colors.gradients.primary} style={styles.gradient}>
         <Animated.View
           style={[
             styles.content,
             {
               opacity: fadeAnim,
-              transform: [
-                { translateY: slideAnim },
-                { scale: scaleAnim },
-              ],
+              transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
             },
           ]}
         >
@@ -94,8 +88,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
           {/* Описание */}
           <View style={styles.descriptionContainer}>
             <Text style={styles.description}>
-              Изучай обществознание с помощью интерактивных уроков, 
-              ярких иллюстраций и увлекательных тестов
+              Изучай обществознание с помощью интерактивных уроков, ярких
+              иллюстраций и увлекательных тестов
             </Text>
           </View>
 
@@ -141,27 +135,27 @@ const styles = StyleSheet.create({
   },
   gradient: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   content: {
     flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 40,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 40,
   },
   logoContainer: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 20,
   },
   logoEmoji: {
@@ -169,44 +163,44 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text.light,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 5,
   },
   subtitle: {
     fontSize: 24,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.text.light,
-    textAlign: 'center',
+    textAlign: "center",
     opacity: 0.9,
   },
   illustrationContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   illustration: {
-    position: 'relative',
+    position: "relative",
     width: 200,
     height: 200,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   studentEmoji: {
     fontSize: 60,
-    position: 'absolute',
+    position: "absolute",
     top: 20,
   },
   phoneEmoji: {
     fontSize: 40,
-    position: 'absolute',
+    position: "absolute",
     right: 20,
     bottom: 40,
   },
   bookEmoji: {
     fontSize: 40,
-    position: 'absolute',
+    position: "absolute",
     left: 20,
     bottom: 40,
   },
@@ -216,21 +210,21 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     color: colors.text.light,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 24,
     opacity: 0.9,
     paddingHorizontal: 20,
   },
   buttonContainer: {
-    width: '100%',
+    width: "100%",
     marginBottom: 40,
   },
   primaryButton: {
-    width: '100%',
+    width: "100%",
     height: 56,
     borderRadius: 28,
     marginBottom: 16,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -242,35 +236,37 @@ const styles = StyleSheet.create({
   buttonGradient: {
     flex: 1,
     borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   primaryButtonText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text.light,
   },
   secondaryButton: {
-    width: '100%',
+    width: "100%",
     height: 56,
     borderRadius: 28,
     borderWidth: 2,
     borderColor: colors.text.light,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   secondaryButtonText: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.text.light,
   },
   footer: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   footerText: {
     fontSize: 14,
     color: colors.text.light,
     opacity: 0.7,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
+
+export default WelcomeScreen;

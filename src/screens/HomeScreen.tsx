@@ -9,25 +9,17 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { colors } from "@/constants/colors";
+import { colors } from "../constants/colors";
 import { NavigationProp } from "@react-navigation/native";
-import { NavigationParams, Section } from "@/types";
-import { SECTIONS, SECTION_COLORS } from "@/constants/sections";
+import { NavigationParams, Section } from "../types";
+import { SECTIONS, SECTION_COLORS } from "../constants/sections";
+import { mockUserProgress, moneyTopic } from "../data";
 
 interface HomeScreenProps {
   navigation: NavigationProp<NavigationParams, "Home">;
 }
 
-// Моковые данные для демонстрации
-const mockUserProgress = {
-  totalSections: 6,
-  completedSections: 2,
-  totalTopics: 48,
-  completedTopics: 12,
-  xp: 1250,
-  level: 3,
-  streak: 5,
-};
+// Используем данные из централизованного источника
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [sections] = useState<Section[]>([
@@ -99,29 +91,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   ]);
 
   const handleSectionPress = (section: Section) => {
-    // Navigate to topic header screen with mock topic data
-    const mockTopic = {
-      id: "topic_money_001",
+    // Для демо-версии используем тему "Деньги" для всех разделов
+    // В реальном приложении здесь будет логика выбора темы
+    const demoTopic = {
+      ...moneyTopic,
       sectionId: section.id,
-      title: "Деньги",
-      description:
-        "Узнай, что такое деньги, зачем они нужны и как работают в экономике",
-      coverImage:
-        "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800",
-      gradeLevel: 9,
-      isPremium: false,
-      estimatedTime: 15,
-      difficulty: "medium",
-      learningObjectives: [
-        "Понять что такое деньги и их роль в экономике",
-        "Изучить 5 основных функций денег",
-        "Различать виды денег и их особенности",
-      ],
-      totalBlocks: 4,
-      completedBlocks: 0,
     };
 
-    navigation.navigate("TopicHeader", { topic: mockTopic });
+    navigation.navigate("TopicHeader", { topic: demoTopic });
   };
 
   const handleProfilePress = () => {
@@ -141,6 +118,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
       {/* Верхняя панель с прогрессом */}
       <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.navigate("Welcome")}
+        >
+          <Text style={styles.backButtonText}>← Назад</Text>
+        </TouchableOpacity>
         <View style={styles.progressContainer}>
           <LinearGradient
             colors={colors.gradients.primary}
@@ -391,4 +374,26 @@ const styles = StyleSheet.create({
     color: colors.text.light,
     minWidth: 35,
   },
+  backButton: {
+    position: "absolute",
+    left: 20,
+    top: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: colors.primary,
+    zIndex: 10,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  backButtonText: {
+    color: colors.text.light,
+    fontSize: 16,
+    fontWeight: "600",
+  },
 });
+
+export default HomeScreen;

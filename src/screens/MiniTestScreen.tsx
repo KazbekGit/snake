@@ -19,10 +19,11 @@ import Animated, {
   interpolate,
   Extrapolate,
 } from "react-native-reanimated";
-import * as Haptics from "expo-haptics";
+// import * as Haptics from "expo-haptics";
 
-import { colors } from "@/constants/colors";
-import { Topic, Question } from "@/types";
+import { colors } from "../constants/colors";
+import { Topic, Question } from "../types";
+import { moneyTopic } from "../data";
 
 const { width, height } = Dimensions.get("window");
 
@@ -36,7 +37,7 @@ interface MiniTestScreenProps {
   };
 }
 
-const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
+export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
   navigation,
   route,
 }) => {
@@ -55,51 +56,10 @@ const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
   const explanationOpacity = useSharedValue(0);
   const resultScale = useSharedValue(0.8);
 
-  // Mock questions for demonstration
-  const mockQuestions: Question[] = [
-    {
-      id: "q1",
-      type: "single_choice",
-      question: "Что такое деньги?",
-      options: [
-        "Любая ценная вещь",
-        "Особый товар - универсальный эквивалент стоимости",
-        "Только металлические монеты",
-        "Только бумажные купюры",
-      ],
-      correctIndex: 1,
-      explanation:
-        "Деньги — это именно особый товар, который все принимают в обмен на любые другие товары и услуги.",
-      visualExample: {
-        type: "image",
-        url: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800",
-        altText: "Схема: товар → деньги → другой товар",
-      },
-    },
-    {
-      id: "q2",
-      type: "multiple_choice",
-      question: "Выберите все функции денег:",
-      options: [
-        "Мера стоимости",
-        "Средство обращения",
-        "Средство общения",
-        "Средство сбережения",
-      ],
-      correctIndexes: [0, 1, 3],
-      explanation:
-        "Деньги выполняют функции меры стоимости, средства обращения и сбережения. Средство общения — не функция денег.",
-    },
-    {
-      id: "q3",
-      type: "flip_card",
-      front: "Универсальный эквивалент",
-      back: "Товар, который принимается всеми в обмен на любые другие товары",
-      visualHint: "Представь, что все согласны принимать этот товар",
-    },
-  ];
+  // Используем реальные вопросы из темы "Деньги"
+  const questions = moneyTopic.quiz.questions;
 
-  const questions = mockQuestions;
+  // Используем реальные вопросы из темы "Деньги"
   const currentQuestion = questions[currentQuestionIndex];
   const totalQuestions = questions.length;
 

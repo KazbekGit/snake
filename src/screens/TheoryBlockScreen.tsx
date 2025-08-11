@@ -19,10 +19,11 @@ import Animated, {
   interpolate,
   Extrapolate,
 } from "react-native-reanimated";
-import * as Haptics from "expo-haptics";
+// import * as Haptics from "expo-haptics";
 
-import { colors } from "@/constants/colors";
-import { Topic, ContentBlock } from "@/types";
+import { colors } from "../constants/colors";
+import { Topic, ContentBlock } from "../types";
+import { moneyTopic } from "../data";
 
 const { width, height } = Dimensions.get("window");
 
@@ -36,7 +37,7 @@ interface TheoryBlockScreenProps {
   };
 }
 
-const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
+export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
   navigation,
   route,
 }) => {
@@ -49,101 +50,8 @@ const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
   const mediaScale = useSharedValue(0.9);
   const buttonScale = useSharedValue(1);
 
-  // Mock content blocks for demonstration
-  const mockBlocks: ContentBlock[] = [
-    {
-      id: "block_001",
-      type: "text",
-      title: "Что такое деньги?",
-      content:
-        "Деньги — это особый товар, который служит универсальным эквивалентом стоимости других товаров и услуг. Они появились, когда люди поняли, что обменивать товары напрямую (бартер) неудобно.",
-      example:
-        "Представь, что у тебя есть яблоки, а тебе нужен хлеб. Продавец хлеба не хочет яблоки, но согласен на деньги. Ты продаешь яблоки за деньги, а потом покупаешь хлеб.",
-      keyTerms: [
-        {
-          term: "Универсальный эквивалент",
-          definition:
-            "Товар, который принимается всеми в обмен на любые другие товары",
-          highlightColor: "#FF6B6B",
-        },
-      ],
-      media: {
-        type: "gif",
-        url: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800",
-        altText: "Анимация перехода от бартера к денежному обмену",
-        dimensions: { width: 800, height: 600 },
-        placement: "after_content",
-      },
-      mnemonic: {
-        phrase: "Медведь Саша Сидит Спокойно Молча",
-        explanation:
-          "По первым буквам запоминаем: Мера стоимости, Средство обращения, Сбережения, Платежа, Мировые деньги",
-        visualHint: "Представь медведя по имени Саша, который тихо сидит",
-      },
-      order: 1,
-    },
-    {
-      id: "block_002",
-      type: "text",
-      title: "Функции денег",
-      content:
-        "У денег есть 5 основных функций, которые помогают им работать в экономике. Каждая функция решает определенную задачу в процессе обмена товарами и услугами.",
-      example:
-        "Когда ты покупаешь хлеб за 50 рублей, деньги выполняют функцию средства обращения. А когда ты сравниваешь цены на разные товары, они служат мерой стоимости.",
-      keyTerms: [
-        {
-          term: "Функции денег",
-          definition: "Основные роли, которые выполняют деньги в экономике",
-          highlightColor: "#4ECDC4",
-        },
-      ],
-      media: {
-        type: "infographic",
-        url: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800",
-        altText: "Инфографика с 5 функциями денег и примерами",
-        dimensions: { width: 800, height: 600 },
-        placement: "after_content",
-      },
-      mnemonic: {
-        phrase: "Медведь Саша Сидит Спокойно Молча",
-        explanation:
-          "По первым буквам запоминаем: Мера стоимости, Средство обращения, Сбережения, Платежа, Мировые деньги",
-        visualHint: "Представь медведя по имени Саша, который тихо сидит",
-      },
-      order: 2,
-    },
-    {
-      id: "block_003",
-      type: "text",
-      title: "Виды денег",
-      content:
-        "Деньги бывают разных видов: наличные (монеты и банкноты), безналичные (на банковских счетах) и электронные (цифровые деньги). Каждый вид имеет свои особенности.",
-      example:
-        "Наличные деньги ты можешь потрогать и положить в кошелек. Безналичные — это цифры на счете в банке. Электронные — это криптовалюты вроде биткоина.",
-      keyTerms: [
-        {
-          term: "Наличные деньги",
-          definition: "Физические деньги в виде монет и банкнот",
-          highlightColor: "#45B7D1",
-        },
-        {
-          term: "Безналичные деньги",
-          definition: "Деньги на банковских счетах",
-          highlightColor: "#96CEB4",
-        },
-      ],
-      media: {
-        type: "image",
-        url: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800",
-        altText: "Различные виды денег: монеты, банкноты, карты",
-        dimensions: { width: 800, height: 600 },
-        placement: "before_content",
-      },
-      order: 3,
-    },
-  ];
-
-  const blocks = mockBlocks;
+  // Используем реальный контент из темы "Деньги"
+  const blocks = moneyTopic.contentBlocks;
   const currentBlock = blocks[currentBlockIndex];
   const totalBlocks = blocks.length;
   const progress = ((currentBlockIndex + 1) / totalBlocks) * 100;

@@ -3,83 +3,83 @@
 
 export const colors = {
   // Основные цвета
-  primary: '#4A90E2', // Яркий синий
-  secondary: '#F39C12', // Оранжевый
-  accent: '#E74C3C', // Красный
-  success: '#27AE60', // Зеленый
-  warning: '#F1C40F', // Желтый
-  info: '#3498DB', // Голубой
-  
+  primary: "#2563EB", // Темно-синий (более контрастный)
+  secondary: "#DC2626", // Красный (более контрастный)
+  accent: "#EA580C", // Оранжевый
+  success: "#16A34A", // Зеленый
+  warning: "#CA8A04", // Желтый
+  info: "#0891B2", // Голубой
+
   // Градиенты
   gradients: {
-    primary: ['#4A90E2', '#357ABD'],
-    secondary: ['#F39C12', '#E67E22'],
-    success: ['#27AE60', '#2ECC71'],
-    warning: ['#F1C40F', '#F39C12'],
-    accent: ['#E74C3C', '#C0392B'],
+    primary: ["#2563EB", "#1D4ED8"],
+    secondary: ["#DC2626", "#B91C1C"],
+    success: ["#16A34A", "#15803D"],
+    warning: ["#CA8A04", "#A16207"],
+    accent: ["#EA580C", "#C2410C"],
   },
-  
+
   // Фоны
   background: {
-    primary: '#FFFFFF',
-    secondary: '#F8F9FA',
-    tertiary: '#E9ECEF',
-    dark: '#2C3E50',
+    primary: "#FFFFFF",
+    secondary: "#F8FAFC",
+    tertiary: "#E2E8F0",
+    dark: "#1E293B",
   },
-  
+
   // Текст
   text: {
-    primary: '#2C3E50',
-    secondary: '#6C757D',
-    light: '#FFFFFF',
-    muted: '#ADB5BD',
+    primary: "#1E293B", // Темно-синий (более контрастный)
+    secondary: "#475569", // Серый (более контрастный)
+    light: "#FFFFFF",
+    muted: "#64748B",
   },
-  
+
   // Карточки и элементы
   card: {
-    background: '#FFFFFF',
-    border: '#E9ECEF',
-    shadow: 'rgba(0, 0, 0, 0.1)',
+    background: "#FFFFFF",
+    border: "#E2E8F0",
+    shadow: "rgba(0, 0, 0, 0.1)",
   },
-  
+
   // Статусы
   status: {
-    completed: '#27AE60',
-    inProgress: '#F39C12',
-    notStarted: '#BDC3C7',
-    error: '#E74C3C',
+    completed: "#16A34A",
+    inProgress: "#CA8A04",
+    notStarted: "#94A3B8",
+    error: "#DC2626",
   },
-  
+
   // Разделы (каждый раздел имеет свой цвет)
   sections: {
-    person: '#4A90E2', // Человек и общество - синий
-    economy: '#27AE60', // Экономика - зеленый
-    politics: '#E74C3C', // Политика - красный
-    law: '#9B59B6', // Право - фиолетовый
-    social: '#F39C12', // Социальные отношения - оранжевый
-    culture: '#1ABC9C', // Духовная культура - бирюзовый
+    person: "#2563EB", // Человек и общество - синий
+    economy: "#16A34A", // Экономика - зеленый
+    politics: "#DC2626", // Политика - красный
+    law: "#9333EA", // Право - фиолетовый
+    social: "#EA580C", // Социальные отношения - оранжевый
+    culture: "#0891B2", // Духовная культура - бирюзовый
   },
-  
+
   // Уровни сложности
   difficulty: {
-    easy: '#27AE60',
-    medium: '#F39C12',
-    hard: '#E74C3C',
+    easy: "#16A34A",
+    medium: "#CA8A04",
+    hard: "#DC2626",
   },
-  
+
   // Редкость достижений
   rarity: {
-    common: '#BDC3C7',
-    rare: '#3498DB',
-    epic: '#9B59B6',
-    legendary: '#F1C40F',
+    common: "#94A3B8",
+    rare: "#0891B2",
+    epic: "#9333EA",
+    legendary: "#CA8A04",
   },
-  
+
   // Премиум функции
   premium: {
-    primary: '#F1C40F',
-    secondary: '#F39C12',
-    gradient: ['#F1C40F', '#F39C12'],
+    primary: "#CA8A04",
+    secondary: "#EA580C",
+    gradient: ["#CA8A04", "#EA580C"],
   },
 } as const;
 

@@ -1,61 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from '@/constants/colors';
-import { NavigationProp, RouteProp } from '@react-navigation/native';
-import { NavigationParams } from '@/types';
-import { LEARNING_GOALS } from '@/constants/sections';
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { colors } from "../constants/colors";
+import { NavigationProp, RouteProp } from "@react-navigation/native";
+import { NavigationParams } from "../types";
+import { LEARNING_GOALS } from "../constants/sections";
 
 interface GoalSelectionScreenProps {
-  navigation: NavigationProp<NavigationParams, 'GoalSelection'>;
-  route: RouteProp<NavigationParams, 'GoalSelection'>;
+  navigation: NavigationProp<NavigationParams, "GoalSelection">;
+  route: RouteProp<NavigationParams, "GoalSelection">;
 }
 
 const GOALS = [
   {
-    id: 'ege' as const,
+    id: "ege" as const,
     title: LEARNING_GOALS.ege.title,
     description: LEARNING_GOALS.ege.description,
     icon: LEARNING_GOALS.ege.icon,
     color: colors.sections.person,
     features: [
-      'Глубокое изучение всех тем',
-      'Задания в формате ЕГЭ',
-      'Детальный разбор ошибок',
-      'Персональная статистика',
+      "Глубокое изучение всех тем",
+      "Задания в формате ЕГЭ",
+      "Детальный разбор ошибок",
+      "Персональная статистика",
     ],
   },
   {
-    id: 'school' as const,
+    id: "school" as const,
     title: LEARNING_GOALS.school.title,
     description: LEARNING_GOALS.school.description,
     icon: LEARNING_GOALS.school.icon,
     color: colors.sections.economy,
     features: [
-      'Соответствие школьной программе',
-      'Пошаговое изучение тем',
-      'Интерактивные уроки',
-      'Подготовка к контрольным',
+      "Соответствие школьной программе",
+      "Пошаговое изучение тем",
+      "Интерактивные уроки",
+      "Подготовка к контрольным",
     ],
   },
   {
-    id: 'personal' as const,
+    id: "personal" as const,
     title: LEARNING_GOALS.personal.title,
     description: LEARNING_GOALS.personal.description,
     icon: LEARNING_GOALS.personal.icon,
     color: colors.sections.culture,
     features: [
-      'Общее развитие',
-      'Интересные факты',
-      'Практические примеры',
-      'Гибкий график обучения',
+      "Общее развитие",
+      "Интересные факты",
+      "Практические примеры",
+      "Гибкий график обучения",
     ],
   },
 ];
@@ -73,18 +73,21 @@ export const GoalSelectionScreen: React.FC<GoalSelectionScreenProps> = ({
     setTimeout(() => {
       // TODO: Сохранить выбор пользователя и перейти к главному экрану
       console.log(`Выбран класс: ${grade}, цель: ${goalId}`);
-      navigation.navigate('Home');
+      navigation.navigate("Home");
     }, 300);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient
-        colors={colors.gradients.primary}
-        style={styles.gradient}
-      >
+      <LinearGradient colors={colors.gradients.primary} style={styles.gradient}>
         {/* Заголовок */}
         <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backButtonText}>← Назад</Text>
+          </TouchableOpacity>
           <Text style={styles.title}>Выберите цель обучения</Text>
           <Text style={styles.subtitle}>
             {grade} класс • Мы адаптируем материал под ваши задачи
@@ -155,22 +158,42 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingTop: 40,
     paddingBottom: 30,
     paddingHorizontal: 20,
+    position: "relative",
+  },
+  backButton: {
+    position: "absolute",
+    left: 20,
+    top: 40,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: colors.primary,
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  backButtonText: {
+    color: colors.text.light,
+    fontSize: 16,
+    fontWeight: "600",
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text.light,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
     color: colors.text.light,
-    textAlign: 'center',
+    textAlign: "center",
     opacity: 0.9,
     lineHeight: 22,
   },
@@ -186,8 +209,8 @@ const styles = StyleSheet.create({
   },
   goalCard: {
     borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#000',
+    overflow: "hidden",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -203,8 +226,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
   },
   goalIcon: {
@@ -216,7 +239,7 @@ const styles = StyleSheet.create({
   },
   goalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.text.light,
     marginBottom: 4,
   },
@@ -230,14 +253,14 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   featureItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   featureIcon: {
     fontSize: 16,
     color: colors.text.light,
     marginRight: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   featureText: {
     fontSize: 14,
@@ -253,6 +276,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.text.light,
     opacity: 0.7,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
+
+export default GoalSelectionScreen;

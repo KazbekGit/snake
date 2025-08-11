@@ -19,10 +19,11 @@ import Animated, {
   interpolate,
   Extrapolate,
 } from "react-native-reanimated";
-import * as Haptics from "expo-haptics";
+// import * as Haptics from "expo-haptics";
 
-import { colors } from "@/constants/colors";
-import { Topic } from "@/types";
+import { colors } from "../constants/colors";
+import { Topic } from "../types";
+import { moneyTopic } from "../data";
 
 const { width, height } = Dimensions.get("window");
 
@@ -35,7 +36,7 @@ interface TopicHeaderScreenProps {
   };
 }
 
-const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
+export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
   navigation,
   route,
 }) => {
@@ -266,7 +267,8 @@ const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                 <Text style={styles.progressText}>Прогресс изучения</Text>
                 <Text style={styles.progressPercentage}>
                   {Math.round(
-                    (currentTopic.completedBlocks / currentTopic.totalBlocks) *
+                    (currentTopic.completedBlocks /
+                      Math.max(currentTopic.totalBlocks, 1)) *
                       100
                   )}
                   %
@@ -279,7 +281,7 @@ const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                     {
                       width: `${
                         (currentTopic.completedBlocks /
-                          currentTopic.totalBlocks) *
+                          Math.max(currentTopic.totalBlocks, 1)) *
                         100
                       }%`,
                       backgroundColor: colors.primary,

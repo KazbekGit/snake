@@ -2,19 +2,19 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import WelcomeScreen from "@/screens/WelcomeScreen";
-import GradeSelectionScreen from "@/screens/GradeSelectionScreen";
-import GoalSelectionScreen from "@/screens/GoalSelectionScreen";
-import HomeScreen from "@/screens/HomeScreen";
-import TopicHeaderScreen from "@/screens/TopicHeaderScreen";
-import TheoryBlockScreen from "@/screens/TheoryBlockScreen";
-import MiniTestScreen from "@/screens/MiniTestScreen";
+import { WelcomeScreen } from "../screens/WelcomeScreen";
+import { GradeSelectionScreen } from "../screens/GradeSelectionScreen";
+import { GoalSelectionScreen } from "../screens/GoalSelectionScreen";
+import { HomeScreen } from "../screens/HomeScreen";
+import { TopicHeaderScreen } from "../screens/TopicHeaderScreen";
+import { TheoryBlockScreen } from "../screens/TheoryBlockScreen";
+import { MiniTestScreen } from "../screens/MiniTestScreen";
 
 export type RootStackParamList = {
   Welcome: undefined;
   GradeSelection: undefined;
   GoalSelection: { grade: number };
-  Home: { grade: number; goal: string };
+  Home: undefined;
   TopicHeader: { topic: any };
   TheoryBlock: { topic: any; blockIndex: number };
   MiniTest: { topic: any; blockId: string };
