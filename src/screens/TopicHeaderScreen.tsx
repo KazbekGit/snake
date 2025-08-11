@@ -48,8 +48,8 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
   const contentTranslateY = useSharedValue(50);
   const buttonScale = useSharedValue(1);
 
-  // Mock data for demonstration
-  const mockTopic: Topic = {
+  // Используем переданную тему или fallback на mockTopic
+  const currentTopic = topic || {
     id: "topic_money_001",
     sectionId: "economics",
     title: "Деньги",
@@ -69,8 +69,6 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
     totalBlocks: 4,
     completedBlocks: 0,
   };
-
-  const currentTopic = topic || mockTopic;
 
   useEffect(() => {
     // Start animations
@@ -213,7 +211,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                   color={colors.primary}
                 />
                 <Text style={styles.infoCardValue}>
-                  {currentTopic.estimatedTime} мин
+                  {currentTopic.estimatedTime || 15} мин
                 </Text>
                 <Text style={styles.infoCardLabel}>Время изучения</Text>
               </View>
@@ -225,7 +223,9 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                   color={colors.primary}
                 />
                 <Text style={styles.infoCardValue}>
-                  {currentTopic.totalBlocks}
+                  {currentTopic.totalBlocks ||
+                    currentTopic.contentBlocks?.length ||
+                    4}
                 </Text>
                 <Text style={styles.infoCardLabel}>Блоков теории</Text>
               </View>
@@ -237,7 +237,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                   color={colors.primary}
                 />
                 <Text style={styles.infoCardValue}>
-                  {getDifficultyText(currentTopic.difficulty)}
+                  {getDifficultyText(currentTopic.difficulty || "medium")}
                 </Text>
                 <Text style={styles.infoCardLabel}>Сложность</Text>
               </View>
@@ -250,13 +250,13 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                   styles.difficultyBadge,
                   {
                     backgroundColor: getDifficultyColor(
-                      currentTopic.difficulty
+                      currentTopic.difficulty || "medium"
                     ),
                   },
                 ]}
               >
                 <Text style={styles.difficultyBadgeText}>
-                  {getDifficultyText(currentTopic.difficulty)}
+                  {getDifficultyText(currentTopic.difficulty || "medium")}
                 </Text>
               </View>
             </View>
@@ -267,8 +267,13 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                 <Text style={styles.progressText}>Прогресс изучения</Text>
                 <Text style={styles.progressPercentage}>
                   {Math.round(
-                    (currentTopic.completedBlocks /
-                      Math.max(currentTopic.totalBlocks, 1)) *
+                    ((currentTopic.completedBlocks || 0) /
+                      Math.max(
+                        currentTopic.totalBlocks ||
+                          currentTopic.contentBlocks?.length ||
+                          1,
+                        1
+                      )) *
                       100
                   )}
                   %
@@ -280,8 +285,13 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                     styles.progressFill,
                     {
                       width: `${
-                        (currentTopic.completedBlocks /
-                          Math.max(currentTopic.totalBlocks, 1)) *
+                        ((currentTopic.completedBlocks || 0) /
+                          Math.max(
+                            currentTopic.totalBlocks ||
+                              currentTopic.contentBlocks?.length ||
+                              1,
+                            1
+                          )) *
                         100
                       }%`,
                       backgroundColor: colors.primary,

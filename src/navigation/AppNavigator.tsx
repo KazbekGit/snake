@@ -15,7 +15,7 @@ export type RootStackParamList = {
   GradeSelection: undefined;
   GoalSelection: { grade: number };
   Home: undefined;
-  TopicHeader: { topic: any };
+  Topic: { topic: any };
   TheoryBlock: { topic: any; blockIndex: number };
   MiniTest: { topic: any; blockId: string };
 };
@@ -50,7 +50,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="GradeSelection" component={GradeSelectionScreen} />
         <Stack.Screen name="GoalSelection" component={GoalSelectionScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="TopicHeader" component={TopicHeaderScreen} />
+        <Stack.Screen name="Topic" component={TopicHeaderScreen} />
         <Stack.Screen name="TheoryBlock" component={TheoryBlockScreen} />
         <Stack.Screen name="MiniTest" component={MiniTestScreen} />
       </Stack.Navigator>

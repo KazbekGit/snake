@@ -92,13 +92,36 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   const handleSectionPress = (section: Section) => {
     // Для демо-версии используем тему "Деньги" для всех разделов
-    // В реальном приложении здесь будет логика выбора темы
     const demoTopic = {
-      ...moneyTopic,
+      id: "money",
       sectionId: section.id,
+      title: "Деньги",
+      description: "Изучаем природу денег, их функции и роль в экономике",
+      coverImage:
+        "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800",
+      order: 1,
+      gradeLevel: 9,
+      isPremium: false,
+      contentBlocks: moneyTopic.contentBlocks,
+      quiz: moneyTopic.quiz,
+      isCompleted: false,
+      progress: 0,
+      bestScore: 0,
+      totalBlocks: moneyTopic.contentBlocks.length,
+      completedBlocks: 0,
+      estimatedTime: 20,
+      difficulty: "medium",
+      learningObjectives: [
+        "Понять что такое деньги и их роль в экономике",
+        "Изучить 5 основных функций денег",
+        "Различать виды денег и их особенности",
+      ],
     };
 
-    navigation.navigate("TopicHeader", { topic: demoTopic });
+    console.log("Передаем тему:", demoTopic);
+    console.log("moneyTopic:", moneyTopic);
+
+    navigation.navigate("Topic", { topic: demoTopic });
   };
 
   const handleProfilePress = () => {
@@ -126,7 +149,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         </TouchableOpacity>
         <View style={styles.progressContainer}>
           <LinearGradient
-            colors={colors.gradients.primary}
+            colors={[...colors.gradients.primary]}
             style={styles.progressCard}
           >
             <View style={styles.progressHeader}>

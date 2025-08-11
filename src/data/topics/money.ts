@@ -299,8 +299,47 @@ export const moneyTopic: Topic = {
         points: 10,
         order: 8,
       },
+      {
+        id: "q9",
+        quizId: "money_quiz",
+        type: "single",
+        text: "Какие деньги считаются самыми ликвидными?",
+        options: [
+          { id: "q9_a", text: "Недвижимость", isCorrect: false },
+          { id: "q9_b", text: "Акции компаний", isCorrect: false },
+          { id: "q9_c", text: "Наличные деньги", isCorrect: true },
+          { id: "q9_d", text: "Криптовалюты", isCorrect: false },
+        ],
+        correctAnswer: "q9_c",
+        explanation:
+          "Наличные деньги считаются самыми ликвидными, так как их можно мгновенно использовать для покупки товаров и услуг без дополнительных операций.",
+        points: 10,
+        order: 9,
+      },
+      {
+        id: "q10",
+        quizId: "money_quiz",
+        type: "multiple",
+        text: "Какие факторы влияют на стоимость денег?",
+        options: [
+          { id: "q10_a", text: "Инфляция", isCorrect: true },
+          { id: "q10_b", text: "Курс валют", isCorrect: true },
+          { id: "q10_c", text: "Погода", isCorrect: false },
+          { id: "q10_d", text: "Ставка рефинансирования", isCorrect: true },
+          {
+            id: "q10_e",
+            text: "Количество денег в обращении",
+            isCorrect: true,
+          },
+        ],
+        correctAnswer: ["q10_a", "q10_b", "q10_d", "q10_e"],
+        explanation:
+          "На стоимость денег влияют инфляция, курс валют, ставка рефинансирования и количество денег в обращении. Погода не влияет на стоимость денег.",
+        points: 15,
+        order: 10,
+      },
     ],
-    timeLimit: 600, // 10 минут
+    timeLimit: 900, // 15 минут (увеличили время)
     passingScore: 70, // 70% для прохождения
   },
   isCompleted: false,
@@ -333,4 +372,3 @@ export const moneyTopicData = {
     },
   ],
 };
-
