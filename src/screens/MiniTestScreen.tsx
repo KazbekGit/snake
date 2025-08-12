@@ -74,23 +74,30 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
   }, [currentQuestionIndex]);
 
   const handleAnswerSelect = (answerIndex: number) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Временно отключено для веб
 
-    if (currentQuestion.type === "single_choice") {
+    console.log("Выбран ответ:", answerIndex, "для вопроса:", currentQuestionIndex);
+
+    if (currentQuestion.type === "single") {
       setSelectedAnswers([answerIndex]);
       checkAnswer([answerIndex]);
-    } else if (currentQuestion.type === "multiple_choice") {
+    } else if (currentQuestion.type === "multiple") {
       const newAnswers = selectedAnswers.includes(answerIndex)
         ? selectedAnswers.filter((i) => i !== answerIndex)
         : [...selectedAnswers, answerIndex];
 
       setSelectedAnswers(newAnswers);
+      console.log("Множественный выбор:", newAnswers);
 
       // Auto-check if all correct answers are selected
       if (
-        currentQuestion.correctIndexes &&
-        newAnswers.length === currentQuestion.correctIndexes.length &&
-        currentQuestion.correctIndexes.every((i) => newAnswers.includes(i))
+        currentQuestion.correctAnswer &&
+        Array.isArray(currentQuestion.correctAnswer) &&
+        newAnswers.length === currentQuestion.correctAnswer.length &&
+        currentQuestion.correctAnswer.every((answerId: string) => {
+          const optionIndex = currentQuestion.options.findIndex(opt => opt.id === answerId);
+          return newAnswers.includes(optionIndex);
+        })
       ) {
         checkAnswer(newAnswers);
       }
@@ -100,26 +107,28 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
   const checkAnswer = (answers: number[]) => {
     let correct = false;
 
-    if (
-      currentQuestion.type === "single_choice" &&
-      currentQuestion.correctIndex !== undefined
-    ) {
-      correct = answers[0] === currentQuestion.correctIndex;
-    } else if (
-      currentQuestion.type === "multiple_choice" &&
-      currentQuestion.correctIndexes
-    ) {
-      correct =
-        answers.length === currentQuestion.correctIndexes.length &&
-        currentQuestion.correctIndexes.every((i) => answers.includes(i));
+    if (currentQuestion.type === "single") {
+      // Для single choice сравниваем с correctAnswer
+      const selectedOptionId = currentQuestion.options[answers[0]]?.id;
+      correct = selectedOptionId === currentQuestion.correctAnswer;
+    } else if (currentQuestion.type === "multiple") {
+      // Для multiple choice проверяем все правильные ответы
+      const selectedOptionIds = answers.map(index => currentQuestion.options[index]?.id);
+      if (Array.isArray(currentQuestion.correctAnswer)) {
+        correct = 
+          selectedOptionIds.length === currentQuestion.correctAnswer.length &&
+          currentQuestion.correctAnswer.every(id => selectedOptionIds.includes(id));
+      }
     }
+
+    console.log("Проверка ответа:", { correct, answers, correctAnswer: currentQuestion.correctAnswer });
 
     setIsCorrect(correct);
     if (correct) {
       setScore(score + 1);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      // Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success); // Временно отключено для веб
     } else {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      // Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error); // Временно отключено для веб
     }
 
     setShowExplanation(true);

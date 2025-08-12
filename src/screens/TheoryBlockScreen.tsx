@@ -68,15 +68,18 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
   }, [currentBlockIndex]);
 
   const handleNext = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // Временно отключено для веб
     buttonScale.value = withSpring(0.95, { duration: 100 }, () => {
       buttonScale.value = withSpring(1, { duration: 100 });
     });
+
+    console.log("Следующий блок:", currentBlockIndex + 1, "из", totalBlocks);
 
     if (currentBlockIndex < totalBlocks - 1) {
       setCurrentBlockIndex(currentBlockIndex + 1);
     } else {
       // Navigate to mini test
+      console.log("Переходим к мини-тесту");
       navigation.navigate("MiniTest", {
         topic,
         blockId: currentBlock.id,
@@ -85,14 +88,16 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
   };
 
   const handlePrevious = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Временно отключено для веб
     if (currentBlockIndex > 0) {
+      console.log("Предыдущий блок:", currentBlockIndex - 1);
       setCurrentBlockIndex(currentBlockIndex - 1);
     }
   };
 
   const handleBack = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Временно отключено для веб
+    console.log("Возвращаемся к списку тем");
     navigation.goBack();
   };
 

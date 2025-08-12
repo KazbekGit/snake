@@ -78,10 +78,13 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
   }, []);
 
   const handleStartLearning = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // Временно отключено для веб
     buttonScale.value = withSpring(0.95, { duration: 100 }, () => {
       buttonScale.value = withSpring(1, { duration: 100 });
     });
+
+    console.log("Начинаем изучение темы:", currentTopic.title);
+    console.log("Переходим к первому блоку теории");
 
     // Navigate to first theory block
     navigation.navigate("TheoryBlock", {
@@ -91,7 +94,8 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
   };
 
   const handleBack = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Временно отключено для веб
+    console.log("Возвращаемся назад");
     navigation.goBack();
   };
 
