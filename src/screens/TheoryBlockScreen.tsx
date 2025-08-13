@@ -24,6 +24,9 @@ import Animated, {
 import { colors } from "../constants/colors";
 import { Topic, ContentBlock } from "../types";
 import { moneyTopic } from "../data";
+import { markBlockCompleted, addStudyTime } from "../utils/progressStorage";
+import { logEvent } from "../utils/analytics";
+import { getCachedUri } from "../utils/imageCache";
 
 const { width, height } = Dimensions.get("window");
 
@@ -41,48 +44,117 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
   navigation,
   route,
 }) => {
-  const { topic, blockIndex } = route.params;
+  const { topic, blockIndex = 0 } = route.params;
   const [currentBlockIndex, setCurrentBlockIndex] = useState(blockIndex);
+  const [studyStartTime, setStudyStartTime] = useState<number>(Date.now());
+  const [mediaUri, setMediaUri] = useState<string | null>(null);
 
   // Animation values
+  const contentTranslateY = useSharedValue(50);
   const contentOpacity = useSharedValue(0);
-  const contentTranslateY = useSharedValue(30);
-  const mediaScale = useSharedValue(0.9);
   const buttonScale = useSharedValue(1);
+  const mediaScale = useSharedValue(1);
 
-  // Используем реальный контент из темы "Деньги"
-  const blocks = moneyTopic.contentBlocks;
-  const currentBlock = blocks[currentBlockIndex];
-  const totalBlocks = blocks.length;
+  // Используем переданную тему или fallback на moneyTopic
+  const currentTopic = topic || moneyTopic;
+  const totalBlocks = currentTopic.contentBlocks?.length || 4;
+  const currentBlock = currentTopic.contentBlocks?.[currentBlockIndex] || {
+    title: "Блок теории",
+    content: "Содержание блока",
+  };
+
   const progress = ((currentBlockIndex + 1) / totalBlocks) * 100;
 
-  useEffect(() => {
-    // Reset and start animations for new block
-    contentOpacity.value = 0;
-    contentTranslateY.value = 30;
-    mediaScale.value = 0.9;
+  const renderDots = () => {
+    return (
+      <View style={styles.dotsContainer}>
+        {Array.from({ length: totalBlocks }).map((_, idx) => (
+          <TouchableOpacity
+            key={idx}
+            onPress={() => {
+              if (idx !== currentBlockIndex) {
+                logEvent("jump_block", { topicId: currentTopic.id, to: idx });
+                setCurrentBlockIndex(idx);
+              }
+            }}
+            accessibilityRole="button"
+            accessibilityLabel={`Перейти к блоку ${idx + 1}`}
+            testID={`dot-${idx}`}
+            style={[
+              styles.dot,
+              idx === currentBlockIndex ? styles.dotActive : styles.dotInactive,
+            ]}
+          />
+        ))}
+      </View>
+    );
+  };
 
-    contentOpacity.value = withTiming(1, { duration: 600 });
+  const scrollRef = React.useRef<ScrollView | null>(null);
+
+  useEffect(() => {
+    // Start animations
     contentTranslateY.value = withSpring(0, { damping: 15, stiffness: 100 });
-    mediaScale.value = withSpring(1, { damping: 15, stiffness: 100 });
+    contentOpacity.value = withTiming(1, { duration: 800 });
+
+    // Записываем время начала изучения
+    setStudyStartTime(Date.now());
+
+    // Лог события просмотра блока
+    logEvent("open_block", {
+      topicId: currentTopic.id,
+      blockIndex: currentBlockIndex,
+    });
+
+    // Автоскролл к началу
+    try {
+      scrollRef.current?.scrollTo({ y: 0, animated: true });
+    } catch {}
+
+    // Кэшируем медиа, если есть
+    (async () => {
+      try {
+        if (currentBlock.media?.url) {
+          const cached = await getCachedUri(currentBlock.media.url);
+          setMediaUri(cached);
+        } else {
+          setMediaUri(null);
+        }
+      } catch {
+        setMediaUri(null);
+      }
+    })();
   }, [currentBlockIndex]);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // Временно отключено для веб
     buttonScale.value = withSpring(0.95, { duration: 100 }, () => {
       buttonScale.value = withSpring(1, { duration: 100 });
     });
 
-    console.log("Следующий блок:", currentBlockIndex + 1, "из", totalBlocks);
+    // Сохраняем прогресс текущего блока
+    await markBlockCompleted(currentTopic.id, currentBlockIndex, totalBlocks);
+
+    // Добавляем время изучения
+    const studyTimeMinutes = Math.round((Date.now() - studyStartTime) / 60000);
+    if (studyTimeMinutes > 0) {
+      await addStudyTime(currentTopic.id, studyTimeMinutes);
+    }
 
     if (currentBlockIndex < totalBlocks - 1) {
+      // Переходим к следующему блоку
+      logEvent("next_block", {
+        topicId: currentTopic.id,
+        from: currentBlockIndex,
+        to: currentBlockIndex + 1,
+      });
       setCurrentBlockIndex(currentBlockIndex + 1);
     } else {
-      // Navigate to mini test
-      console.log("Переходим к мини-тесту");
+      // Переходим к тесту
+      console.log("Переходим к тесту");
+      logEvent("start_test", { topicId: currentTopic.id });
       navigation.navigate("MiniTest", {
-        topic,
-        blockId: currentBlock.id,
+        topic: currentTopic,
       });
     }
   };
@@ -90,7 +162,6 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
   const handlePrevious = () => {
     // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Временно отключено для веб
     if (currentBlockIndex > 0) {
-      console.log("Предыдущий блок:", currentBlockIndex - 1);
       setCurrentBlockIndex(currentBlockIndex - 1);
     }
   };
@@ -123,7 +194,7 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
     return (
       <Animated.View style={[styles.mediaContainer, mediaAnimatedStyle]}>
         <Image
-          source={{ uri: media.url }}
+          source={{ uri: mediaUri || media.url }}
           style={styles.mediaImage}
           resizeMode="cover"
         />
@@ -187,6 +258,7 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+            accessibilityRole="button" accessibilityLabel="Назад"
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
 
@@ -209,8 +281,10 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
           </View>
           <Text style={styles.progressText}>{Math.round(progress)}%</Text>
         </View>
+        {renderDots()}
 
         <ScrollView
+          ref={scrollRef}
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
@@ -279,6 +353,12 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
                 style={styles.nextButton}
                 onPress={handleNext}
                 activeOpacity={0.8}
+                accessibilityRole="button"
+                accessibilityLabel={
+                  currentBlockIndex < totalBlocks - 1
+                    ? "Следующий блок"
+                    : "Перейти к тесту"
+                }
               >
                 <LinearGradient
                   colors={[colors.primary, colors.primaryDark]}
@@ -287,7 +367,7 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
                   <Text style={styles.nextButtonText}>
                     {currentBlockIndex < totalBlocks - 1
                       ? "Следующий блок"
-                      : "К тесту"}
+                      : "Перейти к тесту"}
                   </Text>
                   <Ionicons
                     name={
@@ -300,6 +380,13 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
                   />
                 </LinearGradient>
               </TouchableOpacity>
+
+              {/* Подсказка под кнопкой */}
+              <Text style={styles.buttonHint}>
+                {currentBlockIndex < totalBlocks - 1
+                  ? `Следующий: блок ${currentBlockIndex + 2} из ${totalBlocks}`
+                  : "Далее: тест"}
+              </Text>
             </Animated.View>
           </View>
         </View>
@@ -586,6 +673,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginRight: 8,
+  },
+  buttonHint: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    textAlign: "center",
+    marginTop: 8,
+    fontStyle: "italic",
+  },
+  dotsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 4,
+  },
+  dotActive: {
+    backgroundColor: "white",
+  },
+  dotInactive: {
+    backgroundColor: "rgba(255,255,255,0.5)",
   },
 });
 

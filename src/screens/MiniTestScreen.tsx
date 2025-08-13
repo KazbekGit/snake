@@ -24,6 +24,9 @@ import Animated, {
 import { colors } from "../constants/colors";
 import { Topic, Question } from "../types";
 import { moneyTopic } from "../data";
+import { saveTestResult } from "../utils/progressStorage";
+import { logEvent } from "../utils/analytics";
+import { useThrottle } from "../hooks/useThrottle";
 
 const { width, height } = Dimensions.get("window");
 
@@ -73,10 +76,15 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
     questionTranslateY.value = withSpring(0, { damping: 15, stiffness: 100 });
   }, [currentQuestionIndex]);
 
-  const handleAnswerSelect = (answerIndex: number) => {
+  const handleAnswerSelectUnthrottled = (answerIndex: number) => {
     // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Временно отключено для веб
 
-    console.log("Выбран ответ:", answerIndex, "для вопроса:", currentQuestionIndex);
+    console.log(
+      "Выбран ответ:",
+      answerIndex,
+      "для вопроса:",
+      currentQuestionIndex
+    );
 
     if (currentQuestion.type === "single") {
       setSelectedAnswers([answerIndex]);
@@ -95,7 +103,9 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
         Array.isArray(currentQuestion.correctAnswer) &&
         newAnswers.length === currentQuestion.correctAnswer.length &&
         currentQuestion.correctAnswer.every((answerId: string) => {
-          const optionIndex = currentQuestion.options.findIndex(opt => opt.id === answerId);
+          const optionIndex = currentQuestion.options.findIndex(
+            (opt) => opt.id === answerId
+          );
           return newAnswers.includes(optionIndex);
         })
       ) {
@@ -103,6 +113,8 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
       }
     }
   };
+
+  const handleAnswerSelect = useThrottle(handleAnswerSelectUnthrottled, 200);
 
   const checkAnswer = (answers: number[]) => {
     let correct = false;
@@ -113,15 +125,23 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
       correct = selectedOptionId === currentQuestion.correctAnswer;
     } else if (currentQuestion.type === "multiple") {
       // Для multiple choice проверяем все правильные ответы
-      const selectedOptionIds = answers.map(index => currentQuestion.options[index]?.id);
+      const selectedOptionIds = answers.map(
+        (index) => currentQuestion.options[index]?.id
+      );
       if (Array.isArray(currentQuestion.correctAnswer)) {
-        correct = 
+        correct =
           selectedOptionIds.length === currentQuestion.correctAnswer.length &&
-          currentQuestion.correctAnswer.every(id => selectedOptionIds.includes(id));
+          currentQuestion.correctAnswer.every((id) =>
+            selectedOptionIds.includes(id)
+          );
       }
     }
 
-    console.log("Проверка ответа:", { correct, answers, correctAnswer: currentQuestion.correctAnswer });
+    console.log("Проверка ответа:", {
+      correct,
+      answers,
+      correctAnswer: currentQuestion.correctAnswer,
+    });
 
     setIsCorrect(correct);
     if (correct) {
@@ -136,32 +156,51 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
   };
 
   const handleNext = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // Временно отключено для веб
 
     if (currentQuestionIndex < totalQuestions - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedAnswers([]);
       setShowExplanation(false);
-      explanationOpacity.value = 0;
     } else {
-      // Test completed
-      setTestCompleted(true);
-      resultScale.value = withSpring(1, { damping: 15, stiffness: 100 });
+      // Завершаем тест
+      handleFinishTest();
     }
   };
 
   const handleBack = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Временно отключено для веб
     navigation.goBack();
   };
 
   const handleContinue = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // Временно отключено для веб
     // Navigate to next theory block or control test
+    logEvent("continue_after_test", { topicId: topic.id });
     navigation.navigate("TheoryBlock", {
       topic,
       blockIndex: 1, // Next block
     });
+  };
+
+  const handleFinishTest = async () => {
+    // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); // Временно отключено для веб
+
+    // Сохраняем результат теста
+    await saveTestResult(currentTopic.id, correctAnswers, totalQuestions);
+    logEvent("finish_test", {
+      topicId: currentTopic.id,
+      score: correctAnswers,
+      totalQuestions,
+    });
+
+    setTestCompleted(true);
+    console.log(
+      "Тест завершен. Правильных ответов:",
+      correctAnswers,
+      "из",
+      totalQuestions
+    );
   };
 
   // Animated styles
@@ -185,7 +224,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
           <TouchableOpacity
             style={styles.flipCard}
             onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Временно отключено для веб
               setShowExplanation(!showExplanation);
             }}
           >
@@ -425,7 +464,12 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
         style={styles.background}
       >
         <View style={styles.header}>
-          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+          <TouchableOpacity
+            onPress={handleBack}
+            style={styles.backButton}
+            accessibilityRole="button"
+            accessibilityLabel="Назад"
+          >
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Проверь понимание</Text>
@@ -467,6 +511,12 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
               style={styles.nextButton}
               onPress={handleNext}
               activeOpacity={0.8}
+              accessibilityRole="button"
+              accessibilityLabel={
+                currentQuestionIndex < totalQuestions - 1
+                  ? "Следующий вопрос"
+                  : "Завершить тест"
+              }
             >
               <LinearGradient
                 colors={[colors.primary, colors.primaryDark]}
@@ -488,6 +538,13 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
                 />
               </LinearGradient>
             </TouchableOpacity>
+
+            {/* Подсказка под кнопкой */}
+            <Text style={styles.buttonHint}>
+              {currentQuestionIndex < totalQuestions - 1
+                ? `Вопрос ${currentQuestionIndex + 2} из ${totalQuestions}`
+                : "Посмотреть результаты теста"}
+            </Text>
           </View>
         )}
       </LinearGradient>
@@ -784,6 +841,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginRight: 8,
+  },
+  buttonHint: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    textAlign: "center",
+    marginTop: 8,
+    fontStyle: "italic",
   },
 });
 

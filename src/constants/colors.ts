@@ -3,11 +3,13 @@
 
 export const colors = {
   // Основные цвета
-  primary: "#2563EB", // Темно-синий (более контрастный)
-  secondary: "#DC2626", // Красный (более контрастный)
+  primary: "#2563EB", // Темно-синий
+  primaryDark: "#1D4ED8", // Еще более темный синий
+  secondary: "#DC2626", // Красный
   accent: "#EA580C", // Оранжевый
   success: "#16A34A", // Зеленый
   warning: "#CA8A04", // Желтый
+  error: "#DC2626", // Красный для ошибок
   info: "#0891B2", // Голубой
 
   // Градиенты
@@ -20,27 +22,21 @@ export const colors = {
   },
 
   // Фоны
-  background: {
-    primary: "#FFFFFF",
-    secondary: "#F8FAFC",
-    tertiary: "#E2E8F0",
-    dark: "#1E293B",
-  },
+  background: "#FFFFFF",
+  backgroundSecondary: "#F8FAFC",
+  backgroundTertiary: "#E2E8F0",
+  backgroundDark: "#1E293B",
 
   // Текст
-  text: {
-    primary: "#1E293B", // Темно-синий (более контрастный)
-    secondary: "#475569", // Серый (более контрастный)
-    light: "#FFFFFF",
-    muted: "#64748B",
-  },
+  text: "#1E293B", // Темно-синий для основного текста
+  textSecondary: "#475569", // Серый для второстепенного текста
+  textLight: "#FFFFFF", // Белый для темного фона
+  textMuted: "#64748B", // Приглушенный серый
 
   // Карточки и элементы
-  card: {
-    background: "#FFFFFF",
-    border: "#E2E8F0",
-    shadow: "rgba(0, 0, 0, 0.1)",
-  },
+  card: "#FFFFFF",
+  border: "#E2E8F0",
+  shadow: "rgba(0, 0, 0, 0.1)",
 
   // Статусы
   status: {
@@ -76,11 +72,7 @@ export const colors = {
   },
 
   // Премиум функции
-  premium: {
-    primary: "#CA8A04",
-    secondary: "#EA580C",
-    gradient: ["#CA8A04", "#EA580C"],
-  },
+  premium: "#CA8A04",
 } as const;
 
 export type ColorScheme = typeof colors;

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -24,6 +25,13 @@ import Animated, {
 import { colors } from "../constants/colors";
 import { Topic } from "../types";
 import { moneyTopic } from "../data";
+import { getCachedUri } from "../utils/imageCache";
+import {
+  getTopicProgress,
+  resetTopicProgress,
+  TopicProgress,
+} from "../utils/progressStorage";
+import { logEvent } from "../utils/analytics";
 
 const { width, height } = Dimensions.get("window");
 
@@ -41,6 +49,11 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
   route,
 }) => {
   const { topic } = route.params;
+  const [topicProgress, setTopicProgress] = useState<TopicProgress | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [coverUri, setCoverUri] = useState<string | null>(null);
 
   // Animation values
   const headerOpacity = useSharedValue(0);
@@ -70,6 +83,22 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
     completedBlocks: 0,
   };
 
+  // Загружаем прогресс темы
+  useEffect(() => {
+    const loadTopicProgress = async () => {
+      try {
+        const progress = await getTopicProgress(currentTopic.id);
+        setTopicProgress(progress);
+      } catch (error) {
+        console.error("Error loading topic progress:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadTopicProgress();
+  }, [currentTopic.id]);
+
   useEffect(() => {
     // Start animations
     headerOpacity.value = withTiming(1, { duration: 800 });
@@ -77,19 +106,50 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
     contentTranslateY.value = withSpring(0, { damping: 15, stiffness: 100 });
   }, []);
 
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const cached = await getCachedUri(currentTopic.coverImage);
+        if (mounted) setCoverUri(cached);
+      } catch {
+        if (mounted) setCoverUri(null);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [currentTopic.coverImage]);
+
   const handleStartLearning = () => {
+    console.log("=== handleStartLearning вызвана ===");
+    console.log("currentTopic:", currentTopic);
+    console.log("topicProgress:", topicProgress);
+
     // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // Временно отключено для веб
     buttonScale.value = withSpring(0.95, { duration: 100 }, () => {
       buttonScale.value = withSpring(1, { duration: 100 });
     });
 
     console.log("Начинаем изучение темы:", currentTopic.title);
-    console.log("Переходим к первому блоку теории");
 
-    // Navigate to first theory block
+    // Определяем с какого блока начать
+    const startBlockIndex = topicProgress?.lastBlockIndex || 0;
+    console.log("Переходим к блоку:", startBlockIndex + 1);
+
+    // Navigate to theory block
+    console.log("Навигация к TheoryBlock с параметрами:", {
+      topic: currentTopic,
+      blockIndex: startBlockIndex,
+    });
+
+    logEvent("start_topic", {
+      topicId: currentTopic.id,
+      fromBlock: startBlockIndex,
+    });
     navigation.navigate("TheoryBlock", {
       topic: currentTopic,
-      blockIndex: 0,
+      blockIndex: startBlockIndex,
     });
   };
 
@@ -97,6 +157,25 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
     // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Временно отключено для веб
     console.log("Возвращаемся назад");
     navigation.goBack();
+  };
+
+  const confirmResetProgress = () => {
+    Alert.alert(
+      "Сбросить прогресс",
+      "Вы уверены, что хотите удалить прогресс по этой теме?",
+      [
+        { text: "Отмена", style: "cancel" },
+        {
+          text: "Сбросить",
+          style: "destructive",
+          onPress: async () => {
+            await resetTopicProgress(currentTopic.id);
+            const updated = await getTopicProgress(currentTopic.id);
+            setTopicProgress(updated);
+          },
+        },
+      ]
+    );
   };
 
   // Animated styles
@@ -150,7 +229,13 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
       >
         {/* Header */}
         <Animated.View style={[styles.header, headerAnimatedStyle]}>
-          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+          <TouchableOpacity
+            onPress={handleBack}
+            accessibilityRole="button"
+            accessibilityLabel="Назад"
+            style={styles.backButton}
+            testID="back-button"
+          >
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
 
@@ -172,9 +257,11 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
           {/* Cover Image */}
           <Animated.View style={[styles.imageContainer, imageAnimatedStyle]}>
             <Image
-              source={{ uri: currentTopic.coverImage }}
+              source={{ uri: coverUri || currentTopic.coverImage }}
               style={styles.coverImage}
               resizeMode="cover"
+              accessible
+              accessibilityLabel={`Обложка темы ${currentTopic.title}`}
             />
             <LinearGradient
               colors={["transparent", "rgba(0,0,0,0.7)"]}
@@ -271,7 +358,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                 <Text style={styles.progressText}>Прогресс изучения</Text>
                 <Text style={styles.progressPercentage}>
                   {Math.round(
-                    ((currentTopic.completedBlocks || 0) /
+                    ((topicProgress?.completedBlocks || 0) /
                       Math.max(
                         currentTopic.totalBlocks ||
                           currentTopic.contentBlocks?.length ||
@@ -289,7 +376,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                     styles.progressFill,
                     {
                       width: `${
-                        ((currentTopic.completedBlocks || 0) /
+                        ((topicProgress?.completedBlocks || 0) /
                           Math.max(
                             currentTopic.totalBlocks ||
                               currentTopic.contentBlocks?.length ||
@@ -313,19 +400,45 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                 style={styles.startButton}
                 onPress={handleStartLearning}
                 activeOpacity={0.8}
+                testID="start-learning-button"
+                accessibilityRole="button"
+                accessibilityLabel={
+                  topicProgress?.completedBlocks > 0
+                    ? "Продолжить изучение"
+                    : "Начать изучение"
+                }
               >
                 <LinearGradient
                   colors={[colors.primary, colors.primaryDark]}
                   style={styles.startButtonGradient}
+                  pointerEvents="none"
                 >
                   <Ionicons name="play" size={24} color="white" />
                   <Text style={styles.startButtonText}>
-                    {currentTopic.completedBlocks > 0
+                    {topicProgress?.completedBlocks > 0
                       ? "Продолжить изучение"
                       : "Начать изучение"}
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
+
+              {/* Подсказка под кнопкой */}
+              <Text style={styles.buttonHint}>
+                {topicProgress?.completedBlocks > 0
+                  ? `Продолжить с блока ${topicProgress.lastBlockIndex + 1}`
+                  : "Начать изучение темы с первого блока"}
+              </Text>
+
+              {/* Reset progress */}
+              {topicProgress && (
+                <TouchableOpacity
+                  onPress={confirmResetProgress}
+                  style={styles.resetButton}
+                  testID="reset-progress-button"
+                >
+                  <Text style={styles.resetButtonText}>Сбросить прогресс</Text>
+                </TouchableOpacity>
+              )}
             </Animated.View>
 
             {/* Premium Badge (if applicable) */}
@@ -542,6 +655,26 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginLeft: 12,
+  },
+  buttonHint: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    textAlign: "center",
+    marginTop: 8,
+    fontStyle: "italic",
+  },
+  resetButton: {
+    alignSelf: "center",
+    marginTop: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
+    backgroundColor: colors.card,
+  },
+  resetButtonText: {
+    color: colors.textSecondary,
+    fontSize: 12,
+    fontWeight: "600",
   },
   premiumBadge: {
     flexDirection: "row",

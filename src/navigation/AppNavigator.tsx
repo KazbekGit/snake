@@ -9,6 +9,7 @@ import { HomeScreen } from "../screens/HomeScreen";
 import { TopicHeaderScreen } from "../screens/TopicHeaderScreen";
 import { TheoryBlockScreen } from "../screens/TheoryBlockScreen";
 import { MiniTestScreen } from "../screens/MiniTestScreen";
+import { StatisticsScreen } from "../screens/StatisticsScreen";
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -18,6 +19,7 @@ export type RootStackParamList = {
   Topic: { topic: any };
   TheoryBlock: { topic: any; blockIndex: number };
   MiniTest: { topic: any; blockId: string };
+  Statistics: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -53,6 +55,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="Topic" component={TopicHeaderScreen} />
         <Stack.Screen name="TheoryBlock" component={TheoryBlockScreen} />
         <Stack.Screen name="MiniTest" component={MiniTestScreen} />
+        <Stack.Screen name="Statistics" component={StatisticsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

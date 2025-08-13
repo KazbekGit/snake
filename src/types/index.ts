@@ -13,7 +13,7 @@ export interface User {
   avatar?: string;
 }
 
-export type LearningGoal = 'ege' | 'school' | 'personal';
+export type LearningGoal = "ege" | "school" | "personal";
 
 export interface Section {
   id: string;
@@ -45,7 +45,7 @@ export interface Topic {
 export interface ContentBlock {
   id: string;
   topicId: string;
-  type: 'text' | 'image' | 'video' | 'infographic' | 'mnemonic';
+  type: "text" | "image" | "video" | "infographic" | "mnemonic";
   title: string;
   content: string;
   mediaUrl?: string;
@@ -64,7 +64,7 @@ export interface Quiz {
 export interface Question {
   id: string;
   quizId: string;
-  type: 'single' | 'multiple' | 'match' | 'flipcard' | 'text';
+  type: "single" | "multiple" | "match" | "flipcard" | "text";
   text: string;
   options?: QuestionOption[];
   correctAnswer: string | string[];
@@ -85,9 +85,9 @@ export interface Achievement {
   title: string;
   description: string;
   icon: string;
-  category: 'topic' | 'section' | 'streak' | 'special';
+  category: "topic" | "section" | "streak" | "special";
   awardedAt: Date;
-  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+  rarity: "common" | "rare" | "epic" | "legendary";
 }
 
 export interface Progress {
@@ -126,8 +126,8 @@ export interface AppSettings {
   sound: boolean;
   hapticFeedback: boolean;
   autoPlay: boolean;
-  theme: 'light' | 'dark' | 'auto';
-  fontSize: 'small' | 'medium' | 'large';
+  theme: "light" | "dark" | "auto";
+  fontSize: "small" | "medium" | "large";
 }
 
 export interface NavigationParams {
@@ -140,6 +140,7 @@ export interface NavigationParams {
   Quiz: { quiz: Quiz; topicId: string };
   Results: { result: TestResult; topicId: string };
   Profile: undefined;
+  Statistics: undefined;
   Achievements: undefined;
   Settings: undefined;
   Search: undefined;

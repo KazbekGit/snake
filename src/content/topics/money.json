@@ -1,0 +1,32 @@
+{
+  "id": "money",
+  "sectionId": "economy",
+  "title": "Деньги",
+  "description": "Изучаем природу денег, их функции и роль в экономике",
+  "coverImage": "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800",
+  "gradeLevel": 9,
+  "isPremium": false,
+  "estimatedTime": 20,
+  "difficulty": "medium",
+  "learningObjectives": [
+    "Понять что такое деньги и их роль в экономике",
+    "Изучить 5 основных функций денег",
+    "Различать виды денег и их особенности"
+  ],
+  "contentBlocks": [
+    { "title": "Определение", "content": "Деньги — это..." },
+    { "title": "Функции", "content": "Функции денег..." },
+    { "title": "Виды", "content": "Виды денег..." },
+    { "title": "Итоги", "content": "Что мы узнали..." }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "type": "single",
+        "question": "Деньги — это?",
+        "options": ["Эквивалент", "Товар"],
+        "correctAnswer": "Эквивалент"
+      }
+    ]
+  }
+}

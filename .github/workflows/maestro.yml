@@ -1,0 +1,26 @@
+name: Maestro E2E
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: npm ci --force
+      - name: Install Maestro CLI
+        run: curl -Ls "https://get.maestro.mobile.dev" | bash
+      - name: Run flow (placeholder)
+        run: |
+          echo "This step requires a running app on emulator; integrate with Expo EAS CI for full run."
+      - name: Upload flow
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-flow
+          path: maestro/flow.yaml
+
+

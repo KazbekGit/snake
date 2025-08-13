@@ -10,10 +10,17 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { colors } from "../constants/colors";
+import { getTopicProgress, getUserProgress } from "../utils/progressStorage";
+import {
+  computeStartBlockIndex,
+  getLastStudiedTopicIdFromUserProgress,
+} from "../utils/progressHelpers";
 import { NavigationProp } from "@react-navigation/native";
 import { NavigationParams, Section } from "../types";
 import { SECTIONS, SECTION_COLORS } from "../constants/sections";
 import { mockUserProgress, moneyTopic } from "../data";
+import { getTopicWithCache } from "../content/loader";
+import { getTopicFallback } from "../content/index";
 
 interface HomeScreenProps {
   navigation: NavigationProp<NavigationParams, "Home">;
@@ -90,9 +97,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     },
   ]);
 
-  const handleSectionPress = (section: Section) => {
-    // Для демо-версии используем тему "Деньги" для всех разделов
-    const demoTopic = {
+  const handleSectionPress = async (section: Section) => {
+    // Для демо-версии используем тему "Деньги"
+    const fallback = getTopicFallback("money") || {
       id: "money",
       sectionId: section.id,
       title: "Деньги",
@@ -118,26 +125,61 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       ],
     };
 
-    console.log("Передаем тему:", demoTopic);
-    console.log("moneyTopic:", moneyTopic);
+    const loaded = await getTopicWithCache("money", fallback as any);
 
-    navigation.navigate("Topic", { topic: demoTopic });
+    navigation.navigate("Topic", { topic: loaded });
   };
 
   const handleProfilePress = () => {
     navigation.navigate("Profile");
   };
 
+  const handleStatisticsPress = () => {
+    navigation.navigate("Statistics");
+  };
+
   const handleSearchPress = () => {
     navigation.navigate("Search");
   };
 
+  const handleContinuePress = async () => {
+    const userProgress = await getUserProgress();
+    const lastTopicId =
+      getLastStudiedTopicIdFromUserProgress(userProgress) || "money";
+    const progress = await getTopicProgress(lastTopicId);
+    const blockIndex = computeStartBlockIndex(progress);
+    const fallback = getTopicFallback(lastTopicId) || {
+      id: lastTopicId,
+      sectionId: "economy",
+      title: "Деньги",
+      description: "Изучаем природу денег, их функции и роль в экономике",
+      coverImage:
+        "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800",
+      order: 1,
+      gradeLevel: 9,
+      isPremium: false,
+      contentBlocks: moneyTopic.contentBlocks,
+      quiz: moneyTopic.quiz,
+      isCompleted: false,
+      progress: 0,
+      bestScore: 0,
+      totalBlocks: moneyTopic.contentBlocks.length,
+      completedBlocks: 0,
+      estimatedTime: 20,
+      difficulty: "medium",
+      learningObjectives: [
+        "Понять что такое деньги и их роль в экономике",
+        "Изучить 5 основных функций денег",
+        "Различать виды денег и их особенности",
+      ],
+    };
+    const loaded = await getTopicWithCache(lastTopicId, fallback as any);
+    navigation.navigate("TheoryBlock", { topic: loaded as any, blockIndex });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor={colors.background.primary}
-      />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
 
       {/* Верхняя панель с прогрессом */}
       <View style={styles.header}>
@@ -149,14 +191,25 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         </TouchableOpacity>
         <View style={styles.progressContainer}>
           <LinearGradient
-            colors={[...colors.gradients.primary]}
+            colors={colors.gradients.primary}
             style={styles.progressCard}
           >
             <View style={styles.progressHeader}>
               <Text style={styles.progressTitle}>Ваш прогресс</Text>
-              <TouchableOpacity onPress={handleProfilePress}>
-                <Text style={styles.profileButton}>👤</Text>
-              </TouchableOpacity>
+              <View style={styles.headerButtons}>
+                <TouchableOpacity
+                  onPress={handleStatisticsPress}
+                  style={styles.headerButton}
+                >
+                  <Text style={styles.headerButtonText}>📊</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={handleProfilePress}
+                  style={styles.headerButton}
+                >
+                  <Text style={styles.headerButtonText}>👤</Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.progressStats}>
@@ -177,6 +230,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 <Text style={styles.statLabel}>дней подряд</Text>
               </View>
             </View>
+            {/* CTA Continue */}
+            <TouchableOpacity
+              onPress={handleContinuePress}
+              style={{
+                marginTop: 12,
+                alignSelf: "flex-end",
+                backgroundColor: "rgba(255,255,255,0.15)",
+                paddingHorizontal: 14,
+                paddingVertical: 8,
+                borderRadius: 12,
+              }}
+            >
+              <Text style={{ color: "white", fontWeight: "600" }}>
+                Продолжить ▶
+              </Text>
+            </TouchableOpacity>
           </LinearGradient>
         </View>
       </View>
@@ -233,7 +302,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                           styles.progressFill,
                           {
                             width: `${section.progress}%`,
-                            backgroundColor: colors.text.light,
+                            backgroundColor: colors.textLight,
                           },
                         ]}
                       />
@@ -253,7 +322,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.primary,
+    backgroundColor: colors.background,
   },
   header: {
     paddingHorizontal: 20,
@@ -284,7 +353,7 @@ const styles = StyleSheet.create({
   progressTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: colors.text.light,
+    color: colors.textLight,
   },
   profileButton: {
     fontSize: 24,
@@ -299,11 +368,11 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 20,
     fontWeight: "bold",
-    color: colors.text.light,
+    color: colors.textLight,
   },
   statLabel: {
     fontSize: 12,
-    color: colors.text.light,
+    color: colors.textLight,
     opacity: 0.8,
     textAlign: "center",
   },
@@ -326,7 +395,7 @@ const styles = StyleSheet.create({
   sectionsTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: colors.text.primary,
+    color: colors.text,
   },
   searchButton: {
     fontSize: 24,
@@ -413,9 +482,22 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   backButtonText: {
-    color: colors.text.light,
+    color: colors.textLight,
     fontSize: 16,
     fontWeight: "600",
+  },
+  headerButtons: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  headerButton: {
+    padding: 8,
+    borderRadius: 15,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+  },
+  headerButtonText: {
+    fontSize: 24,
+    color: colors.textLight,
   },
 });
 
