@@ -22,6 +22,7 @@ import { CheckIcon } from "../ui/icons/CheckIcon";
 import { BookIcon } from "../ui/icons/BookIcon";
 import { ChartIcon } from "../ui/icons/ChartIcon";
 import { Teacher } from "../ui/illustrations/Teacher";
+import { Typography } from "../ui/Typography";
 
 const { width, height } = Dimensions.get("window");
 
@@ -84,15 +85,17 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
                   <View style={styles.logoContainer}>
                     <Text style={styles.logoEmoji}>📚</Text>
                   </View>
-                  <Text style={styles.title}>Обществознание 8–11 классы</Text>
-                  <Text style={styles.subtitle}>
+                  <Typography variant="heroTitle" style={{ color: colors.navy, textAlign: "center", marginBottom: 5 }}>
+                    Обществознание 8–11 классы
+                  </Typography>
+                  <Typography variant="subtitle" style={{ color: colors.navy, textAlign: "center" }}>
                     Интерактивные уроки, теория и тесты
-                  </Text>
+                  </Typography>
                   <View style={styles.descriptionContainer}>
-                    <Text style={styles.description}>
+                    <Typography style={{ color: colors.navy, textAlign: "center", paddingHorizontal: 20 }}>
                       Подготовка к школе и экзаменам с визуальными материалами и
                       мини‑тестами.
-                    </Text>
+                    </Typography>
                   </View>
                   <View style={styles.buttonContainer}>
                     <Button

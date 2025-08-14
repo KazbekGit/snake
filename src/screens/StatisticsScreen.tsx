@@ -21,6 +21,11 @@ import { colors } from "../constants/colors";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { Container, Row, Col } from "../ui/Grid";
 import { TopNav } from "../ui/TopNav";
+import { Typography } from "../ui/Typography";
+import { CheckIcon } from "../ui/icons/CheckIcon";
+import { BookIcon } from "../ui/icons/BookIcon";
+import { TimeIcon } from "../ui/icons/TimeIcon";
+import { StarOutlineIcon } from "../ui/icons/StarOutlineIcon";
 import {
   getStudyStatistics,
   clearUserData,
@@ -185,17 +190,19 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({
             <Animated.View style={[styles.content, animatedStyle]}>
               {/* Main Statistics */}
               <View style={styles.mainStatsContainer}>
-                <Text style={styles.sectionTitle}>Общая статистика</Text>
+                <Typography variant="title">Общая статистика</Typography>
                 <Row>
                   {[0, 1, 2, 3, 4].map((i) => (
                     <Col key={i} spanDesktop={6} spanTablet={6} spanMobile={12}>
                       <View style={styles.statCard}>
                         <View style={styles.statIconContainer}>
-                          <Ionicons
-                            name={i === 0 ? "book-outline" : i === 1 ? "checkmark-circle-outline" : i === 2 ? "time-outline" : i === 3 ? "flame-outline" : "trophy-outline"}
-                            size={32}
-                            color={i === 0 ? colors.primary : i === 1 ? colors.success : i === 2 ? colors.warning : i === 3 ? colors.error : colors.premium}
-                          />
+                          {i === 0 && <BookIcon size={28} color={colors.primary} />}
+                          {i === 1 && <CheckIcon size={28} color={colors.success} />}
+                          {i === 2 && <TimeIcon size={28} color={colors.warning} />}
+                          {i === 3 && (
+                            <Ionicons name="flame-outline" size={28} color={colors.error} />
+                          )}
+                          {i === 4 && <StarOutlineIcon size={28} color={colors.premium} />}
                         </View>
                         <Text style={styles.statValue}>
                           {i === 0
@@ -227,10 +234,10 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({
 
               {/* Progress Overview */}
               <View style={styles.progressContainer}>
-                <Text style={styles.sectionTitle}>Прогресс обучения</Text>
+                <Typography variant="title">Прогресс обучения</Typography>
                 <View style={styles.progressCard}>
                   <View style={styles.progressHeader}>
-                    <Text style={styles.progressTitle}>Завершенность курса</Text>
+                    <Typography>Завершенность курса</Typography>
                     <Text style={styles.progressPercentage}>
                       {statistics.totalTopics > 0
                         ? Math.round(
@@ -262,7 +269,7 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({
 
               {/* Recent Activity */}
               <View style={styles.activityContainer}>
-                <Text style={styles.sectionTitle}>Последняя активность</Text>
+                <Typography variant="title">Последняя активность</Typography>
                 <View style={styles.activityCard}>
                   <View style={styles.activityHeader}>
                     <Ionicons name="calendar-outline" size={20} color={colors.textSecondary} />
