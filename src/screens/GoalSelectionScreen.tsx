@@ -10,12 +10,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
-import { NavigationParams } from "../types";
+import { RootStackParamList } from "../navigation/AppNavigator";
 import { LEARNING_GOALS } from "../constants/sections";
 
 interface GoalSelectionScreenProps {
-  navigation: NavigationProp<NavigationParams, "GoalSelection">;
-  route: RouteProp<NavigationParams, "GoalSelection">;
+  navigation: NavigationProp<RootStackParamList, "GoalSelection">;
+  route: RouteProp<RootStackParamList, "GoalSelection">;
 }
 
 const GOALS = [
@@ -79,7 +79,10 @@ export const GoalSelectionScreen: React.FC<GoalSelectionScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient colors={colors.gradients.primary} style={styles.gradient}>
+      <LinearGradient
+        colors={[...colors.gradients.primary]}
+        style={styles.gradient}
+      >
         {/* Заголовок */}
         <View style={styles.header}>
           <TouchableOpacity
@@ -179,20 +182,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   backButtonText: {
-    color: colors.text.light,
+    color: colors.textLight,
     fontSize: 16,
     fontWeight: "600",
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: colors.text.light,
+    color: colors.textLight,
     textAlign: "center",
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: colors.text.light,
+    color: colors.textLight,
     textAlign: "center",
     opacity: 0.9,
     lineHeight: 22,
@@ -240,12 +243,12 @@ const styles = StyleSheet.create({
   goalTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: colors.text.light,
+    color: colors.textLight,
     marginBottom: 4,
   },
   goalDescription: {
     fontSize: 14,
-    color: colors.text.light,
+    color: colors.textLight,
     opacity: 0.9,
     lineHeight: 20,
   },
@@ -258,13 +261,13 @@ const styles = StyleSheet.create({
   },
   featureIcon: {
     fontSize: 16,
-    color: colors.text.light,
+    color: colors.textLight,
     marginRight: 12,
     fontWeight: "bold",
   },
   featureText: {
     fontSize: 14,
-    color: colors.text.light,
+    color: colors.textLight,
     opacity: 0.9,
     flex: 1,
   },
@@ -274,7 +277,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
-    color: colors.text.light,
+    color: colors.textLight,
     opacity: 0.7,
     textAlign: "center",
   },

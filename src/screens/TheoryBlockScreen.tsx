@@ -296,7 +296,7 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
             </View>
 
             {/* Media (if before content) */}
-            {currentBlock.media?.placement === "before_content" &&
+            {(currentBlock as any).media?.placement === "before_content" &&
               renderMedia()}
 
             {/* Main Content */}
@@ -305,17 +305,19 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
             </View>
 
             {/* Example */}
-            {currentBlock.example && (
+            {(currentBlock as any).example && (
               <View style={styles.exampleContainer}>
                 <View style={styles.exampleHeader}>
                   <Ionicons
-                    name="lightbulb-outline"
+                    name="bulb-outline"
                     size={20}
                     color={colors.warning}
                   />
                   <Text style={styles.exampleTitle}>Пример из жизни</Text>
                 </View>
-                <Text style={styles.exampleText}>{currentBlock.example}</Text>
+                <Text style={styles.exampleText}>
+                  {(currentBlock as any).example}
+                </Text>
               </View>
             )}
 
@@ -323,7 +325,8 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
             {renderKeyTerms()}
 
             {/* Media (if after content) */}
-            {currentBlock.media?.placement === "after_content" && renderMedia()}
+            {(currentBlock as any).media?.placement === "after_content" &&
+              renderMedia()}
 
             {/* Mnemonic */}
             {renderMnemonic()}

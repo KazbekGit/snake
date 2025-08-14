@@ -227,6 +227,11 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
         colors={[colors.primary, colors.primaryDark]}
         style={styles.background}
       >
+        {/** derive safe completed blocks for UI conditions */}
+        {(() => {
+          const _ = topicProgress?.completedBlocks ?? 0;
+          return null;
+        })()}
         {/* Header */}
         <Animated.View style={[styles.header, headerAnimatedStyle]}>
           <TouchableOpacity
@@ -358,14 +363,13 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                 <Text style={styles.progressText}>Прогресс изучения</Text>
                 <Text style={styles.progressPercentage}>
                   {Math.round(
-                    ((topicProgress?.completedBlocks || 0) /
+                    ((topicProgress?.completedBlocks ?? 0) /
                       Math.max(
                         currentTopic.totalBlocks ||
                           currentTopic.contentBlocks?.length ||
                           1,
                         1
-                      )) *
-                      100
+                      ) || 0) * 100
                   )}
                   %
                 </Text>
@@ -375,16 +379,15 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                   style={[
                     styles.progressFill,
                     {
-                      width: `${
-                        ((topicProgress?.completedBlocks || 0) /
+                      width: `${Math.round(
+                        ((topicProgress?.completedBlocks ?? 0) /
                           Math.max(
                             currentTopic.totalBlocks ||
                               currentTopic.contentBlocks?.length ||
                               1,
                             1
-                          )) *
-                        100
-                      }%`,
+                          ) || 0) * 100
+                      )}%`,
                       backgroundColor: colors.primary,
                     },
                   ]}
@@ -403,7 +406,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                 testID="start-learning-button"
                 accessibilityRole="button"
                 accessibilityLabel={
-                  topicProgress?.completedBlocks > 0
+                  (topicProgress?.completedBlocks ?? 0) > 0
                     ? "Продолжить изучение"
                     : "Начать изучение"
                 }
@@ -415,7 +418,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                 >
                   <Ionicons name="play" size={24} color="white" />
                   <Text style={styles.startButtonText}>
-                    {topicProgress?.completedBlocks > 0
+                    {(topicProgress?.completedBlocks ?? 0) > 0
                       ? "Продолжить изучение"
                       : "Начать изучение"}
                   </Text>
@@ -424,8 +427,10 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
 
               {/* Подсказка под кнопкой */}
               <Text style={styles.buttonHint}>
-                {topicProgress?.completedBlocks > 0
-                  ? `Продолжить с блока ${topicProgress.lastBlockIndex + 1}`
+                {(topicProgress?.completedBlocks ?? 0) > 0
+                  ? `Продолжить с блока ${
+                      (topicProgress?.lastBlockIndex ?? 0) + 1
+                    }`
                   : "Начать изучение темы с первого блока"}
               </Text>
 
@@ -444,7 +449,11 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
             {/* Premium Badge (if applicable) */}
             {currentTopic.isPremium && (
               <View style={styles.premiumBadge}>
-                <Ionicons name="diamond" size={16} color={colors.premium} />
+                <Ionicons
+                  name="star-outline"
+                  size={16}
+                  color={colors.premium}
+                />
                 <Text style={styles.premiumText}>Premium контент</Text>
               </View>
             )}

@@ -11,12 +11,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
 import { NavigationProp } from "@react-navigation/native";
-import { NavigationParams } from "../types";
+import { RootStackParamList } from "../navigation/AppNavigator";
 
 const { width } = Dimensions.get("window");
 
 interface GradeSelectionScreenProps {
-  navigation: NavigationProp<NavigationParams, "GradeSelection">;
+  navigation: NavigationProp<RootStackParamList, "GradeSelection">;
 }
 
 const GRADES = [
@@ -65,7 +65,10 @@ export const GradeSelectionScreen: React.FC<GradeSelectionScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient colors={colors.gradients.primary} style={styles.gradient}>
+      <LinearGradient
+        colors={[...colors.gradients.primary]}
+        style={styles.gradient}
+      >
         {/* Заголовок */}
         <View style={styles.header}>
           <TouchableOpacity
@@ -154,20 +157,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   backButtonText: {
-    color: colors.text.light,
+    color: colors.textLight,
     fontSize: 16,
     fontWeight: "600",
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: colors.text.light,
+    color: colors.textLight,
     textAlign: "center",
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: colors.text.light,
+    color: colors.textLight,
     textAlign: "center",
     opacity: 0.9,
     lineHeight: 22,
@@ -210,12 +213,12 @@ const styles = StyleSheet.create({
   gradeTitle: {
     fontSize: 24,
     fontWeight: "bold",
-    color: colors.text.light,
+    color: colors.textLight,
     marginBottom: 8,
   },
   gradeDescription: {
     fontSize: 16,
-    color: colors.text.light,
+    color: colors.textLight,
     opacity: 0.9,
     textAlign: "center",
   },
@@ -225,7 +228,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
-    color: colors.text.light,
+    color: colors.textLight,
     opacity: 0.7,
     textAlign: "center",
   },

@@ -22,7 +22,9 @@ import Animated, {
 // import * as Haptics from "expo-haptics";
 
 import { colors } from "../constants/colors";
-import { Topic, Question } from "../types";
+import { Topic } from "../types";
+import { RootStackParamList } from "../navigation/AppNavigator";
+import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { moneyTopic } from "../data";
 import { saveTestResult } from "../utils/progressStorage";
 import { logEvent } from "../utils/analytics";
@@ -31,13 +33,8 @@ import { useThrottle } from "../hooks/useThrottle";
 const { width, height } = Dimensions.get("window");
 
 interface MiniTestScreenProps {
-  navigation: any;
-  route: {
-    params: {
-      topic: Topic;
-      blockId: string;
-    };
-  };
+  navigation: NavigationProp<RootStackParamList, "MiniTest">;
+  route: RouteProp<RootStackParamList, "MiniTest">;
 }
 
 export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
@@ -64,6 +61,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
 
   // Используем реальные вопросы из темы "Деньги"
   const currentQuestion = questions[currentQuestionIndex];
+  const optionsSafe = currentQuestion.options ?? [];
   const totalQuestions = questions.length;
 
   useEffect(() => {
@@ -103,10 +101,14 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
         Array.isArray(currentQuestion.correctAnswer) &&
         newAnswers.length === currentQuestion.correctAnswer.length &&
         currentQuestion.correctAnswer.every((answerId: string) => {
-          const optionIndex = currentQuestion.options.findIndex(
+          const optionIndex = currentQuestion.options?.findIndex(
             (opt) => opt.id === answerId
           );
-          return newAnswers.includes(optionIndex);
+          return (
+            optionIndex !== undefined &&
+            optionIndex >= 0 &&
+            newAnswers.includes(optionIndex)
+          );
         })
       ) {
         checkAnswer(newAnswers);
@@ -121,12 +123,12 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
 
     if (currentQuestion.type === "single") {
       // Для single choice сравниваем с correctAnswer
-      const selectedOptionId = currentQuestion.options[answers[0]]?.id;
+      const selectedOptionId = currentQuestion.options?.[answers[0]]?.id;
       correct = selectedOptionId === currentQuestion.correctAnswer;
     } else if (currentQuestion.type === "multiple") {
       // Для multiple choice проверяем все правильные ответы
       const selectedOptionIds = answers.map(
-        (index) => currentQuestion.options[index]?.id
+        (index) => currentQuestion.options?.[index]?.id
       );
       if (Array.isArray(currentQuestion.correctAnswer)) {
         correct =
@@ -179,7 +181,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
     logEvent("continue_after_test", { topicId: topic.id });
     navigation.navigate("TheoryBlock", {
       topic,
-      blockIndex: 1, // Next block
+      blockIndex: 1,
     });
   };
 
@@ -187,17 +189,17 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
     // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); // Временно отключено для веб
 
     // Сохраняем результат теста
-    await saveTestResult(currentTopic.id, correctAnswers, totalQuestions);
+    await saveTestResult(topic.id, score, totalQuestions);
     logEvent("finish_test", {
-      topicId: currentTopic.id,
-      score: correctAnswers,
+      topicId: topic.id,
+      score,
       totalQuestions,
     });
 
     setTestCompleted(true);
     console.log(
       "Тест завершен. Правильных ответов:",
-      correctAnswers,
+      score,
       "из",
       totalQuestions
     );
@@ -218,7 +220,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
   }));
 
   const renderQuestion = () => {
-    if (currentQuestion.type === "flip_card") {
+    if (currentQuestion.type === "flipcard") {
       return (
         <View style={styles.flipCardContainer}>
           <TouchableOpacity
@@ -233,7 +235,9 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
               style={styles.flipCardGradient}
             >
               <Text style={styles.flipCardText}>
-                {showExplanation ? currentQuestion.back : currentQuestion.front}
+                {showExplanation
+                  ? (currentQuestion as any).back
+                  : (currentQuestion as any).front}
               </Text>
               <Ionicons
                 name="refresh"
@@ -243,8 +247,10 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
               />
             </LinearGradient>
           </TouchableOpacity>
-          {currentQuestion.visualHint && (
-            <Text style={styles.flipHint}>{currentQuestion.visualHint}</Text>
+          {(currentQuestion as any).visualHint && (
+            <Text style={styles.flipHint}>
+              {(currentQuestion as any).visualHint}
+            </Text>
           )}
         </View>
       );
@@ -252,26 +258,25 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
 
     return (
       <View style={styles.questionContainer}>
-        <Text style={styles.questionText}>{currentQuestion.question}</Text>
+        <Text style={styles.questionText}>{(currentQuestion as any).text}</Text>
 
         <View style={styles.optionsContainer}>
-          {currentQuestion.options?.map((option, index) => {
+          {optionsSafe.map((option: any, index: number) => {
             const isSelected = selectedAnswers.includes(index);
-            const isCorrect =
-              currentQuestion.type === "single_choice"
-                ? index === currentQuestion.correctIndex
-                : currentQuestion.correctIndexes?.includes(index);
+            const isCorrect = Array.isArray(currentQuestion.correctAnswer)
+              ? (currentQuestion.correctAnswer as string[]).includes(option?.id)
+              : option?.id === currentQuestion.correctAnswer;
 
-            let optionStyle = styles.option;
-            if (showExplanation) {
-              if (isCorrect) {
-                optionStyle = [styles.option, styles.correctOption];
-              } else if (isSelected && !isCorrect) {
-                optionStyle = [styles.option, styles.incorrectOption];
-              }
-            } else if (isSelected) {
-              optionStyle = [styles.option, styles.selectedOption];
-            }
+            const optionStyle = [
+              styles.option,
+              showExplanation && isCorrect ? styles.correctOption : undefined,
+              showExplanation && isSelected && !isCorrect
+                ? styles.incorrectOption
+                : undefined,
+              !showExplanation && isSelected
+                ? styles.selectedOption
+                : undefined,
+            ].filter(Boolean) as any;
 
             return (
               <TouchableOpacity
@@ -281,7 +286,9 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
                 disabled={showExplanation}
               >
                 <View style={styles.optionContent}>
-                  <Text style={styles.optionText}>{option}</Text>
+                  <Text style={styles.optionText}>
+                    {String(option.text ?? option)}
+                  </Text>
                   {showExplanation && isCorrect && (
                     <Ionicons
                       name="checkmark-circle"
@@ -327,15 +334,15 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
           {currentQuestion.explanation}
         </Text>
 
-        {currentQuestion.visualExample && (
+        {(currentQuestion as any).visualExample && (
           <View style={styles.visualExampleContainer}>
             <Image
-              source={{ uri: currentQuestion.visualExample.url }}
+              source={{ uri: (currentQuestion as any).visualExample.url }}
               style={styles.visualExampleImage}
               resizeMode="cover"
             />
             <Text style={styles.visualExampleText}>
-              {currentQuestion.visualExample.altText}
+              {(currentQuestion as any).visualExample.altText}
             </Text>
           </View>
         )}
@@ -383,10 +390,10 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
           <Text style={styles.percentageText}>{percentage}%</Text>
         </View>
 
-        <View style={styles.progressBar}>
+        <View style={styles.resultProgressBar}>
           <View
             style={[
-              styles.progressFill,
+              styles.resultProgressFill,
               {
                 width: `${percentage}%`,
                 backgroundColor: isExcellent
@@ -476,23 +483,21 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
           <View style={styles.placeholder} />
         </View>
 
-        <View style={styles.progressContainer}>
-          <View style={styles.progressBar}>
-            <View
-              style={[
-                styles.progressFill,
-                {
-                  width: `${
-                    ((currentQuestionIndex + 1) / totalQuestions) * 100
-                  }%`,
-                },
-              ]}
-            />
-          </View>
-          <Text style={styles.progressText}>
-            {currentQuestionIndex + 1} из {totalQuestions}
-          </Text>
+        <View style={styles.headerProgressBar}>
+          <View
+            style={[
+              styles.headerProgressFill,
+              {
+                width: `${
+                  ((currentQuestionIndex + 1) / totalQuestions) * 100
+                }%`,
+              },
+            ]}
+          />
         </View>
+        <Text style={styles.progressText}>
+          {currentQuestionIndex + 1} из {totalQuestions}
+        </Text>
 
         <ScrollView
           style={styles.scrollView}
@@ -782,13 +787,29 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: colors.primary,
   },
-  progressBar: {
+  headerProgressBar: {
+    flex: 1,
+    height: 4,
+    backgroundColor: "rgba(255,255,255,0.3)",
+    borderRadius: 2,
+    marginRight: 10,
+    overflow: "hidden",
+  },
+  headerProgressFill: {
+    height: "100%",
+    backgroundColor: "white",
+    borderRadius: 2,
+  },
+  resultProgressBar: {
     width: "100%",
     height: 8,
     backgroundColor: colors.border,
     borderRadius: 4,
     marginBottom: 20,
     overflow: "hidden",
+  },
+  resultProgressFill: {
+    height: "100%",
   },
   resultMessage: {
     fontSize: 16,

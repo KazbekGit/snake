@@ -40,6 +40,11 @@ export interface Topic {
   isCompleted: boolean;
   progress: number;
   bestScore: number;
+  // Optional meta fields used in UI
+  estimatedTime?: number;
+  totalBlocks?: number;
+  difficulty?: "easy" | "medium" | "hard";
+  learningObjectives?: string[];
 }
 
 export interface ContentBlock {
@@ -51,6 +56,23 @@ export interface ContentBlock {
   mediaUrl?: string;
   order: number;
   isCompleted: boolean;
+  // Optional enriched fields used by UI
+  media?: {
+    url: string;
+    altText: string;
+    placement?: "before_content" | "after_content";
+  };
+  mnemonic?: {
+    phrase: string;
+    explanation: string;
+    visualHint?: string;
+  };
+  keyTerms?: Array<{
+    term: string;
+    definition: string;
+    highlightColor?: string;
+  }>;
+  example?: string;
 }
 
 export interface Quiz {

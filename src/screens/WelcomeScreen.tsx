@@ -11,13 +11,22 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../constants/colors";
+import { Button } from "../ui/Button";
+import { ds } from "../ui/theme";
 import { NavigationProp } from "@react-navigation/native";
-import { NavigationParams } from "../types";
+import { RootStackParamList } from "../navigation/AppNavigator";
+import { Card } from "../ui/Card";
+import { Container, Row, Col } from "../ui/Grid";
+import { TopNav } from "../ui/TopNav";
+import { CheckIcon } from "../ui/icons/CheckIcon";
+import { BookIcon } from "../ui/icons/BookIcon";
+import { ChartIcon } from "../ui/icons/ChartIcon";
+import { Teacher } from "../ui/illustrations/Teacher";
 
 const { width, height } = Dimensions.get("window");
 
 interface WelcomeScreenProps {
-  navigation: NavigationProp<NavigationParams, "Welcome">;
+  navigation: NavigationProp<RootStackParamList, "Welcome">;
 }
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
@@ -57,74 +66,90 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient colors={colors.gradients.primary} style={styles.gradient}>
-        <Animated.View
-          style={[
-            styles.content,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
-            },
-          ]}
-        >
-          {/* Логотип и заголовок */}
-          <View style={styles.header}>
-            <View style={styles.logoContainer}>
-              <Text style={styles.logoEmoji}>📚</Text>
+      <View style={styles.gradient}>
+        <Container>
+          <TopNav />
+          <Animated.View
+            style={[
+              styles.content,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
+              },
+            ]}
+          >
+            <Row>
+              <Col spanDesktop={7} spanTablet={7} spanMobile={12}>
+                <View style={styles.header}>
+                  <View style={styles.logoContainer}>
+                    <Text style={styles.logoEmoji}>📚</Text>
+                  </View>
+                  <Text style={styles.title}>Обществознание 8–11 классы</Text>
+                  <Text style={styles.subtitle}>
+                    Интерактивные уроки, теория и тесты
+                  </Text>
+                  <View style={styles.descriptionContainer}>
+                    <Text style={styles.description}>
+                      Подготовка к школе и экзаменам с визуальными материалами и
+                      мини‑тестами.
+                    </Text>
+                  </View>
+                  <View style={styles.buttonContainer}>
+                    <Button
+                      label="Начать обучение"
+                      onPress={handleStartLearning}
+                    />
+                    <View style={{ height: ds.spacing.sm }} />
+                    <Button
+                      label="Мои курсы"
+                      onPress={handleLogin}
+                      variant="ghost"
+                    />
+                    <View style={{ height: ds.spacing.xs }} />
+                    <Button
+                      label="Тестирование"
+                      onPress={handleLogin}
+                      variant="ghost"
+                    />
+                  </View>
+                </View>
+              </Col>
+              <Col spanDesktop={5} spanTablet={5} spanMobile={12}>
+                <View style={styles.illustrationContainer}>
+                  <Teacher />
+                </View>
+              </Col>
+            </Row>
+
+            <Row style={{ marginTop: 24 }}>
+              <Col spanDesktop={4} spanTablet={4} spanMobile={12}>
+                <Card style={styles.bottomCard}>
+                  <CheckIcon />
+                  <Text style={styles.bottomLabel}>Тесты</Text>
+                </Card>
+              </Col>
+              <Col spanDesktop={4} spanTablet={4} spanMobile={12}>
+                <Card style={styles.bottomCard}>
+                  <BookIcon />
+                  <Text style={styles.bottomLabel}>Теория</Text>
+                </Card>
+              </Col>
+              <Col spanDesktop={4} spanTablet={4} spanMobile={12}>
+                <Card style={styles.bottomCard}>
+                  <ChartIcon />
+                  <Text style={styles.bottomLabel}>Статистика</Text>
+                </Card>
+              </Col>
+            </Row>
+
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>
+                Соответствует ФГОС • Бесплатно • Для 8-11 классов
+              </Text>
             </View>
-            <Text style={styles.title}>Обществознание</Text>
-            <Text style={styles.subtitle}>— это легко!</Text>
-          </View>
-
-          {/* Иллюстрация */}
-          <View style={styles.illustrationContainer}>
-            <View style={styles.illustration}>
-              <Text style={styles.studentEmoji}>👨‍🎓</Text>
-              <Text style={styles.phoneEmoji}>📱</Text>
-              <Text style={styles.bookEmoji}>📖</Text>
-            </View>
-          </View>
-
-          {/* Описание */}
-          <View style={styles.descriptionContainer}>
-            <Text style={styles.description}>
-              Изучай обществознание с помощью интерактивных уроков, ярких
-              иллюстраций и увлекательных тестов
-            </Text>
-          </View>
-
-          {/* Кнопки */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.primaryButton}
-              onPress={handleStartLearning}
-              activeOpacity={0.8}
-            >
-              <LinearGradient
-                colors={colors.gradients.success}
-                style={styles.buttonGradient}
-              >
-                <Text style={styles.primaryButtonText}>Начать обучение</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.secondaryButton}
-              onPress={handleLogin}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.secondaryButtonText}>Войти</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Дополнительная информация */}
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>
-              Соответствует ФГОС • Бесплатно • Для 8-11 классов
-            </Text>
-          </View>
-        </Animated.View>
-      </LinearGradient>
+          </Animated.View>
+        </Container>
+      </View>
     </SafeAreaView>
   );
 };
@@ -135,15 +160,38 @@ const styles = StyleSheet.create({
   },
   gradient: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: colors.background,
   },
   content: {
     flex: 1,
     justifyContent: "space-between",
+    paddingHorizontal: 40,
+    paddingVertical: 32,
+  },
+  topNav: {
+    height: 72,
+    flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 40,
+    justifyContent: "space-between",
+  },
+  logoText: {
+    color: colors.navy,
+    fontSize: 20,
+    fontWeight: "800",
+  },
+  topNavMenu: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  topNavItem: {
+    color: colors.navy,
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 16,
+  },
+  topNavAvatar: {
+    fontSize: 22,
+    marginLeft: 8,
   },
   header: {
     alignItems: "center",
@@ -153,7 +201,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    backgroundColor: "rgba(0, 0, 0, 0.05)",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
@@ -162,16 +210,16 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: colors.text.light,
+    fontSize: 36,
+    fontWeight: "700",
+    color: colors.navy,
     textAlign: "center",
     marginBottom: 5,
   },
   subtitle: {
-    fontSize: 24,
-    fontWeight: "600",
-    color: colors.text.light,
+    fontSize: 20,
+    fontWeight: "400",
+    color: colors.navy,
     textAlign: "center",
     opacity: 0.9,
   },
@@ -209,7 +257,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    color: colors.text.light,
+    color: colors.navy,
     textAlign: "center",
     lineHeight: 24,
     opacity: 0.9,
@@ -217,53 +265,37 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: "100%",
-    marginBottom: 40,
+    marginBottom: 24,
   },
-  primaryButton: {
-    width: "100%",
-    height: 56,
-    borderRadius: 28,
-    marginBottom: 16,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+  bottomRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 8,
   },
-  buttonGradient: {
+  bottomCard: {
     flex: 1,
-    borderRadius: 28,
-    justifyContent: "center",
     alignItems: "center",
-  },
-  primaryButtonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: colors.text.light,
-  },
-  secondaryButton: {
-    width: "100%",
-    height: 56,
-    borderRadius: 28,
-    borderWidth: 2,
-    borderColor: colors.text.light,
     justifyContent: "center",
-    alignItems: "center",
+    marginHorizontal: 8,
   },
-  secondaryButtonText: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: colors.text.light,
+  bottomIcon: {
+    fontSize: 22,
+    marginBottom: 8,
+    color: colors.navy,
+    textAlign: "center",
+  },
+  bottomLabel: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: colors.navy,
+    textAlign: "center",
   },
   footer: {
     alignItems: "center",
   },
   footerText: {
     fontSize: 14,
-    color: colors.text.light,
+    color: colors.navy,
     opacity: 0.7,
     textAlign: "center",
   },

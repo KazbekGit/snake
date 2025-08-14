@@ -9,21 +9,28 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import { Donut } from "../components/Donut";
+import { DashboardCard } from "../components/DashboardCard";
+import { SectionCard } from "../ui/SectionCard";
+import { Button } from "../ui/Button";
 import { colors } from "../constants/colors";
+import { t } from "../i18n";
 import { getTopicProgress, getUserProgress } from "../utils/progressStorage";
 import {
   computeStartBlockIndex,
   getLastStudiedTopicIdFromUserProgress,
 } from "../utils/progressHelpers";
 import { NavigationProp } from "@react-navigation/native";
-import { NavigationParams, Section } from "../types";
+import { Section } from "../types";
+import { RootStackParamList } from "../navigation/AppNavigator";
 import { SECTIONS, SECTION_COLORS } from "../constants/sections";
 import { mockUserProgress, moneyTopic } from "../data";
 import { getTopicWithCache } from "../content/loader";
 import { getTopicFallback } from "../content/index";
 
 interface HomeScreenProps {
-  navigation: NavigationProp<NavigationParams, "Home">;
+  navigation: NavigationProp<RootStackParamList, "Home">;
 }
 
 // Используем данные из централизованного источника
@@ -127,11 +134,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
     const loaded = await getTopicWithCache("money", fallback as any);
 
-    navigation.navigate("Topic", { topic: loaded });
+    navigation.navigate("Topic", { topic: loaded as any });
   };
 
   const handleProfilePress = () => {
-    navigation.navigate("Profile");
+    (navigation as any).navigate("Profile");
   };
 
   const handleStatisticsPress = () => {
@@ -139,7 +146,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   };
 
   const handleSearchPress = () => {
-    navigation.navigate("Search");
+    (navigation as any).navigate("Search");
   };
 
   const handleContinuePress = async () => {
@@ -183,6 +190,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
       {/* Верхняя панель с прогрессом */}
       <View style={styles.header}>
+        {/* Заголовок страницы */}
+        <Text style={styles.pageTitle}>{t("dashboard")}</Text>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.navigate("Welcome")}
@@ -191,11 +200,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         </TouchableOpacity>
         <View style={styles.progressContainer}>
           <LinearGradient
-            colors={colors.gradients.primary}
+            colors={[...colors.gradients.primary]}
             style={styles.progressCard}
           >
             <View style={styles.progressHeader}>
-              <Text style={styles.progressTitle}>Ваш прогресс</Text>
+              <Text style={styles.progressTitle}>{t("yourProgress")}</Text>
               <View style={styles.headerButtons}>
                 <TouchableOpacity
                   onPress={handleStatisticsPress}
@@ -243,11 +252,81 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               }}
             >
               <Text style={{ color: "white", fontWeight: "600" }}>
-                Продолжить ▶
+                {t("continue")} ▶
               </Text>
             </TouchableOpacity>
           </LinearGradient>
         </View>
+      </View>
+
+      <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
+        <DashboardCard
+          title={t("continueStudy")}
+          right={
+            <View style={styles.chipsRow}>
+              <View
+                style={[
+                  styles.chip,
+                  { backgroundColor: colors.backgroundSecondary },
+                ]}
+              >
+                <Ionicons
+                  name="book-outline"
+                  size={14}
+                  color={colors.primary}
+                />
+                <Text style={styles.chipText}>Экономика</Text>
+              </View>
+              <View
+                style={[
+                  styles.chip,
+                  { backgroundColor: colors.backgroundSecondary },
+                ]}
+              >
+                <Ionicons
+                  name="time-outline"
+                  size={14}
+                  color={colors.primary}
+                />
+                <Text style={styles.chipText}>~20 мин</Text>
+              </View>
+            </View>
+          }
+        >
+          <View style={styles.continueBody}>
+            <Donut progress={65} />
+            <View style={{ flex: 1 }}>
+              <View style={styles.bigCtaRow}>
+                <Button label={t("continue")} onPress={handleContinuePress} />
+                <Button
+                  label={t("repeat")}
+                  variant="secondary"
+                  onPress={() =>
+                    navigation.navigate("Topic", {
+                      topic: { id: "money", title: "Деньги" } as unknown as any,
+                    })
+                  }
+                />
+                <Button
+                  label={t("start")}
+                  variant="danger"
+                  onPress={() =>
+                    handleSectionPress({
+                      id: "economy",
+                      title: "Экономика",
+                      description: "",
+                      icon: "💰",
+                      order: 0,
+                      topics: [],
+                      isCompleted: false,
+                      progress: 0,
+                    })
+                  }
+                />
+              </View>
+            </View>
+          </View>
+        </DashboardCard>
       </View>
 
       {/* Основной контент */}
@@ -265,53 +344,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           </View>
 
           {sections.map((section) => (
-            <TouchableOpacity
-              key={section.id}
-              style={styles.sectionCard}
-              onPress={() => handleSectionPress(section)}
-              activeOpacity={0.8}
-            >
-              <LinearGradient
-                colors={[
-                  SECTION_COLORS[section.id as keyof typeof SECTION_COLORS],
-                  `${
-                    SECTION_COLORS[section.id as keyof typeof SECTION_COLORS]
-                  }CC`,
-                ]}
-                style={styles.sectionGradient}
-              >
-                <View style={styles.sectionContent}>
-                  <View style={styles.sectionHeader}>
-                    <Text style={styles.sectionIcon}>{section.icon}</Text>
-                    <View style={styles.sectionInfo}>
-                      <Text style={styles.sectionTitle}>{section.title}</Text>
-                      <Text style={styles.sectionDescription}>
-                        {section.description}
-                      </Text>
-                    </View>
-                    {section.isCompleted && (
-                      <Text style={styles.completedIcon}>✅</Text>
-                    )}
-                  </View>
-
-                  {/* Прогресс-бар */}
-                  <View style={styles.progressBarContainer}>
-                    <View style={styles.progressBar}>
-                      <View
-                        style={[
-                          styles.progressFill,
-                          {
-                            width: `${section.progress}%`,
-                            backgroundColor: colors.textLight,
-                          },
-                        ]}
-                      />
-                    </View>
-                    <Text style={styles.progressText}>{section.progress}%</Text>
-                  </View>
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
+            <View key={section.id} style={{ marginBottom: 12 }}>
+              <SectionCard
+                icon={section.icon}
+                title={section.title}
+                description={section.description}
+                colorFrom={
+                  SECTION_COLORS[section.id as keyof typeof SECTION_COLORS]
+                }
+                progress={section.progress}
+                onPress={() => handleSectionPress(section)}
+              />
+            </View>
           ))}
         </View>
       </ScrollView>
@@ -340,6 +384,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
+  },
+  pageTitle: {
+    fontSize: 24,
+    fontWeight: "800",
+    color: colors.text,
+    marginBottom: 8,
   },
   progressCard: {
     padding: 20,
@@ -432,12 +482,12 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: colors.text.light,
+    color: colors.textLight,
     marginBottom: 4,
   },
   sectionDescription: {
     fontSize: 14,
-    color: colors.text.light,
+    color: colors.textLight,
     opacity: 0.9,
     lineHeight: 20,
   },
@@ -463,7 +513,7 @@ const styles = StyleSheet.create({
   progressText: {
     fontSize: 12,
     fontWeight: "bold",
-    color: colors.text.light,
+    color: colors.textLight,
     minWidth: 35,
   },
   backButton: {
@@ -498,6 +548,99 @@ const styles = StyleSheet.create({
   headerButtonText: {
     fontSize: 24,
     color: colors.textLight,
+  },
+  continueCard: {
+    marginTop: 10,
+    marginHorizontal: 20,
+    backgroundColor: colors.card,
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  continueHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  continueTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: colors.text,
+  },
+  chipsRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  chip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  chipText: {
+    color: colors.text,
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  continueBody: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  donutWrapper: {
+    width: 110,
+    alignItems: "center",
+  },
+  donutOuter: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: colors.backgroundSecondary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  donutInner: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: colors.card,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  donutText: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: colors.text,
+  },
+  donutCaption: {
+    marginTop: 6,
+    fontSize: 12,
+    color: colors.textSecondary,
+    textTransform: "uppercase",
+    letterSpacing: 1,
+  },
+  bigCtaRow: {
+    flexDirection: "row",
+    gap: 10,
+    justifyContent: "space-between",
+  },
+  bigCta: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  bigCtaText: {
+    color: "white",
+    fontWeight: "700",
   },
 });
 

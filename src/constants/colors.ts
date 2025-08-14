@@ -2,15 +2,20 @@
 // Яркие, дружелюбные цвета для школьников
 
 export const colors = {
-  // Основные цвета
-  primary: "#2563EB", // Темно-синий
-  primaryDark: "#1D4ED8", // Еще более темный синий
-  secondary: "#DC2626", // Красный
-  accent: "#EA580C", // Оранжевый
-  success: "#16A34A", // Зеленый
-  warning: "#CA8A04", // Желтый
-  error: "#DC2626", // Красный для ошибок
-  info: "#0891B2", // Голубой
+  // Основные цвета (по макету)
+  background: "#FAF5EF", // Светло-бежевый фон
+  primary: "#E35B46", // Тёплый красный
+  teal: "#2A7F80", // Глубокий бирюзовый
+  yellow: "#F2B544", // Золотисто-жёлтый
+  navy: "#1E3B4E", // Тёмно-синий
+  // Совместимость старых имён
+  primaryDark: "#C94C3B",
+  secondary: "#DC2626",
+  accent: "#EA580C",
+  success: "#16A34A",
+  warning: "#F2B544",
+  error: "#DC2626",
+  info: "#0891B2",
 
   // Градиенты
   gradients: {
@@ -22,20 +27,19 @@ export const colors = {
   },
 
   // Фоны
-  background: "#FFFFFF",
-  backgroundSecondary: "#F8FAFC",
-  backgroundTertiary: "#E2E8F0",
+  backgroundSecondary: "#FFF8EE",
+  backgroundTertiary: "#EDE6DD",
   backgroundDark: "#1E293B",
 
   // Текст
-  text: "#1E293B", // Темно-синий для основного текста
+  text: "#1E3B4E", // Тёмно-синий как основной текст
   textSecondary: "#475569", // Серый для второстепенного текста
   textLight: "#FFFFFF", // Белый для темного фона
   textMuted: "#64748B", // Приглушенный серый
 
   // Карточки и элементы
   card: "#FFFFFF",
-  border: "#E2E8F0",
+  border: "#E5DCCD",
   shadow: "rgba(0, 0, 0, 0.1)",
 
   // Статусы
@@ -48,12 +52,12 @@ export const colors = {
 
   // Разделы (каждый раздел имеет свой цвет)
   sections: {
-    person: "#2563EB", // Человек и общество - синий
-    economy: "#16A34A", // Экономика - зеленый
-    politics: "#DC2626", // Политика - красный
-    law: "#9333EA", // Право - фиолетовый
-    social: "#EA580C", // Социальные отношения - оранжевый
-    culture: "#0891B2", // Духовная культура - бирюзовый
+    person: "#2A7F80",
+    economy: "#16A34A",
+    politics: "#E35B46",
+    law: "#9333EA",
+    social: "#EA580C",
+    culture: "#0891B2",
   },
 
   // Уровни сложности
@@ -73,6 +77,6 @@ export const colors = {
 
   // Премиум функции
   premium: "#CA8A04",
-} as const;
+};
 
 export type ColorScheme = typeof colors;

@@ -48,14 +48,20 @@ const AppNavigator: React.FC = () => {
           },
         }}
       >
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="GradeSelection" component={GradeSelectionScreen} />
-        <Stack.Screen name="GoalSelection" component={GoalSelectionScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Topic" component={TopicHeaderScreen} />
-        <Stack.Screen name="TheoryBlock" component={TheoryBlockScreen} />
-        <Stack.Screen name="MiniTest" component={MiniTestScreen} />
-        <Stack.Screen name="Statistics" component={StatisticsScreen} />
+        <Stack.Screen name="Welcome" component={WelcomeScreen as any} />
+        <Stack.Screen
+          name="GradeSelection"
+          component={GradeSelectionScreen as any}
+        />
+        <Stack.Screen
+          name="GoalSelection"
+          component={GoalSelectionScreen as any}
+        />
+        <Stack.Screen name="Home" component={HomeScreen as any} />
+        <Stack.Screen name="Topic" component={TopicHeaderScreen as any} />
+        <Stack.Screen name="TheoryBlock" component={TheoryBlockScreen as any} />
+        <Stack.Screen name="MiniTest" component={MiniTestScreen as any} />
+        <Stack.Screen name="Statistics" component={StatisticsScreen as any} />
       </Stack.Navigator>
     </NavigationContainer>
   );

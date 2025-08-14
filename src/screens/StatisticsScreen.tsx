@@ -26,6 +26,7 @@ import {
   getUserProgress,
 } from "../utils/progressStorage";
 import { getEvents, clearEvents, getStreakDays } from "../utils/analytics";
+import { t, setLocale } from "../i18n";
 import { serializeUserData } from "../utils/backup";
 
 const { width, height } = Dimensions.get("window");
@@ -168,11 +169,19 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Моя статистика</Text>
-          <TouchableOpacity onPress={toggle} style={styles.backButton}>
-            <Ionicons name="moon" size={18} color="white" />
-          </TouchableOpacity>
-          <View style={styles.placeholder} />
+          <Text style={styles.headerTitle}>{t("statsTitle")}</Text>
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity onPress={toggle} style={styles.backButton}>
+              <Ionicons name="moon" size={18} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setLocale("en")}
+              style={styles.backButton}
+              accessibilityLabel="Switch to English"
+            >
+              <Ionicons name="language" size={18} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <ScrollView
