@@ -36,6 +36,9 @@ import { GroupIcon } from "../ui/icons/GroupIcon";
 import { GovernmentIcon } from "../ui/icons/GovernmentIcon";
 import { JusticeIcon } from "../ui/icons/JusticeIcon";
 import { CultureIcon } from "../ui/icons/CultureIcon";
+import { UserIcon } from "../ui/icons/UserIcon";
+import { ChartIcon } from "../ui/icons/ChartIcon";
+import { SearchIcon } from "../ui/icons/SearchIcon";
 
 interface HomeScreenProps {
   navigation: NavigationProp<RootStackParamList, "Home">;
@@ -216,17 +219,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               <View style={styles.progressHeader}>
                 <Text style={styles.progressTitle}>{t("yourProgress")}</Text>
                 <View style={styles.headerButtons}>
-                  <TouchableOpacity
-                    onPress={handleStatisticsPress}
-                    style={styles.headerButton}
-                  >
-                    <Text style={styles.headerButtonText}>📊</Text>
+                  <TouchableOpacity onPress={handleStatisticsPress} style={styles.headerButton}>
+                    <ChartIcon size={20} color={colors.textLight} />
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={handleProfilePress}
-                    style={styles.headerButton}
-                  >
-                    <Text style={styles.headerButtonText}>👤</Text>
+                  <TouchableOpacity onPress={handleProfilePress} style={styles.headerButton}>
+                    <UserIcon size={20} color={colors.textLight} />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -353,7 +350,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <View style={styles.sectionsHeader}>
               <Text style={styles.sectionsTitle}>Разделы обществознания</Text>
               <TouchableOpacity onPress={handleSearchPress}>
-                <Text style={styles.searchButton}>🔍</Text>
+                <SearchIcon color={colors.text} />
               </TouchableOpacity>
             </View>
 
