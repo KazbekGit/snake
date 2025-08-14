@@ -12,6 +12,9 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import { TimeIcon } from "../ui/icons/TimeIcon";
+import { LayersIcon } from "../ui/icons/LayersIcon";
+import { StarOutlineIcon } from "../ui/icons/StarOutlineIcon";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -301,11 +304,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
             {/* Topic Info Cards */}
             <View style={styles.infoCardsContainer}>
               <View style={styles.infoCard}>
-                <Ionicons
-                  name="time-outline"
-                  size={24}
-                  color={colors.primary}
-                />
+                <TimeIcon size={24} color={colors.primary} />
                 <Text style={styles.infoCardValue}>
                   {currentTopic.estimatedTime || 15} мин
                 </Text>
@@ -313,11 +312,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
               </View>
 
               <View style={styles.infoCard}>
-                <Ionicons
-                  name="layers-outline"
-                  size={24}
-                  color={colors.primary}
-                />
+                <LayersIcon size={24} color={colors.primary} />
                 <Text style={styles.infoCardValue}>
                   {currentTopic.totalBlocks ||
                     currentTopic.contentBlocks?.length ||
@@ -327,11 +322,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
               </View>
 
               <View style={styles.infoCard}>
-                <Ionicons
-                  name="trophy-outline"
-                  size={24}
-                  color={colors.primary}
-                />
+                <StarOutlineIcon size={24} color={colors.primary} />
                 <Text style={styles.infoCardValue}>
                   {getDifficultyText(currentTopic.difficulty || "medium")}
                 </Text>
