@@ -9,6 +9,14 @@ export const ds = {
     xl: 24,
     xxl: 32,
   },
+  typography: {
+    heroTitle: { fontSize: 36, lineHeight: 44, fontWeight: "700" as const },
+    title: { fontSize: 24, lineHeight: 32, fontWeight: "700" as const },
+    subtitle: { fontSize: 20, lineHeight: 28, fontWeight: "400" as const },
+    body: { fontSize: 16, lineHeight: 24, fontWeight: "400" as const },
+    button: { fontSize: 18, lineHeight: 24, fontWeight: "700" as const },
+    caption: { fontSize: 12, lineHeight: 16, fontWeight: "400" as const },
+  },
   radius: {
     sm: 8,
     md: 12,
@@ -30,6 +38,13 @@ export const ds = {
       shadowOpacity: 0.2,
       shadowRadius: 12,
       elevation: 8,
+    },
+    card: {
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.15,
+      shadowRadius: 10,
+      elevation: 3,
     },
   },
   colors,
