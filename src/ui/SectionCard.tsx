@@ -4,7 +4,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { ds } from "./theme";
 
 interface Props {
-  icon: string;
+  icon?: string;
+  iconNode?: React.ReactNode;
   title: string;
   description: string;
   colorFrom: string;
@@ -15,6 +16,7 @@ interface Props {
 
 export const SectionCard: React.FC<Props> = ({
   icon,
+  iconNode,
   title,
   description,
   colorFrom,
@@ -29,7 +31,11 @@ export const SectionCard: React.FC<Props> = ({
         style={{ borderRadius: ds.radius.lg, padding: ds.spacing.lg }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ fontSize: 28, marginRight: 12 }}>{icon}</Text>
+          {iconNode ? (
+            <View style={{ marginRight: 12 }}>{iconNode}</View>
+          ) : (
+            <Text style={{ fontSize: 28, marginRight: 12 }}>{icon}</Text>
+          )}
           <View style={{ flex: 1 }}>
             <Text
               style={{

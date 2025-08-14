@@ -354,7 +354,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             {sections.map((section) => (
               <View key={section.id} style={{ marginBottom: 12 }}>
                 <SectionCard
-                  icon={section.icon}
+                  iconNode={<Text style={{ fontSize: 28 }}>⬤</Text>}
                   title={section.title}
                   description={section.description}
                   colorFrom={
