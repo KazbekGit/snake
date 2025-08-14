@@ -26,11 +26,30 @@ export const SectionCard: React.FC<Props> = ({
 }) => {
   return (
     <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
-      <LinearGradient
-        colors={[colorFrom, colorTo ?? `${colorFrom}CC`]}
-        style={{ borderRadius: ds.radius.lg, padding: ds.spacing.lg }}
+      <View
+        style={{
+          borderRadius: 8,
+          overflow: "hidden",
+          ...ds.shadow.card,
+        }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <LinearGradient
+          colors={[colorFrom, colorTo ?? `${colorFrom}CC`]}
+          style={{ borderRadius: 8, padding: ds.spacing.lg }}
+        >
+          {/* верхний блик */}
+          <View
+            pointerEvents="none"
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 0,
+              height: 20,
+              backgroundColor: "rgba(255,255,255,0.08)",
+            }}
+          />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
           {iconNode ? (
             <View style={{ marginRight: 12 }}>{iconNode}</View>
           ) : (
@@ -52,24 +71,25 @@ export const SectionCard: React.FC<Props> = ({
           </View>
           {progress >= 100 ? <Text style={{ color: "#fff" }}>✅</Text> : null}
         </View>
-        <View
-          style={{
-            height: 6,
-            backgroundColor: "rgba(255,255,255,0.35)",
-            borderRadius: 3,
-            marginTop: 12,
-            overflow: "hidden",
-          }}
-        >
           <View
             style={{
-              width: `${progress}%`,
-              height: "100%",
-              backgroundColor: ds.colors.textLight,
+              height: 6,
+              backgroundColor: "rgba(255,255,255,0.35)",
+              borderRadius: 3,
+              marginTop: 12,
+              overflow: "hidden",
             }}
-          />
-        </View>
-      </LinearGradient>
+          >
+            <View
+              style={{
+                width: `${progress}%`,
+                height: "100%",
+                backgroundColor: ds.colors.textLight,
+              }}
+            />
+          </View>
+        </LinearGradient>
+      </View>
     </TouchableOpacity>
   );
 };

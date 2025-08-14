@@ -15,6 +15,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { TimeIcon } from "../ui/icons/TimeIcon";
 import { LayersIcon } from "../ui/icons/LayersIcon";
 import { StarOutlineIcon } from "../ui/icons/StarOutlineIcon";
+import { Container } from "../ui/Grid";
+import { TopNav } from "../ui/TopNav";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -230,6 +232,9 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
         colors={[colors.primary, colors.primaryDark]}
         style={styles.background}
       >
+        <Container>
+          <TopNav />
+        </Container>
         {/** derive safe completed blocks for UI conditions */}
         {(() => {
           const _ = topicProgress?.completedBlocks ?? 0;

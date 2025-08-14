@@ -31,6 +31,7 @@ import { getTopicFallback } from "../content/index";
 import { Container, Row, Col } from "../ui/Grid";
 import { TopNav } from "../ui/TopNav";
 import { PersonIcon } from "../ui/icons/PersonIcon";
+import { Typography } from "../ui/Typography";
 import { BankIcon } from "../ui/icons/BankIcon";
 import { GroupIcon } from "../ui/icons/GroupIcon";
 import { GovernmentIcon } from "../ui/icons/GovernmentIcon";
@@ -204,7 +205,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         {/* Верхняя панель с прогрессом */}
         <View style={styles.header}>
           {/* Заголовок страницы */}
-          <Text style={styles.pageTitle}>{t("dashboard")}</Text>
+          <Typography variant="title">{t("dashboard")}</Typography>
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => navigation.navigate("Welcome")}
