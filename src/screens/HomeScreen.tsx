@@ -30,6 +30,12 @@ import { getTopicWithCache } from "../content/loader";
 import { getTopicFallback } from "../content/index";
 import { Container, Row, Col } from "../ui/Grid";
 import { TopNav } from "../ui/TopNav";
+import { PersonIcon } from "../ui/icons/PersonIcon";
+import { BankIcon } from "../ui/icons/BankIcon";
+import { GroupIcon } from "../ui/icons/GroupIcon";
+import { GovernmentIcon } from "../ui/icons/GovernmentIcon";
+import { JusticeIcon } from "../ui/icons/JusticeIcon";
+import { CultureIcon } from "../ui/icons/CultureIcon";
 
 interface HomeScreenProps {
   navigation: NavigationProp<RootStackParamList, "Home">;
@@ -351,20 +357,30 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
-            {sections.map((section) => (
-              <View key={section.id} style={{ marginBottom: 12 }}>
-                <SectionCard
-                  iconNode={<Text style={{ fontSize: 28 }}>⬤</Text>}
-                  title={section.title}
-                  description={section.description}
-                  colorFrom={
-                    SECTION_COLORS[section.id as keyof typeof SECTION_COLORS]
-                  }
-                  progress={section.progress}
-                  onPress={() => handleSectionPress(section)}
-                />
-              </View>
-            ))}
+            {sections.map((section) => {
+              const iconMap: Record<string, JSX.Element> = {
+                "person-society": <PersonIcon size={28} color="#FFFFFF" />,
+                economy: <BankIcon size={28} color="#FFFFFF" />,
+                "social-relations": <GroupIcon size={28} color="#FFFFFF" />,
+                politics: <GovernmentIcon size={28} color="#FFFFFF" />,
+                law: <JusticeIcon size={28} color="#FFFFFF" />,
+                "spiritual-culture": <CultureIcon size={28} color="#FFFFFF" />,
+              };
+              return (
+                <View key={section.id} style={{ marginBottom: 12 }}>
+                  <SectionCard
+                    iconNode={iconMap[section.id]}
+                    title={section.title}
+                    description={section.description}
+                    colorFrom={
+                      SECTION_COLORS[section.id as keyof typeof SECTION_COLORS]
+                    }
+                    progress={section.progress}
+                    onPress={() => handleSectionPress(section)}
+                  />
+                </View>
+              );
+            })}
           </View>
         </ScrollView>
       </Container>
