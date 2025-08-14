@@ -28,6 +28,8 @@ import { SECTIONS, SECTION_COLORS } from "../constants/sections";
 import { mockUserProgress, moneyTopic } from "../data";
 import { getTopicWithCache } from "../content/loader";
 import { getTopicFallback } from "../content/index";
+import { Container, Row, Col } from "../ui/Grid";
+import { TopNav } from "../ui/TopNav";
 
 interface HomeScreenProps {
   navigation: NavigationProp<RootStackParamList, "Home">;
@@ -187,178 +189,185 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+      <Container>
+        <TopNav />
 
-      {/* Верхняя панель с прогрессом */}
-      <View style={styles.header}>
-        {/* Заголовок страницы */}
-        <Text style={styles.pageTitle}>{t("dashboard")}</Text>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.navigate("Welcome")}
-        >
-          <Text style={styles.backButtonText}>← Назад</Text>
-        </TouchableOpacity>
-        <View style={styles.progressContainer}>
-          <LinearGradient
-            colors={[...colors.gradients.primary]}
-            style={styles.progressCard}
+        {/* Верхняя панель с прогрессом */}
+        <View style={styles.header}>
+          {/* Заголовок страницы */}
+          <Text style={styles.pageTitle}>{t("dashboard")}</Text>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.navigate("Welcome")}
           >
-            <View style={styles.progressHeader}>
-              <Text style={styles.progressTitle}>{t("yourProgress")}</Text>
-              <View style={styles.headerButtons}>
-                <TouchableOpacity
-                  onPress={handleStatisticsPress}
-                  style={styles.headerButton}
-                >
-                  <Text style={styles.headerButtonText}>📊</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={handleProfilePress}
-                  style={styles.headerButton}
-                >
-                  <Text style={styles.headerButtonText}>👤</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={styles.progressStats}>
-              <View style={styles.statItem}>
-                <Text style={styles.statNumber}>
-                  {mockUserProgress.completedSections}
-                </Text>
-                <Text style={styles.statLabel}>
-                  из {mockUserProgress.totalSections} разделов
-                </Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{mockUserProgress.xp}</Text>
-                <Text style={styles.statLabel}>XP</Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statNumber}>{mockUserProgress.streak}</Text>
-                <Text style={styles.statLabel}>дней подряд</Text>
-              </View>
-            </View>
-            {/* CTA Continue */}
-            <TouchableOpacity
-              onPress={handleContinuePress}
-              style={{
-                marginTop: 12,
-                alignSelf: "flex-end",
-                backgroundColor: "rgba(255,255,255,0.15)",
-                paddingHorizontal: 14,
-                paddingVertical: 8,
-                borderRadius: 12,
-              }}
+            <Text style={styles.backButtonText}>← Назад</Text>
+          </TouchableOpacity>
+          <View style={styles.progressContainer}>
+            <LinearGradient
+              colors={[...colors.gradients.primary]}
+              style={styles.progressCard}
             >
-              <Text style={{ color: "white", fontWeight: "600" }}>
-                {t("continue")} ▶
-              </Text>
-            </TouchableOpacity>
-          </LinearGradient>
+              <View style={styles.progressHeader}>
+                <Text style={styles.progressTitle}>{t("yourProgress")}</Text>
+                <View style={styles.headerButtons}>
+                  <TouchableOpacity
+                    onPress={handleStatisticsPress}
+                    style={styles.headerButton}
+                  >
+                    <Text style={styles.headerButtonText}>📊</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={handleProfilePress}
+                    style={styles.headerButton}
+                  >
+                    <Text style={styles.headerButtonText}>👤</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={styles.progressStats}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>
+                    {mockUserProgress.completedSections}
+                  </Text>
+                  <Text style={styles.statLabel}>
+                    из {mockUserProgress.totalSections} разделов
+                  </Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>{mockUserProgress.xp}</Text>
+                  <Text style={styles.statLabel}>XP</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statNumber}>{mockUserProgress.streak}</Text>
+                  <Text style={styles.statLabel}>дней подряд</Text>
+                </View>
+              </View>
+              {/* CTA Continue */}
+              <TouchableOpacity
+                onPress={handleContinuePress}
+                style={{
+                  marginTop: 12,
+                  alignSelf: "flex-end",
+                  backgroundColor: "rgba(255,255,255,0.15)",
+                  paddingHorizontal: 14,
+                  paddingVertical: 8,
+                  borderRadius: 12,
+                }}
+              >
+                <Text style={{ color: "white", fontWeight: "600" }}>
+                  {t("continue")} ▶
+                </Text>
+              </TouchableOpacity>
+            </LinearGradient>
+          </View>
         </View>
-      </View>
 
-      <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
-        <DashboardCard
-          title={t("continueStudy")}
-          right={
-            <View style={styles.chipsRow}>
-              <View
-                style={[
-                  styles.chip,
-                  { backgroundColor: colors.backgroundSecondary },
-                ]}
-              >
-                <Ionicons
-                  name="book-outline"
-                  size={14}
-                  color={colors.primary}
-                />
-                <Text style={styles.chipText}>Экономика</Text>
-              </View>
-              <View
-                style={[
-                  styles.chip,
-                  { backgroundColor: colors.backgroundSecondary },
-                ]}
-              >
-                <Ionicons
-                  name="time-outline"
-                  size={14}
-                  color={colors.primary}
-                />
-                <Text style={styles.chipText}>~20 мин</Text>
-              </View>
-            </View>
-          }
-        >
-          <View style={styles.continueBody}>
-            <Donut progress={65} />
-            <View style={{ flex: 1 }}>
-              <View style={styles.bigCtaRow}>
-                <Button label={t("continue")} onPress={handleContinuePress} />
-                <Button
-                  label={t("repeat")}
-                  variant="secondary"
-                  onPress={() =>
-                    navigation.navigate("Topic", {
-                      topic: { id: "money", title: "Деньги" } as unknown as any,
-                    })
-                  }
-                />
-                <Button
-                  label={t("start")}
-                  variant="danger"
-                  onPress={() =>
-                    handleSectionPress({
-                      id: "economy",
-                      title: "Экономика",
-                      description: "",
-                      icon: "💰",
-                      order: 0,
-                      topics: [],
-                      isCompleted: false,
-                      progress: 0,
-                    })
-                  }
-                />
-              </View>
-            </View>
-          </View>
-        </DashboardCard>
-      </View>
-
-      {/* Основной контент */}
-      <ScrollView
-        style={styles.content}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.sectionsContainer}>
-          <View style={styles.sectionsHeader}>
-            <Text style={styles.sectionsTitle}>Разделы обществознания</Text>
-            <TouchableOpacity onPress={handleSearchPress}>
-              <Text style={styles.searchButton}>🔍</Text>
-            </TouchableOpacity>
-          </View>
-
-          {sections.map((section) => (
-            <View key={section.id} style={{ marginBottom: 12 }}>
-              <SectionCard
-                icon={section.icon}
-                title={section.title}
-                description={section.description}
-                colorFrom={
-                  SECTION_COLORS[section.id as keyof typeof SECTION_COLORS]
+        <Row>
+          <Col spanDesktop={12} spanTablet={12} spanMobile={12}>
+            <View style={{ marginTop: 10 }}>
+              <DashboardCard
+                title={t("continueStudy")}
+                right={
+                  <View style={styles.chipsRow}>
+                    <View
+                      style={[
+                        styles.chip,
+                        { backgroundColor: colors.backgroundSecondary },
+                      ]}
+                    >
+                      <Ionicons
+                        name="book-outline"
+                        size={14}
+                        color={colors.primary}
+                      />
+                      <Text style={styles.chipText}>Экономика</Text>
+                    </View>
+                    <View
+                      style={[
+                        styles.chip,
+                        { backgroundColor: colors.backgroundSecondary },
+                      ]}
+                    >
+                      <Ionicons
+                        name="time-outline"
+                        size={14}
+                        color={colors.primary}
+                      />
+                      <Text style={styles.chipText}>~20 мин</Text>
+                    </View>
+                  </View>
                 }
-                progress={section.progress}
-                onPress={() => handleSectionPress(section)}
-              />
+              >
+                <View style={styles.continueBody}>
+                  <Donut progress={65} />
+                  <View style={{ flex: 1 }}>
+                    <View style={styles.bigCtaRow}>
+                      <Button label={t("continue")} onPress={handleContinuePress} />
+                      <Button
+                        label={t("repeat")}
+                        variant="secondary"
+                        onPress={() =>
+                          navigation.navigate("Topic", {
+                            topic: { id: "money", title: "Деньги" } as unknown as any,
+                          })
+                        }
+                      />
+                      <Button
+                        label={t("start")}
+                        variant="danger"
+                        onPress={() =>
+                          handleSectionPress({
+                            id: "economy",
+                            title: "Экономика",
+                            description: "",
+                            icon: "💰",
+                            order: 0,
+                            topics: [],
+                            isCompleted: false,
+                            progress: 0,
+                          })
+                        }
+                      />
+                    </View>
+                  </View>
+                </View>
+              </DashboardCard>
             </View>
-          ))}
-        </View>
-      </ScrollView>
+          </Col>
+        </Row>
+
+        {/* Основной контент */}
+        <ScrollView
+          style={styles.content}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.sectionsContainer}>
+            <View style={styles.sectionsHeader}>
+              <Text style={styles.sectionsTitle}>Разделы обществознания</Text>
+              <TouchableOpacity onPress={handleSearchPress}>
+                <Text style={styles.searchButton}>🔍</Text>
+              </TouchableOpacity>
+            </View>
+
+            {sections.map((section) => (
+              <View key={section.id} style={{ marginBottom: 12 }}>
+                <SectionCard
+                  icon={section.icon}
+                  title={section.title}
+                  description={section.description}
+                  colorFrom={
+                    SECTION_COLORS[section.id as keyof typeof SECTION_COLORS]
+                  }
+                  progress={section.progress}
+                  onPress={() => handleSectionPress(section)}
+                />
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      </Container>
     </SafeAreaView>
   );
 };

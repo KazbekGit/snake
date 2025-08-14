@@ -19,6 +19,8 @@ import Animated, {
 
 import { colors } from "../constants/colors";
 import { useAppTheme } from "../theme/ThemeProvider";
+import { Container, Row, Col } from "../ui/Grid";
+import { TopNav } from "../ui/TopNav";
 import {
   getStudyStatistics,
   clearUserData,
@@ -160,277 +162,182 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient
-        colors={[colors.primary, colors.primaryDark]}
-        style={styles.background}
-      >
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>{t("statsTitle")}</Text>
-          <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity onPress={toggle} style={styles.backButton}>
-              <Ionicons name="moon" size={18} color="white" />
+      <LinearGradient colors={[colors.primary, colors.primaryDark]} style={styles.background}>
+        <Container>
+          <TopNav />
+          {/* Header */}
+          <View style={styles.header}>
+            <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+              <Ionicons name="arrow-back" size={24} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setLocale("en")}
-              style={styles.backButton}
-              accessibilityLabel="Switch to English"
-            >
-              <Ionicons name="language" size={18} color="white" />
-            </TouchableOpacity>
+            <Text style={styles.headerTitle}>{t("statsTitle")}</Text>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity onPress={toggle} style={styles.backButton}>
+                <Ionicons name="moon" size={18} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setLocale("en")} style={styles.backButton} accessibilityLabel="Switch to English">
+                <Ionicons name="language" size={18} color="white" />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
 
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <Animated.View style={[styles.content, animatedStyle]}>
-            {/* Main Statistics */}
-            <View style={styles.mainStatsContainer}>
-              <Text style={styles.sectionTitle}>Общая статистика</Text>
+          <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+            <Animated.View style={[styles.content, animatedStyle]}>
+              {/* Main Statistics */}
+              <View style={styles.mainStatsContainer}>
+                <Text style={styles.sectionTitle}>Общая статистика</Text>
+                <Row>
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <Col key={i} spanDesktop={6} spanTablet={6} spanMobile={12}>
+                      <View style={styles.statCard}>
+                        <View style={styles.statIconContainer}>
+                          <Ionicons
+                            name={i === 0 ? "book-outline" : i === 1 ? "checkmark-circle-outline" : i === 2 ? "time-outline" : i === 3 ? "flame-outline" : "trophy-outline"}
+                            size={32}
+                            color={i === 0 ? colors.primary : i === 1 ? colors.success : i === 2 ? colors.warning : i === 3 ? colors.error : colors.premium}
+                          />
+                        </View>
+                        <Text style={styles.statValue}>
+                          {i === 0
+                            ? statistics.totalTopics
+                            : i === 1
+                            ? statistics.completedTopics
+                            : i === 2
+                            ? formatStudyTime(statistics.totalStudyTime)
+                            : i === 3
+                            ? streakDays
+                            : `${statistics.averageScore}%`}
+                        </Text>
+                        <Text style={styles.statLabel}>
+                          {i === 0
+                            ? "Изучено тем"
+                            : i === 1
+                            ? "Завершено тем"
+                            : i === 2
+                            ? "Время изучения"
+                            : i === 3
+                            ? "Серия (дней подряд)"
+                            : "Средний балл"}
+                        </Text>
+                      </View>
+                    </Col>
+                  ))}
+                </Row>
+              </View>
 
-              <View style={styles.statsGrid}>
-                <View style={styles.statCard}>
-                  <View style={styles.statIconContainer}>
-                    <Ionicons
-                      name="book-outline"
-                      size={32}
-                      color={colors.primary}
+              {/* Progress Overview */}
+              <View style={styles.progressContainer}>
+                <Text style={styles.sectionTitle}>Прогресс обучения</Text>
+                <View style={styles.progressCard}>
+                  <View style={styles.progressHeader}>
+                    <Text style={styles.progressTitle}>Завершенность курса</Text>
+                    <Text style={styles.progressPercentage}>
+                      {statistics.totalTopics > 0
+                        ? Math.round(
+                            (statistics.completedTopics / statistics.totalTopics) * 100
+                          )
+                        : 0}
+                      %
+                    </Text>
+                  </View>
+                  <View style={styles.progressBar}>
+                    <View
+                      style={[
+                        styles.progressFill,
+                        {
+                          width: `${
+                            statistics.totalTopics > 0
+                              ? (statistics.completedTopics / statistics.totalTopics) * 100
+                              : 0
+                          }%`,
+                        },
+                      ]}
                     />
                   </View>
-                  <Text style={styles.statValue}>{statistics.totalTopics}</Text>
-                  <Text style={styles.statLabel}>Изучено тем</Text>
-                </View>
-
-                <View style={styles.statCard}>
-                  <View style={styles.statIconContainer}>
-                    <Ionicons
-                      name="checkmark-circle-outline"
-                      size={32}
-                      color={colors.success}
-                    />
-                  </View>
-                  <Text style={styles.statValue}>
-                    {statistics.completedTopics}
+                  <Text style={styles.progressText}>
+                    {statistics.completedTopics} из {statistics.totalTopics} тем завершено
                   </Text>
-                  <Text style={styles.statLabel}>Завершено тем</Text>
-                </View>
-
-                <View style={styles.statCard}>
-                  <View style={styles.statIconContainer}>
-                    <Ionicons
-                      name="time-outline"
-                      size={32}
-                      color={colors.warning}
-                    />
-                  </View>
-                  <Text style={styles.statValue}>
-                    {formatStudyTime(statistics.totalStudyTime)}
-                  </Text>
-                  <Text style={styles.statLabel}>Время изучения</Text>
-                </View>
-
-                <View style={styles.statCard}>
-                  <View style={styles.statIconContainer}>
-                    <Ionicons
-                      name="flame-outline"
-                      size={32}
-                      color={colors.error}
-                    />
-                  </View>
-                  <Text style={styles.statValue}>{streakDays}</Text>
-                  <Text style={styles.statLabel}>Серия (дней подряд)</Text>
-                </View>
-
-                <View style={styles.statCard}>
-                  <View style={styles.statIconContainer}>
-                    <Ionicons
-                      name="trophy-outline"
-                      size={32}
-                      color={colors.premium}
-                    />
-                  </View>
-                  <Text style={styles.statValue}>
-                    {statistics.averageScore}%
-                  </Text>
-                  <Text style={styles.statLabel}>Средний балл</Text>
                 </View>
               </View>
-            </View>
 
-            {/* Progress Overview */}
-            <View style={styles.progressContainer}>
-              <Text style={styles.sectionTitle}>Прогресс обучения</Text>
-
-              <View style={styles.progressCard}>
-                <View style={styles.progressHeader}>
-                  <Text style={styles.progressTitle}>Завершенность курса</Text>
-                  <Text style={styles.progressPercentage}>
-                    {statistics.totalTopics > 0
-                      ? Math.round(
-                          (statistics.completedTopics /
-                            statistics.totalTopics) *
-                            100
-                        )
-                      : 0}
-                    %
-                  </Text>
-                </View>
-                <View style={styles.progressBar}>
-                  <View
-                    style={[
-                      styles.progressFill,
-                      {
-                        width: `${
-                          statistics.totalTopics > 0
-                            ? (statistics.completedTopics /
-                                statistics.totalTopics) *
-                              100
-                            : 0
-                        }%`,
-                      },
-                    ]}
-                  />
-                </View>
-                <Text style={styles.progressText}>
-                  {statistics.completedTopics} из {statistics.totalTopics} тем
-                  завершено
-                </Text>
-              </View>
-            </View>
-
-            {/* Recent Activity */}
-            <View style={styles.activityContainer}>
-              <Text style={styles.sectionTitle}>Последняя активность</Text>
-
-              <View style={styles.activityCard}>
-                <View style={styles.activityHeader}>
-                  <Ionicons
-                    name="calendar-outline"
-                    size={20}
-                    color={colors.textSecondary}
-                  />
-                  <Text style={styles.activityText}>
-                    {formatLastActivity(statistics.lastActivity)}
-                  </Text>
-                </View>
-                {events.length > 0 && (
-                  <View style={{ marginTop: 12 }}>
-                    {events.map((e, idx) => (
-                      <Text key={idx} style={styles.activityText}>
-                        • {new Date(e.timestamp).toLocaleString()} — {e.type}
-                      </Text>
-                    ))}
-                    <TouchableOpacity
-                      onPress={async () => {
-                        await clearEvents();
-                        setEvents([]);
-                      }}
-                      style={{ marginTop: 8 }}
-                    >
-                      <Text
-                        style={{ color: colors.primary, textAlign: "right" }}
+              {/* Recent Activity */}
+              <View style={styles.activityContainer}>
+                <Text style={styles.sectionTitle}>Последняя активность</Text>
+                <View style={styles.activityCard}>
+                  <View style={styles.activityHeader}>
+                    <Ionicons name="calendar-outline" size={20} color={colors.textSecondary} />
+                    <Text style={styles.activityText}>{formatLastActivity(statistics.lastActivity)}</Text>
+                  </View>
+                  {events.length > 0 && (
+                    <View style={{ marginTop: 12 }}>
+                      {events.map((e, idx) => (
+                        <Text key={idx} style={styles.activityText}>
+                          • {new Date(e.timestamp).toLocaleString()} — {e.type}
+                        </Text>
+                      ))}
+                      <TouchableOpacity
+                        onPress={async () => {
+                          await clearEvents();
+                          setEvents([]);
+                        }}
+                        style={{ marginTop: 8 }}
                       >
-                        Очистить журнал событий
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-              </View>
-            </View>
-
-            {/* Actions */}
-            <View style={styles.actionsContainer}>
-              <Text style={styles.sectionTitle}>Действия</Text>
-
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={loadStatistics}
-              >
-                <LinearGradient
-                  colors={[colors.primary, colors.primaryDark]}
-                  style={styles.actionButtonGradient}
-                >
-                  <Ionicons name="refresh" size={20} color="white" />
-                  <Text style={styles.actionButtonText}>
-                    Обновить статистику
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={async () => {
-                  try {
-                    const json = await serializeUserData();
-                    console.log("[BACKUP]", json);
-                  } catch (e) {
-                    console.error("Export error", e);
-                  }
-                }}
-              >
-                <LinearGradient
-                  colors={[colors.secondary, colors.primary]}
-                  style={styles.actionButtonGradient}
-                >
-                  <Ionicons name="download-outline" size={20} color="white" />
-                  <Text style={styles.actionButtonText}>
-                    Экспорт резервной копии (в лог)
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={handleResetMoneyTopic}
-              >
-                <LinearGradient
-                  colors={[colors.secondary, colors.primary]}
-                  style={styles.actionButtonGradient}
-                >
-                  <Ionicons name="refresh-circle" size={20} color="white" />
-                  <Text style={styles.actionButtonText}>
-                    Сбросить тему «Деньги»
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={handleResetAllTopics}
-              >
-                <LinearGradient
-                  colors={[colors.warning, colors.error]}
-                  style={styles.actionButtonGradient}
-                >
-                  <Ionicons name="alert-circle" size={20} color="white" />
-                  <Text style={styles.actionButtonText}>
-                    Сбросить прогресс по всем темам
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.clearButton}
-                onPress={handleClearData}
-              >
-                <View style={styles.clearButtonContent}>
-                  <Ionicons
-                    name="trash-outline"
-                    size={20}
-                    color={colors.error}
-                  />
-                  <Text style={styles.clearButtonText}>Очистить данные</Text>
+                        <Text style={{ color: colors.primary, textAlign: "right" }}>
+                          Очистить журнал событий
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
                 </View>
-              </TouchableOpacity>
-            </View>
-          </Animated.View>
-        </ScrollView>
+              </View>
+
+              {/* Actions */}
+              <View style={styles.actionsContainer}>
+                <Text style={styles.sectionTitle}>Действия</Text>
+                <TouchableOpacity style={styles.actionButton} onPress={loadStatistics}>
+                  <LinearGradient colors={[colors.primary, colors.primaryDark]} style={styles.actionButtonGradient}>
+                    <Ionicons name="refresh" size={20} color="white" />
+                    <Text style={styles.actionButtonText}>Обновить статистику</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.actionButton}
+                  onPress={async () => {
+                    try {
+                      const json = await serializeUserData();
+                      console.log("[BACKUP]", json);
+                    } catch (e) {
+                      console.error("Export error", e);
+                    }
+                  }}
+                >
+                  <LinearGradient colors={[colors.secondary, colors.primary]} style={styles.actionButtonGradient}>
+                    <Ionicons name="download-outline" size={20} color="white" />
+                    <Text style={styles.actionButtonText}>Экспорт резервной копии (в лог)</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.actionButton} onPress={handleResetMoneyTopic}>
+                  <LinearGradient colors={[colors.secondary, colors.primary]} style={styles.actionButtonGradient}>
+                    <Ionicons name="refresh-circle" size={20} color="white" />
+                    <Text style={styles.actionButtonText}>Сбросить тему «Деньги»</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.actionButton} onPress={handleResetAllTopics}>
+                  <LinearGradient colors={[colors.warning, colors.error]} style={styles.actionButtonGradient}>
+                    <Ionicons name="alert-circle" size={20} color="white" />
+                    <Text style={styles.actionButtonText}>Сбросить прогресс по всем темам</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.clearButton} onPress={handleClearData}>
+                  <View style={styles.clearButtonContent}>
+                    <Ionicons name="trash-outline" size={20} color={colors.error} />
+                    <Text style={styles.clearButtonText}>Очистить данные</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </Animated.View>
+          </ScrollView>
+        </Container>
       </LinearGradient>
     </SafeAreaView>
   );
