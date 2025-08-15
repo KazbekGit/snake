@@ -60,7 +60,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
   const explanationOpacity = useSharedValue(0);
   const resultScale = useSharedValue(0.8);
 
-  // Используем реальные вопросы из темы "Деньги"
+  // Используем реальные вопросы из темы "Деньги" (t("contentTopics.money.title"))
   const questions = moneyTopic.quiz.questions;
 
   // Используем реальные вопросы из темы "Деньги"

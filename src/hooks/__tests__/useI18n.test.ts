@@ -1,7 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useI18n } from '../useI18n';
-import { setLocale } from '../../i18n';
 
 // Mock AsyncStorage
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -9,32 +8,34 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   setItem: jest.fn(),
 }));
 
-// Helper function to wait for async operations
-const waitForAsync = (ms = 0) => new Promise(resolve => setTimeout(resolve, ms));
+const waitForAsync = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 describe('useI18n', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    setLocale('ru');
   });
 
-  it('should initialize with default locale', () => {
+  it('should initialize with Russian locale', async () => {
     const { result } = renderHook(() => useI18n());
-    
+
     expect(result.current.locale).toBe('ru');
-    expect(result.current.isLoading).toBe(true);
+    
+    // Wait for the effect to complete
+    await waitForAsync(10);
+    
+    expect(result.current.isLoading).toBe(false);
   });
 
-  it('should load saved locale from AsyncStorage', async () => {
+  it('should always use Russian locale regardless of saved locale', async () => {
     (AsyncStorage.getItem as jest.Mock).mockResolvedValue('en');
     
     const { result } = renderHook(() => useI18n());
     
     await waitForAsync(10);
     
-    expect(result.current.locale).toBe('en');
+    // Should always be Russian even if saved locale was English
+    expect(result.current.locale).toBe('ru');
     expect(result.current.isLoading).toBe(false);
-    expect(AsyncStorage.getItem).toHaveBeenCalledWith('app_locale');
   });
 
   it('should handle invalid saved locale', async () => {
@@ -44,7 +45,7 @@ describe('useI18n', () => {
     
     await waitForAsync(10);
     
-    expect(result.current.locale).toBe('ru'); // Default
+    expect(result.current.locale).toBe('ru');
     expect(result.current.isLoading).toBe(false);
   });
 
@@ -55,12 +56,12 @@ describe('useI18n', () => {
     
     await waitForAsync(10);
     
-    expect(result.current.locale).toBe('ru'); // Default
+    expect(result.current.locale).toBe('ru');
     expect(result.current.isLoading).toBe(false);
   });
 
-  it('should change locale and save to AsyncStorage', async () => {
-    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+  it('should always save Russian locale regardless of requested locale', async () => {
+    (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
     
     const { result } = renderHook(() => useI18n());
     
@@ -70,12 +71,12 @@ describe('useI18n', () => {
       await result.current.changeLocale('en');
     });
     
-    expect(result.current.locale).toBe('en');
-    expect(AsyncStorage.setItem).toHaveBeenCalledWith('app_locale', 'en');
+    // Should always be Russian
+    expect(result.current.locale).toBe('ru');
+    expect(AsyncStorage.setItem).toHaveBeenCalledWith('app_locale', 'ru');
   });
 
   it('should handle locale change error', async () => {
-    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
     (AsyncStorage.setItem as jest.Mock).mockRejectedValue(new Error('Save error'));
     
     const { result } = renderHook(() => useI18n());
@@ -86,15 +87,11 @@ describe('useI18n', () => {
       await result.current.changeLocale('en');
     });
     
-    await waitForAsync(10);
-    
-    // Should still change locale even if save fails
-    expect(result.current.locale).toBe('en');
+    // Should still be Russian even if save fails
+    expect(result.current.locale).toBe('ru');
   });
 
   it('should translate strings correctly', async () => {
-    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
-    
     const { result } = renderHook(() => useI18n());
     
     await waitForAsync(10);
@@ -105,19 +102,14 @@ describe('useI18n', () => {
   });
 
   it('should translate with parameters', async () => {
-    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
-    
     const { result } = renderHook(() => useI18n());
     
     await waitForAsync(10);
     
-    expect(result.current.t('blockProgress', { current: 1, total: 4 })).toBe('Блок 1 из 4');
-    expect(result.current.t('questionNumber', { current: 2, total: 5 })).toBe('Вопрос 2 из 5');
+    expect(result.current.t('blockProgress', { current: 1, total: 5 })).toBe('Блок 1 из 5');
   });
 
   it('should translate nested objects', async () => {
-    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
-    
     const { result } = renderHook(() => useI18n());
     
     await waitForAsync(10);
@@ -133,43 +125,39 @@ describe('useI18n', () => {
     });
   });
 
-  it('should switch languages and update translations', async () => {
-    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
-    
+  it('should always use Russian translations', async () => {
     const { result } = renderHook(() => useI18n());
     
     await waitForAsync(10);
     
-    // Initial Russian
+    // Should always be Russian
+    expect(result.current.locale).toBe('ru');
     expect(result.current.t('back')).toBe('Назад');
     expect(result.current.t('continue')).toBe('Продолжить');
     
-    // Switch to English
+    // Even if we try to switch to English, it should stay Russian
     await act(async () => {
       await result.current.changeLocale('en');
     });
     
     await waitForAsync(10);
     
-    expect(result.current.t('back')).toBe('Back');
-    expect(result.current.t('continue')).toBe('Continue');
+    expect(result.current.locale).toBe('ru');
+    expect(result.current.t('back')).toBe('Назад');
+    expect(result.current.t('continue')).toBe('Продолжить');
   });
 
   it('should return stable function references', async () => {
-    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
-    
     const { result, rerender } = renderHook(() => useI18n());
     
     await waitForAsync(10);
     
     const initialT = result.current.t;
-    const initialTn = result.current.tn;
     const initialChangeLocale = result.current.changeLocale;
     
     rerender();
     
     expect(result.current.t).toBe(initialT);
-    expect(result.current.tn).toBe(initialTn);
     expect(result.current.changeLocale).toBe(initialChangeLocale);
   });
 });

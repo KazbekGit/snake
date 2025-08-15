@@ -26,6 +26,7 @@ const ru: Dict = {
   appTitle: "Обществознание",
   appSubtitle: "Изучайте обществознание",
   startButton: "Начать",
+  continueLearning: "Продолжить обучение",
   features: {
     checkmark: "✅",
     books: "📚", 
@@ -45,8 +46,9 @@ const ru: Dict = {
   general: "Общее развитие",
   
   // Home Screen
-  continueLearning: "Продолжить обучение",
+  continueStudy: "Продолжить обучение",
   sections: "Разделы обществознания",
+  sectionsTitle: "Разделы обществознания",
   sectionsList: {
     personSociety: "Человек и общество",
     economy: "Экономика", 
@@ -54,6 +56,14 @@ const ru: Dict = {
     politics: "Политика",
     law: "Право",
     culture: "Духовная культура"
+  },
+  sectionDescriptions: {
+    personSociety: "Изучаем природу человека, его место в обществе и основные социальные процессы",
+    economy: "Основы экономической теории, рынок, деньги, банки и государственная экономическая политика",
+    socialRelations: "Социальная структура, группы, семья, конфликты и социальная политика",
+    politics: "Политическая система, государство, выборы, партии и гражданское общество",
+    law: "Правовая система, Конституция РФ, права человека и судебная система",
+    culture: "Культура, мораль, религия, образование, наука и искусство"
   },
   actions: {
     continue: "Продолжить",
@@ -118,7 +128,7 @@ const ru: Dict = {
   contentTopics: {
     money: {
       title: "Деньги",
-      description: "Изучаем природу денег",
+      description: "Изучаем природу денег, их функции и виды",
       blocks: {
         definition: "Определение",
         functions: "Функции",
@@ -178,7 +188,7 @@ const ru: Dict = {
   }
 };
 
-// English translations
+// English translations (kept for completeness but not used in UI)
 const en: Dict = {
   // Common
   back: "Back",
@@ -203,6 +213,7 @@ const en: Dict = {
   appTitle: "Social Studies",
   appSubtitle: "Learn social studies",
   startButton: "Start",
+  continueLearning: "Continue learning",
   features: {
     checkmark: "✅",
     books: "📚",
@@ -222,8 +233,9 @@ const en: Dict = {
   general: "General development",
   
   // Home Screen
-  continueLearning: "Continue learning",
+  continueStudy: "Continue learning",
   sections: "Social studies sections",
+  sectionsTitle: "Social studies sections",
   sectionsList: {
     personSociety: "Person and Society",
     economy: "Economy",
@@ -231,6 +243,14 @@ const en: Dict = {
     politics: "Politics",
     law: "Law",
     culture: "Spiritual Culture"
+  },
+  sectionDescriptions: {
+    personSociety: "Изучаем природу человека, его место в обществе и основные социальные процессы",
+    economy: "Основы экономической теории, рынок, деньги, банки и государственная экономическая политика",
+    socialRelations: "Социальная структура, группы, семья, конфликты и социальная политика",
+    politics: "Политическая система, государство, выборы, партии и гражданское общество",
+    law: "Правовая система, Конституция РФ, права человека и судебная система",
+    culture: "Культура, мораль, религия, образование, наука и искусство"
   },
   actions: {
     continue: "Continue",
@@ -295,7 +315,7 @@ const en: Dict = {
   contentTopics: {
     money: {
       title: "Money",
-      description: "Learn about the nature of money",
+      description: "Learn about the nature of money, its functions and types",
       blocks: {
         definition: "Definition",
         functions: "Functions", 
@@ -355,19 +375,20 @@ const en: Dict = {
   }
 };
 
-// Current locale
+// Current locale (always Russian for this app)
 let currentLocale: "ru" | "en" = "ru";
 let currentDict: Dict = ru;
 
-// Set locale
+// Set locale (kept for API compatibility but always Russian)
 export function setLocale(locale: "ru" | "en") {
-  currentLocale = locale;
-  currentDict = locale === "en" ? en : ru;
+  // Always use Russian for this app
+  currentLocale = "ru";
+  currentDict = ru;
 }
 
-// Get current locale
+// Get current locale (always Russian)
 export function getLocale(): "ru" | "en" {
-  return currentLocale;
+  return "ru";
 }
 
 // Translation function with nested key support

@@ -58,9 +58,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [sections] = useState<Section[]>([
     {
       id: "person-society",
-      title: "Человек и общество",
-      description:
-        "Изучаем природу человека, его место в обществе и основные социальные процессы",
+      title: t("sectionsList.personSociety"),
+      description: t("sectionDescriptions.personSociety"),
       icon: "👤",
       order: 1,
       topics: [],
@@ -69,9 +68,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     },
     {
       id: "economy",
-      title: "Экономика",
-      description:
-        "Основы экономической теории, рынок, деньги, банки и государственная экономическая политика",
+      title: t("sectionsList.economy"),
+      description: t("sectionDescriptions.economy"),
       icon: "💰",
       order: 2,
       topics: [],
@@ -80,9 +78,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     },
     {
       id: "social-relations",
-      title: "Социальные отношения",
-      description:
-        "Социальная структура, группы, семья, конфликты и социальная политика",
+      title: t("sectionsList.socialRelations"),
+      description: t("sectionDescriptions.socialRelations"),
       icon: "👥",
       order: 3,
       topics: [],
@@ -91,9 +88,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     },
     {
       id: "politics",
-      title: "Политика",
-      description:
-        "Политическая система, государство, выборы, партии и гражданское общество",
+      title: t("sectionsList.politics"),
+      description: t("sectionDescriptions.politics"),
       icon: "🏛️",
       order: 4,
       topics: [],
@@ -102,9 +98,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     },
     {
       id: "law",
-      title: "Право",
-      description:
-        "Правовая система, Конституция РФ, права человека и судебная система",
+      title: t("sectionsList.law"),
+      description: t("sectionDescriptions.law"),
       icon: "⚖️",
       order: 5,
       topics: [],
@@ -113,8 +108,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     },
     {
       id: "spiritual-culture",
-      title: "Духовная культура",
-      description: "Культура, мораль, религия, образование, наука и искусство",
+      title: t("sectionsList.culture"),
+      description: t("sectionDescriptions.culture"),
       icon: "🎨",
       order: 6,
       topics: [],
@@ -198,7 +193,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                       size={14}
                       color={colors.primary}
                     />
-                    <Text style={styles.chipText}>Экономика</Text>
+                    <Text style={styles.chipText}>{t("sectionsList.economy")}</Text>
                   </View>
                   <View
                     style={[
@@ -233,7 +228,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                         navigation.navigate("Topic", {
                           topic: {
                             id: "money",
-                            title: "Деньги",
+                            title: t("money"),
                           } as unknown as any,
                         })
                       }
@@ -245,7 +240,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                       onPress={() =>
                         handleSectionPress({
                           id: "economy",
-                          title: "Экономика",
+                          title: t("sectionsList.economy"),
                           description: "",
                           icon: "💰",
                           order: 0,

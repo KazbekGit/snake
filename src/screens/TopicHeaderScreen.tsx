@@ -39,6 +39,7 @@ import {
   TopicProgress,
 } from "../utils/progressStorage";
 import { logEvent } from "../utils/analytics";
+import { t } from "../i18n";
 
 const { width, height } = Dimensions.get("window");
 
@@ -72,7 +73,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
   const currentTopic = topic || {
     id: "topic_money_001",
     sectionId: "economics",
-    title: "Деньги",
+    title: t("contentTopics.money.title"),
     description:
       "Узнай, что такое деньги, зачем они нужны и как работают в экономике",
     coverImage:
