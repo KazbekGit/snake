@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Typography } from "../ui/Typography";
@@ -186,9 +181,9 @@ const styles = StyleSheet.create({
     top: ds.spacing.xl,
     paddingHorizontal: ds.spacing.md,
     paddingVertical: ds.spacing.sm,
-    borderRadius: ds.radius.full,
+    borderRadius: ds.radius.pill,
     backgroundColor: colors.primary,
-    ...ds.shadows.card,
+    ...ds.shadow.card,
   },
   backButtonText: {
     color: colors.textLight,
@@ -216,7 +211,7 @@ const styles = StyleSheet.create({
   goalCard: {
     borderRadius: ds.radius.lg,
     overflow: "hidden",
-    ...ds.shadows.card,
+    ...ds.shadow.card,
   },
   selectedCard: {
     transform: [{ scale: 1.02 }],

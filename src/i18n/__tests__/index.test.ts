@@ -50,9 +50,9 @@ describe('i18n', () => {
     });
 
     it('should handle complex nested structures', () => {
-      expect(t('topics.money.title')).toBe('Деньги');
-      expect(t('topics.money.description')).toBe('Изучаем природу денег');
-      expect(t('topics.money.blocks.definition')).toBe('Определение');
+      expect(t('contentTopics.money.title')).toBe('Деньги');
+      expect(t('contentTopics.money.description')).toBe('Изучаем природу денег');
+      expect(t('contentTopics.money.blocks.definition')).toBe('Определение');
     });
   });
 
@@ -114,7 +114,7 @@ describe('i18n', () => {
     it('should have all required sections', () => {
       const requiredSections = [
         'appTitle', 'appSubtitle', 'startButton', 'back', 'continue',
-        'sectionsList', 'actions', 'topics', 'errors', 'success'
+        'sectionsList', 'actions', 'contentTopics', 'errors', 'successMessages'
       ];
       
       requiredSections.forEach(section => {
@@ -126,26 +126,26 @@ describe('i18n', () => {
 
   describe('topic translations', () => {
     it('should translate money topic correctly', () => {
-      expect(t('topics.money.title')).toBe('Деньги');
-      expect(t('topics.money.description')).toBe('Изучаем природу денег');
-      expect(t('topics.money.blocks.definition')).toBe('Определение');
-      expect(t('topics.money.blocks.functions')).toBe('Функции');
-      expect(t('topics.money.blocks.types')).toBe('Виды');
-      expect(t('topics.money.blocks.summary')).toBe('Итоги');
+      expect(t('contentTopics.money.title')).toBe('Деньги');
+      expect(t('contentTopics.money.description')).toBe('Изучаем природу денег');
+      expect(t('contentTopics.money.blocks.definition')).toBe('Определение');
+      expect(t('contentTopics.money.blocks.functions')).toBe('Функции');
+      expect(t('contentTopics.money.blocks.types')).toBe('Виды');
+      expect(t('contentTopics.money.blocks.summary')).toBe('Итоги');
     });
 
     it('should translate market topic correctly', () => {
-      expect(t('topics.market.title')).toBe('Рынок');
-      expect(t('topics.market.description')).toBe('Изучаем рыночную экономику');
-      expect(t('topics.market.blocks.definition')).toBe('Что такое рынок?');
-      expect(t('topics.market.blocks.supplyDemand')).toBe('Спрос и предложение');
+      expect(t('contentTopics.market.title')).toBe('Рынок');
+      expect(t('contentTopics.market.description')).toBe('Изучаем рыночную экономику');
+      expect(t('contentTopics.market.blocks.definition')).toBe('Что такое рынок?');
+      expect(t('contentTopics.market.blocks.supplyDemand')).toBe('Спрос и предложение');
     });
 
     it('should translate human nature topic correctly', () => {
-      expect(t('topics.humanNature.title')).toBe('Природа человека');
-      expect(t('topics.humanNature.description')).toBe('Изучаем биологическую и социальную природу человека');
-      expect(t('topics.humanNature.blocks.biological')).toBe('Биологическая природа человека');
-      expect(t('topics.humanNature.blocks.social')).toBe('Социальная природа человека');
+      expect(t('contentTopics.humanNature.title')).toBe('Природа человека');
+      expect(t('contentTopics.humanNature.description')).toBe('Изучаем биологическую и социальную природу человека');
+      expect(t('contentTopics.humanNature.blocks.biological')).toBe('Биологическая природа человека');
+      expect(t('contentTopics.humanNature.blocks.social')).toBe('Социальная природа человека');
     });
   });
 
@@ -167,9 +167,9 @@ describe('i18n', () => {
     });
 
     it('should translate success messages', () => {
-      expect(t('success.progressSaved')).toBe('Прогресс сохранен');
-      expect(t('success.backupExported')).toBe('Резервная копия экспортирована');
-      expect(t('success.progressReset')).toBe('Прогресс сброшен');
+      expect(t('successMessages.progressSaved')).toBe('Прогресс сохранен');
+      expect(t('successMessages.backupExported')).toBe('Резервная копия экспортирована');
+      expect(t('successMessages.progressReset')).toBe('Прогресс сброшен');
     });
   });
 });

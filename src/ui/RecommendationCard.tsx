@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     padding: 1, // Для создания границы
   },
   content: {
-    backgroundColor: ds.colors.surface,
+    backgroundColor: ds.colors.card,
     borderRadius: ds.radius.lg - 1,
     overflow: 'hidden',
   },

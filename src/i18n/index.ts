@@ -1,5 +1,5 @@
 // Types
-type Dict = Record<string, string | Record<string, string>>;
+type Dict = Record<string, string | Record<string, any>>;
 
 // Russian translations
 const ru: Dict = {
@@ -94,7 +94,6 @@ const ru: Dict = {
   correctAnswers: "Правильных ответов",
   totalQuestions: "Всего вопросов",
   percentage: "Процент правильных",
-  continueLearning: "Продолжить изучение",
   retakeTest: "Перепройти тест",
   
   // Statistics Screen
@@ -116,7 +115,7 @@ const ru: Dict = {
   noEvents: "Событий пока нет",
   
   // Content Topics
-  topics: {
+  contentTopics: {
     money: {
       title: "Деньги",
       description: "Изучаем природу денег",
@@ -172,7 +171,7 @@ const ru: Dict = {
   },
   
   // Success Messages
-  success: {
+  successMessages: {
     progressSaved: "Прогресс сохранен",
     backupExported: "Резервная копия экспортирована",
     progressReset: "Прогресс сброшен"
@@ -272,7 +271,6 @@ const en: Dict = {
   correctAnswers: "Correct answers",
   totalQuestions: "Total questions",
   percentage: "Percentage correct",
-  continueLearning: "Continue learning",
   retakeTest: "Retake test",
   
   // Statistics Screen
@@ -294,7 +292,7 @@ const en: Dict = {
   noEvents: "No events yet",
   
   // Content Topics
-  topics: {
+  contentTopics: {
     money: {
       title: "Money",
       description: "Learn about the nature of money",
@@ -350,7 +348,7 @@ const en: Dict = {
   },
   
   // Success Messages
-  success: {
+  successMessages: {
     progressSaved: "Progress saved",
     backupExported: "Backup exported",
     progressReset: "Progress reset"

@@ -245,7 +245,6 @@ export async function setCachedTopic(topic: TopicContent): Promise<void> {
   };
   
   const cacheKey = `${TOPIC_PREFIX}${topic.id}`;
-  contentLoader.cache.set(cacheKey, contentItem);
   await AsyncStorage.setItem(cacheKey, JSON.stringify(contentItem));
 }
 

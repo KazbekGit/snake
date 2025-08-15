@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     padding: 1,
   },
   mainContent: {
-    backgroundColor: ds.colors.surface,
+    backgroundColor: ds.colors.card,
     borderRadius: ds.radius.lg - 1,
     padding: ds.spacing.lg,
   },
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     gap: ds.spacing.md,
   },
   statCard: {
-    backgroundColor: ds.colors.surface,
+    backgroundColor: ds.colors.card,
     borderRadius: ds.radius.lg,
     padding: ds.spacing.lg,
     elevation: 2,

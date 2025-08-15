@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: 40,
     height: 40,
-    borderRadius: ds.radius.full,
+    borderRadius: ds.radius.pill,
     backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
   menuButton: {
     width: 40,
     height: 40,
-    borderRadius: ds.radius.full,
+    borderRadius: ds.radius.pill,
     backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
@@ -539,7 +539,7 @@ const styles = StyleSheet.create({
     margin: ds.spacing.lg,
     borderRadius: ds.radius.xl,
     padding: ds.spacing.lg,
-    ...ds.shadows.card,
+    ...ds.shadow.card,
   },
   titleContainer: {
     marginBottom: ds.spacing.lg,
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
     marginVertical: ds.spacing.lg,
     borderRadius: ds.radius.lg,
     overflow: "hidden",
-    ...ds.shadows.card,
+    ...ds.shadow.card,
   },
   mediaImage: {
     width: "100%",
@@ -610,7 +610,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     paddingHorizontal: ds.spacing.sm,
     paddingVertical: ds.spacing.xs,
-    borderRadius: ds.radius.full,
+    borderRadius: ds.radius.pill,
     marginBottom: ds.spacing.xs,
   },
   keyTermText: {
@@ -655,7 +655,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: ds.radius.xl,
     paddingHorizontal: ds.spacing.lg,
     paddingVertical: ds.spacing.md,
-    ...ds.shadows.card,
+    ...ds.shadow.card,
   },
   navigationButtons: {
     flexDirection: "row",
@@ -713,7 +713,7 @@ const styles = StyleSheet.create({
   dot: {
     width: 8,
     height: 8,
-    borderRadius: ds.radius.full,
+    borderRadius: ds.radius.pill,
     marginHorizontal: ds.spacing.xs,
   },
   dotActive: {

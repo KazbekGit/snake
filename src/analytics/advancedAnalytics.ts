@@ -341,7 +341,7 @@ class AdvancedAnalytics {
     const recommendations: Recommendation[] = [];
 
     // Рекомендация по слабым темам
-    if (profile?.weakTopics?.length > 0) {
+    if (profile && profile.weakTopics && profile.weakTopics.length > 0) {
       recommendations.push({
         type: 'review_weak_topic',
         priority: 'high',
@@ -354,7 +354,7 @@ class AdvancedAnalytics {
     }
 
     // Рекомендация по продолжению серии
-    if (profile?.streakDays > 0) {
+    if (profile && profile.streakDays && profile.streakDays > 0) {
       recommendations.push({
         type: 'continue_streak',
         priority: 'medium',

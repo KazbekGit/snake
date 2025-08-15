@@ -321,7 +321,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
 
             {/* Topic Info Cards */}
             <Row style={styles.infoCardsContainer}>
-              <Col size={4}>
+              <Col spanMobile={4}>
                 <View style={styles.infoCard}>
                   <TimeIcon size={24} color={colors.primary} />
                   <Typography variant="button" style={styles.infoCardValue}>
@@ -332,7 +332,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                   </Typography>
                 </View>
               </Col>
-              <Col size={4}>
+              <Col spanMobile={4}>
                 <View style={styles.infoCard}>
                   <LayersIcon size={24} color={colors.primary} />
                   <Typography variant="button" style={styles.infoCardValue}>
@@ -345,7 +345,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                   </Typography>
                 </View>
               </Col>
-              <Col size={4}>
+              <Col spanMobile={4}>
                 <View style={styles.infoCard}>
                   <StarOutlineIcon size={24} color={colors.primary} />
                   <Typography variant="button" style={styles.infoCardValue}>
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: 40,
     height: 40,
-    borderRadius: ds.radius.full,
+    borderRadius: ds.radius.pill,
     backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
@@ -528,7 +528,7 @@ const styles = StyleSheet.create({
   menuButton: {
     width: 40,
     height: 40,
-    borderRadius: ds.radius.full,
+    borderRadius: ds.radius.pill,
     backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderRadius: ds.radius.lg,
     marginHorizontal: ds.spacing.xs,
-    ...ds.shadows.card,
+    ...ds.shadow.card,
   },
   infoCardValue: {
     marginTop: ds.spacing.sm,
@@ -617,7 +617,7 @@ const styles = StyleSheet.create({
   difficultyBadge: {
     paddingHorizontal: ds.spacing.md,
     paddingVertical: ds.spacing.sm,
-    borderRadius: ds.radius.full,
+    borderRadius: ds.radius.pill,
   },
   difficultyBadgeText: {
     color: "white",
@@ -653,7 +653,7 @@ const styles = StyleSheet.create({
   startButton: {
     borderRadius: ds.radius.lg,
     overflow: "hidden",
-    ...ds.shadows.card,
+    ...ds.shadow.card,
   },
   startButtonGradient: {
     flexDirection: "row",

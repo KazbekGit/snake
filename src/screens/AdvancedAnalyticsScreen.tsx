@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
   },
   tabsContainer: {
     flexDirection: 'row',
-    backgroundColor: ds.colors.surface,
+    backgroundColor: ds.colors.card,
     borderRadius: ds.radius.lg,
     padding: ds.spacing.xs,
     marginBottom: ds.spacing.lg,

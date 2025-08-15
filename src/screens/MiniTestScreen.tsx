@@ -89,7 +89,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
     }
   }, [currentQuestionIndex]);
 
-  const handleAnswerSelectUnthrottled = (answerIndex: number) => {
+  const handleAnswerSelectUnthrottled = async (answerIndex: number) => {
     // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); // Временно отключено для веб
 
     console.log(
@@ -101,7 +101,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
 
     if (currentQuestion.type === "single") {
       setSelectedAnswers([answerIndex]);
-      checkAnswer([answerIndex]);
+      await checkAnswer([answerIndex]);
     } else if (currentQuestion.type === "multiple") {
       const newAnswers = selectedAnswers.includes(answerIndex)
         ? selectedAnswers.filter((i) => i !== answerIndex)
@@ -126,14 +126,14 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
           );
         })
       ) {
-        checkAnswer(newAnswers);
+        await checkAnswer(newAnswers);
       }
     }
   };
 
   const handleAnswerSelect = useThrottle(handleAnswerSelectUnthrottled, 200);
 
-  const checkAnswer = (answers: number[]) => {
+  const checkAnswer = async (answers: number[]) => {
     let correct = false;
 
     if (currentQuestion.type === "single") {
@@ -177,7 +177,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
       await addQuestionAttempt(
         currentQuestion.id || `question_${currentQuestionIndex}`,
         selectedOptionId || '',
-        correctAnswerId || '',
+        Array.isArray(correctAnswerId) ? correctAnswerId[0] || '' : correctAnswerId || '',
         timeSpent,
         0 // hintsUsed
       );
@@ -622,7 +622,7 @@ const styles = StyleSheet.create({
   backButton: {
     width: 40,
     height: 40,
-    borderRadius: ds.radius.full,
+    borderRadius: ds.radius.pill,
     backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
@@ -667,7 +667,7 @@ const styles = StyleSheet.create({
     margin: ds.spacing.lg,
     borderRadius: ds.radius.xl,
     padding: ds.spacing.lg,
-    ...ds.shadows.card,
+    ...ds.shadow.card,
   },
   questionContainer: {
     marginBottom: ds.spacing.lg,
@@ -717,7 +717,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: ds.radius.lg,
     overflow: "hidden",
-    ...ds.shadows.card,
+    ...ds.shadow.card,
   },
   flipCardGradient: {
     flex: 1,
@@ -780,7 +780,7 @@ const styles = StyleSheet.create({
     borderRadius: ds.radius.xl,
     padding: ds.spacing.xl,
     alignItems: "center",
-    ...ds.shadows.card,
+    ...ds.shadow.card,
   },
   resultHeader: {
     alignItems: "center",
@@ -836,7 +836,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: ds.radius.xl,
     paddingHorizontal: ds.spacing.lg,
     paddingVertical: ds.spacing.md,
-    ...ds.shadows.card,
+    ...ds.shadow.card,
   },
   nextButton: {
     borderRadius: ds.radius.lg,

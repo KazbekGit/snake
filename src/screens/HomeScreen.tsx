@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
     width: 280,
   },
   recommendationCard: {
-    backgroundColor: ds.colors.surface,
+    backgroundColor: ds.colors.card,
     borderRadius: ds.radius.lg,
     padding: ds.spacing.lg,
     elevation: 2,

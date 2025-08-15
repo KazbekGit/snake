@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: ds.spacing.sm,
     paddingVertical: ds.spacing.xs,
     borderRadius: ds.radius.md,
-    backgroundColor: ds.colors.surface,
+    backgroundColor: ds.colors.card,
     borderWidth: 1,
     borderColor: ds.colors.border,
   },

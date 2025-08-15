@@ -157,9 +157,9 @@ const styles = StyleSheet.create({
     top: ds.spacing.xl,
     paddingHorizontal: ds.spacing.md,
     paddingVertical: ds.spacing.sm,
-    borderRadius: ds.radius.full,
+    borderRadius: ds.radius.pill,
     backgroundColor: colors.primary,
-    ...ds.shadows.card,
+    ...ds.shadow.card,
   },
   backButtonText: {
     color: colors.textLight,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   gradeCard: {
     borderRadius: ds.radius.lg,
     overflow: "hidden",
-    ...ds.shadows.card,
+    ...ds.shadow.card,
   },
   selectedCard: {
     transform: [{ scale: 1.05 }],
