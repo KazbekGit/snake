@@ -20,6 +20,7 @@ interface Props {
   disabled?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
+  testID?: string;
 }
 
 export const Button: React.FC<Props> = ({
@@ -31,6 +32,7 @@ export const Button: React.FC<Props> = ({
   disabled,
   style,
   textStyle,
+  testID,
 }) => {
   const content = (
     <View
@@ -62,6 +64,7 @@ export const Button: React.FC<Props> = ({
       <TouchableOpacity
         onPress={onPress}
         disabled={disabled}
+        testID={testID}
         style={[
           {
             borderRadius: 8,
@@ -110,7 +113,12 @@ export const Button: React.FC<Props> = ({
       : ds.colors.gradients.secondary;
 
   return (
-    <TouchableOpacity onPress={onPress} disabled={disabled} style={style}>
+    <TouchableOpacity
+      onPress={onPress}
+      disabled={disabled}
+      style={style}
+      testID={testID}
+    >
       <View
         style={{
           borderRadius: 8,

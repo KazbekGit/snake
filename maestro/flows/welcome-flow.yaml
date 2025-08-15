@@ -8,12 +8,13 @@ flows:
   - assertVisible: "Обществознание"
   - assertVisible: "Изучайте обществознание"
   - assertVisible: "Начать"
-  
+
   # Проверка всех элементов UI
   - assertVisible: "✅"
   - assertVisible: "📚"
   - assertVisible: "📊"
-  
+
   # Навигация
-  - tapOn: "Начать"
+  - tapOn:
+      id: "welcome_start_btn"
   - assertVisible: "Выберите класс"

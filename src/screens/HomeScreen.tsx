@@ -28,7 +28,7 @@ import { SECTIONS, SECTION_COLORS } from "../constants/sections";
 import { mockUserProgress, moneyTopic } from "../data";
 import { contentLoader } from "../content/loader";
 import { getTopicFallback, getTopicsBySection } from "../content/index";
-import { Container, Row, Col } from "../ui/Grid";
+import { Container, Row, Col, useBreakpoint } from "../ui/Grid";
 import { TopNav } from "../ui/TopNav";
 import { PersonIcon } from "../ui/icons/PersonIcon";
 import { Typography } from "../ui/Typography";
@@ -52,7 +52,9 @@ interface HomeScreenProps {
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { getProfile, getHighPriorityRecommendations } = useAdvancedAnalytics();
-  
+  const bp = useBreakpoint();
+  const heroSize = bp === "desktop" ? 400 : bp === "tablet" ? 320 : 260;
+
   const [sections] = useState<Section[]>([
     {
       id: "person-society",
@@ -125,7 +127,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     // Получаем первую доступную тему для секции
     const sectionTopics = getTopicsBySection(section.id);
     const topicId = sectionTopics.length > 0 ? sectionTopics[0].id : "money";
-    
+
     try {
       const loaded = await contentLoader.loadTopic(topicId);
       navigation.navigate("Topic", { topic: loaded as any });
@@ -157,7 +159,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       getLastStudiedTopicIdFromUserProgress(userProgress) || "money";
     const progress = await getTopicProgress(lastTopicId);
     const blockIndex = computeStartBlockIndex(progress);
-    
+
     try {
       const loaded = await contentLoader.loadTopic(lastTopicId);
       navigation.navigate("TheoryBlock", { topic: loaded as any, blockIndex });
@@ -166,7 +168,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       // Fallback на тему "Деньги"
       const fallback = getTopicFallback("money");
       if (fallback) {
-        navigation.navigate("TheoryBlock", { topic: fallback as any, blockIndex });
+        navigation.navigate("TheoryBlock", {
+          topic: fallback as any,
+          blockIndex,
+        });
       }
     }
   };
@@ -177,80 +182,92 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       <Container>
         <TopNav />
         <Row style={{ marginTop: ds.spacing.xl }}>
-
           <Col spanDesktop={7} spanTablet={7} spanMobile={12}>
             <DashboardCard
-                title={t("continueStudy")}
-                right={
-                  <View style={styles.chipsRow}>
-                    <View
-                      style={[
-                        styles.chip,
-                        { backgroundColor: colors.backgroundSecondary },
-                      ]}
-                    >
-                      <Ionicons
-                        name="book-outline"
-                        size={14}
-                        color={colors.primary}
-                      />
-                      <Text style={styles.chipText}>Экономика</Text>
-                    </View>
-                    <View
-                      style={[
-                        styles.chip,
-                        { backgroundColor: colors.backgroundSecondary },
-                      ]}
-                    >
-                      <Ionicons
-                        name="time-outline"
-                        size={14}
-                        color={colors.primary}
-                      />
-                      <Text style={styles.chipText}>~20 мин</Text>
-                    </View>
+              title={t("continueStudy")}
+              right={
+                <View style={styles.chipsRow}>
+                  <View
+                    style={[
+                      styles.chip,
+                      { backgroundColor: colors.backgroundSecondary },
+                    ]}
+                  >
+                    <Ionicons
+                      name="book-outline"
+                      size={14}
+                      color={colors.primary}
+                    />
+                    <Text style={styles.chipText}>Экономика</Text>
                   </View>
-                }
-              >
-                <View style={styles.continueBody}>
-                  <Donut progress={65} />
-                  <View style={{ flex: 1 }}>
-                    <View style={styles.bigCtaRow}>
-                      <Button label={t("continue")} onPress={handleContinuePress} />
-                      <Button
-                        label={t("repeat")}
-                        variant="secondary"
-                        onPress={() =>
-                          navigation.navigate("Topic", {
-                            topic: { id: "money", title: "Деньги" } as unknown as any,
-                          })
-                        }
-                      />
-                      <Button
-                        label={t("start")}
-                        variant="danger"
-                        onPress={() =>
-                          handleSectionPress({
-                            id: "economy",
-                            title: "Экономика",
-                            description: "",
-                            icon: "💰",
-                            order: 0,
-                            topics: [],
-                            isCompleted: false,
-                            progress: 0,
-                          })
-                        }
-                      />
-                    </View>
+                  <View
+                    style={[
+                      styles.chip,
+                      { backgroundColor: colors.backgroundSecondary },
+                    ]}
+                  >
+                    <Ionicons
+                      name="time-outline"
+                      size={14}
+                      color={colors.primary}
+                    />
+                    <Text style={styles.chipText}>~20 мин</Text>
                   </View>
                 </View>
-              </DashboardCard>
+              }
+            >
+              <View style={styles.continueBody}>
+                <Donut progress={65} />
+                <View style={{ flex: 1 }}>
+                  <View style={styles.bigCtaRow}>
+                    <Button
+                      label={t("continue")}
+                      onPress={handleContinuePress}
+                      testID="home_continue_btn"
+                    />
+                    <Button
+                      label={t("repeat")}
+                      variant="secondary"
+                      testID="home_repeat_btn"
+                      onPress={() =>
+                        navigation.navigate("Topic", {
+                          topic: {
+                            id: "money",
+                            title: "Деньги",
+                          } as unknown as any,
+                        })
+                      }
+                    />
+                    <Button
+                      label={t("start")}
+                      variant="danger"
+                      testID="home_start_btn"
+                      onPress={() =>
+                        handleSectionPress({
+                          id: "economy",
+                          title: "Экономика",
+                          description: "",
+                          icon: "💰",
+                          order: 0,
+                          topics: [],
+                          isCompleted: false,
+                          progress: 0,
+                        })
+                      }
+                    />
+                  </View>
+                </View>
+              </View>
+            </DashboardCard>
           </Col>
           <Col spanDesktop={5} spanTablet={5} spanMobile={12}>
             {/* Hero Photo (Social studies themed) */}
             <View style={styles.illustrationContainer}>
-              <HeroPhoto uri={require("../../assets/images/hero.jpg")} width={320} height={220} />
+              <HeroPhoto
+                uri={require("../../assets/images/hero.png")}
+                width={heroSize}
+                height={heroSize}
+              />
             </View>
           </Col>
         </Row>
@@ -264,28 +281,46 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 <Col spanDesktop={12} spanTablet={12} spanMobile={12}>
                   <View style={styles.sectionsHeader}>
                     <Typography variant="title">🔥 Рекомендации</Typography>
-                    <TouchableOpacity onPress={() => navigation.navigate("AdvancedAnalytics" as any)}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("AdvancedAnalytics" as any)
+                      }
+                    >
                       <ChartIcon size={ds.spacing.xxl} color={colors.navy} />
                     </TouchableOpacity>
                   </View>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.recommendationsContainer}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.recommendationsContainer}
+                  >
                     {highPriorityRecs.slice(0, 3).map((rec, index) => (
                       <View key={index} style={styles.recommendationItem}>
                         <View style={styles.recommendationCard}>
                           <Text style={styles.recommendationIcon}>
-                            {rec.type === 'review_weak_topic' ? '📚' :
-                             rec.type === 'continue_streak' ? '🔥' :
-                             rec.type === 'try_new_topic' ? '🆕' :
-                             rec.type === 'practice_mistakes' ? '❌' : '💡'}
+                            {rec.type === "review_weak_topic"
+                              ? "📚"
+                              : rec.type === "continue_streak"
+                              ? "🔥"
+                              : rec.type === "try_new_topic"
+                              ? "🆕"
+                              : rec.type === "practice_mistakes"
+                              ? "❌"
+                              : "💡"}
                           </Text>
-                          <Typography variant="subtitle" style={styles.recommendationTitle}>
+                          <Typography
+                            variant="subtitle"
+                            style={styles.recommendationTitle}
+                          >
                             {rec.title}
                           </Typography>
                           <Typography style={styles.recommendationDescription}>
                             {rec.description}
                           </Typography>
                           <View style={styles.recommendationFooter}>
-                            <Text style={styles.recommendationTime}>{rec.estimatedTime} мин</Text>
+                            <Text style={styles.recommendationTime}>
+                              {rec.estimatedTime} мин
+                            </Text>
                           </View>
                         </View>
                       </View>
@@ -318,7 +353,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               "spiritual-culture": <CultureIcon size={28} color="#FFFFFF" />,
             };
             return (
-              <Col key={section.id} spanDesktop={4} spanTablet={6} spanMobile={12} style={{ marginBottom: ds.spacing.lg }}>
+              <Col
+                key={section.id}
+                spanDesktop={4}
+                spanTablet={6}
+                spanMobile={12}
+                style={{ marginBottom: ds.spacing.lg }}
+              >
                 <SectionCard
                   iconNode={iconMap[section.id]}
                   title={section.title}
@@ -353,7 +394,6 @@ const styles = StyleSheet.create({
   illustrationContainer: {
     alignItems: "center",
     justifyContent: "center",
-    height: 200,
   },
 
   chipsRow: {
@@ -427,7 +467,7 @@ const styles = StyleSheet.create({
     borderRadius: ds.radius.lg,
     padding: ds.spacing.lg,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
@@ -439,7 +479,7 @@ const styles = StyleSheet.create({
   recommendationTitle: {
     color: ds.colors.text,
     marginBottom: ds.spacing.xs,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   recommendationDescription: {
     color: ds.colors.textSecondary,
@@ -448,14 +488,13 @@ const styles = StyleSheet.create({
     marginBottom: ds.spacing.md,
   },
   recommendationFooter: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   recommendationTime: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
     color: ds.colors.primary,
   },
-
 });
 
 export default HomeScreen;

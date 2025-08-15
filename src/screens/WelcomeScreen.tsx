@@ -90,40 +90,59 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
                   <View style={styles.logoContainer}>
                     <Text style={styles.logoEmoji}>📚</Text>
                   </View>
-                  <Typography variant="heroTitle" style={{ color: colors.navy, textAlign: "center", marginBottom: 5 }}>
-                    {t('appTitle')}
+                  <Typography
+                    variant="heroTitle"
+                    style={{
+                      color: colors.navy,
+                      textAlign: "center",
+                      marginBottom: 5,
+                    }}
+                  >
+                    {t("appTitle")}
                   </Typography>
-                  <Typography variant="subtitle" style={{ color: colors.navy, textAlign: "center" }}>
-                    {t('appSubtitle')}
+                  <Typography
+                    variant="subtitle"
+                    style={{ color: colors.navy, textAlign: "center" }}
+                  >
+                    {t("appSubtitle")}
                   </Typography>
                   <View style={styles.descriptionContainer}>
-                    <Typography style={{ color: colors.navy, textAlign: "center", paddingHorizontal: 20 }}>
-                      {t('appSubtitle')}
+                    <Typography
+                      style={{
+                        color: colors.navy,
+                        textAlign: "center",
+                        paddingHorizontal: 20,
+                      }}
+                    >
+                      {t("appSubtitle")}
                     </Typography>
                   </View>
                   <View style={styles.buttonContainer}>
                     <Button
-                      label={t('startButton')}
+                      label={t("startButton")}
                       onPress={handleStartLearning}
+                      testID="welcome_start_btn"
                     />
                     <View style={{ height: ds.spacing.sm }} />
                     <Button
-                      label={t('continueLearning')}
+                      label={t("continueLearning")}
                       onPress={handleLogin}
                       variant="ghost"
+                      testID="welcome_continue_btn"
                     />
                     <View style={{ height: ds.spacing.xs }} />
                     <Button
-                      label={t('testTitle')}
+                      label={t("testTitle")}
                       onPress={handleLogin}
                       variant="ghost"
+                      testID="welcome_test_btn"
                     />
                   </View>
                 </View>
               </Col>
               <Col spanDesktop={5} spanTablet={5} spanMobile={12}>
                 <View style={styles.illustrationContainer}>
-                  <HeroPhoto uri={require("../../assets/images/hero.jpg")} width={340} height={220} />
+                  <HeroPhoto uri={require("../../assets/images/hero.png")} />
                 </View>
               </Col>
             </Row>
@@ -132,19 +151,19 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
               <Col spanDesktop={4} spanTablet={4} spanMobile={12}>
                 <Card style={styles.bottomCard}>
                   <CheckIcon />
-                  <Text style={styles.bottomLabel}>{t('testTitle')}</Text>
+                  <Text style={styles.bottomLabel}>{t("testTitle")}</Text>
                 </Card>
               </Col>
               <Col spanDesktop={4} spanTablet={4} spanMobile={12}>
                 <Card style={styles.bottomCard}>
                   <BookIcon />
-                  <Text style={styles.bottomLabel}>{t('topics')}</Text>
+                  <Text style={styles.bottomLabel}>{t("topics")}</Text>
                 </Card>
               </Col>
               <Col spanDesktop={4} spanTablet={4} spanMobile={12}>
                 <Card style={styles.bottomCard}>
                   <ChartIcon />
-                  <Text style={styles.bottomLabel}>{t('statistics')}</Text>
+                  <Text style={styles.bottomLabel}>{t("statistics")}</Text>
                 </Card>
               </Col>
             </Row>

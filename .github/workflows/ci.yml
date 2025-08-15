@@ -7,6 +7,56 @@ on:
     branches: [ main ]
 
 jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test -- --ci --reporters=default --reporters=jest-junit --coverage
+        env:
+          JEST_JUNIT_OUTPUT_DIR: ./reports/junit
+          JEST_JUNIT_OUTPUT_NAME: junit.xml
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: coverage
+
+      - name: Upload junit
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: junit
+          path: reports/junit
+
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
   build:
     runs-on: ubuntu-latest
     steps:
