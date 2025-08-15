@@ -21,7 +21,7 @@ import { TopNav } from "../ui/TopNav";
 import { CheckIcon } from "../ui/icons/CheckIcon";
 import { BookIcon } from "../ui/icons/BookIcon";
 import { ChartIcon } from "../ui/icons/ChartIcon";
-import { Teacher } from "../ui/illustrations/Teacher";
+import HeroPhoto from "../ui/HeroPhoto";
 import { Typography } from "../ui/Typography";
 import { useI18n } from "../hooks/useI18n";
 import { LanguageSwitcher } from "../ui/LanguageSwitcher";
@@ -123,7 +123,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
               </Col>
               <Col spanDesktop={5} spanTablet={5} spanMobile={12}>
                 <View style={styles.illustrationContainer}>
-                  <Teacher />
+                  <HeroPhoto uri={require("../../assets/images/hero.jpg")} width={340} height={220} />
                 </View>
               </Col>
             </Row>

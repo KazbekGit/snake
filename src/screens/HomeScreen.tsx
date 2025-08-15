@@ -41,7 +41,7 @@ import { CultureIcon } from "../ui/icons/CultureIcon";
 import { UserIcon } from "../ui/icons/UserIcon";
 import { ChartIcon } from "../ui/icons/ChartIcon";
 import { SearchIcon } from "../ui/icons/SearchIcon";
-import { Teacher } from "../ui/illustrations/Teacher";
+import HeroPhoto from "../ui/HeroPhoto";
 import { useAdvancedAnalytics } from "../hooks/useAdvancedAnalytics";
 
 interface HomeScreenProps {
@@ -248,9 +248,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               </DashboardCard>
           </Col>
           <Col spanDesktop={5} spanTablet={5} spanMobile={12}>
-            {/* Teacher Illustration */}
+            {/* Hero Photo (Social studies themed) */}
             <View style={styles.illustrationContainer}>
-              <Teacher />
+              <HeroPhoto uri={require("../../assets/images/hero.jpg")} width={320} height={220} />
             </View>
           </Col>
         </Row>
