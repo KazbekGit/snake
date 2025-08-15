@@ -1,0 +1,39 @@
+appId: com.socialstudies.app
+env:
+  DELAY: 1000
+  SWIPE_DURATION: 800
+
+flows:
+  # Тестирование изучения темы
+  - launchApp: {}
+  - tapOn: "Начать"
+  - tapOn: "9 класс"
+  - tapOn: "Подготовка к ОГЭ"
+  - tapOn: "Экономика"
+  - tapOn: "Начать изучение"
+  
+  # Проверка элементов темы
+  - assertVisible: "Деньги"
+  - assertVisible: "Изучаем природу денег"
+  - assertVisible: "Начать изучение"
+  - assertVisible: "Сбросить прогресс"
+  
+  # Проверка блоков контента
+  - assertVisible: "Определение"
+  - assertVisible: "Деньги — это"
+  - swipe: { from: { x: 300, y: 800 }, to: { x: 300, y: 200 }, duration: 800 }
+  - tapOn: "Следующий блок"
+  
+  - assertVisible: "Функции"
+  - assertVisible: "Функции денег"
+  - swipe: { from: { x: 300, y: 800 }, to: { x: 300, y: 200 }, duration: 800 }
+  - tapOn: "Следующий блок"
+  
+  - assertVisible: "Виды"
+  - assertVisible: "Виды денег"
+  - swipe: { from: { x: 300, y: 800 }, to: { x: 300, y: 200 }, duration: 800 }
+  - tapOn: "Следующий блок"
+  
+  - assertVisible: "Итоги"
+  - assertVisible: "Что мы узнали"
+  - tapOn: "Перейти к тесту"

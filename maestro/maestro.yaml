@@ -1,0 +1,41 @@
+# Maestro Configuration
+appId: com.socialstudies.app
+name: Social Studies E2E Tests
+
+# Environment variables
+env:
+  DELAY: 1000
+  SWIPE_DURATION: 800
+  TIMEOUT: 10000
+
+# Test configuration
+config:
+  # Screenshots
+  takeScreenshotOnFailure: true
+  takeScreenshotOnSuccess: false
+  
+  # Video recording
+  recordVideo: true
+  videoQuality: medium
+  
+  # Test reports
+  format: junit
+  output: maestro-reports
+  
+  # Retry configuration
+  retryCount: 2
+  retryDelay: 2000
+  
+# Device configuration
+device:
+  type: android
+  name: Pixel_4_API_30
+  
+# Flows to run
+flows:
+  - main: maestro/flow.yaml
+  - welcome: maestro/flows/welcome-flow.yaml
+  - home: maestro/flows/home-flow.yaml
+  - topic: maestro/flows/topic-flow.yaml
+  - test: maestro/flows/test-flow.yaml
+  - statistics: maestro/flows/statistics-flow.yaml

@@ -9,7 +9,16 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "e2e": "bash scripts/e2e.sh",
+    "e2e:main": "maestro test maestro/flow.yaml",
+    "e2e:welcome": "maestro test maestro/flows/welcome-flow.yaml",
+    "e2e:home": "maestro test maestro/flows/home-flow.yaml",
+    "e2e:topic": "maestro test maestro/flows/topic-flow.yaml",
+    "e2e:test": "maestro test maestro/flows/test-flow.yaml",
+    "e2e:statistics": "maestro test maestro/flows/statistics-flow.yaml"
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",

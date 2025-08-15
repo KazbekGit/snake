@@ -1,0 +1,35 @@
+appId: com.socialstudies.app
+env:
+  DELAY: 1000
+
+flows:
+  # Тестирование прохождения тестов
+  - launchApp: {}
+  - tapOn: "Начать"
+  - tapOn: "9 класс"
+  - tapOn: "Подготовка к ОГЭ"
+  - tapOn: "Экономика"
+  - tapOn: "Начать изучение"
+  
+  # Проходим все блоки до теста
+  - tapOn: "Следующий блок"
+  - tapOn: "Следующий блок"
+  - tapOn: "Следующий блок"
+  - tapOn: "Перейти к тесту"
+  
+  # Прохождение теста
+  - assertVisible: "Проверь понимание"
+  - assertVisible: "Деньги — это?"
+  - assertVisible: "Эквивалент"
+  - assertVisible: "Товар"
+  
+  # Выбираем правильный ответ
+  - tapOn: "Эквивалент"
+  - assertVisible: "Правильно!"
+  - assertVisible: "Рынок — это не просто место"
+  - tapOn: "Продолжить"
+  
+  # Проверяем результаты
+  - assertVisible: "Результаты теста"
+  - assertVisible: "Правильных ответов"
+  - assertVisible: "Продолжить изучение"
