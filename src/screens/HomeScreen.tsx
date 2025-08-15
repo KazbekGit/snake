@@ -26,8 +26,8 @@ import { Section } from "../types";
 import { RootStackParamList } from "../navigation/AppNavigator";
 import { SECTIONS, SECTION_COLORS } from "../constants/sections";
 import { mockUserProgress, moneyTopic } from "../data";
-import { getTopicWithCache } from "../content/loader";
-import { getTopicFallback } from "../content/index";
+import { contentLoader } from "../content/loader";
+import { getTopicFallback, getTopicsBySection } from "../content/index";
 import { Container, Row, Col } from "../ui/Grid";
 import { TopNav } from "../ui/TopNav";
 import { PersonIcon } from "../ui/icons/PersonIcon";
@@ -119,36 +119,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   ]);
 
   const handleSectionPress = async (section: Section) => {
-    // Для демо-версии используем тему "Деньги"
-    const fallback = getTopicFallback("money") || {
-      id: "money",
-      sectionId: section.id,
-      title: "Деньги",
-      description: "Изучаем природу денег, их функции и роль в экономике",
-      coverImage:
-        "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800",
-      order: 1,
-      gradeLevel: 9,
-      isPremium: false,
-      contentBlocks: moneyTopic.contentBlocks,
-      quiz: moneyTopic.quiz,
-      isCompleted: false,
-      progress: 0,
-      bestScore: 0,
-      totalBlocks: moneyTopic.contentBlocks.length,
-      completedBlocks: 0,
-      estimatedTime: 20,
-      difficulty: "medium",
-      learningObjectives: [
-        "Понять что такое деньги и их роль в экономике",
-        "Изучить 5 основных функций денег",
-        "Различать виды денег и их особенности",
-      ],
-    };
-
-    const loaded = await getTopicWithCache("money", fallback as any);
-
-    navigation.navigate("Topic", { topic: loaded as any });
+    // Получаем первую доступную тему для секции
+    const sectionTopics = getTopicsBySection(section.id);
+    const topicId = sectionTopics.length > 0 ? sectionTopics[0].id : "money";
+    
+    try {
+      const loaded = await contentLoader.loadTopic(topicId);
+      navigation.navigate("Topic", { topic: loaded as any });
+    } catch (error) {
+      console.error("Failed to load topic:", error);
+      // Fallback на тему "Деньги"
+      const fallback = getTopicFallback("money");
+      if (fallback) {
+        navigation.navigate("Topic", { topic: fallback as any });
+      }
+    }
   };
 
   const handleProfilePress = () => {
@@ -169,33 +154,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       getLastStudiedTopicIdFromUserProgress(userProgress) || "money";
     const progress = await getTopicProgress(lastTopicId);
     const blockIndex = computeStartBlockIndex(progress);
-    const fallback = getTopicFallback(lastTopicId) || {
-      id: lastTopicId,
-      sectionId: "economy",
-      title: "Деньги",
-      description: "Изучаем природу денег, их функции и роль в экономике",
-      coverImage:
-        "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800",
-      order: 1,
-      gradeLevel: 9,
-      isPremium: false,
-      contentBlocks: moneyTopic.contentBlocks,
-      quiz: moneyTopic.quiz,
-      isCompleted: false,
-      progress: 0,
-      bestScore: 0,
-      totalBlocks: moneyTopic.contentBlocks.length,
-      completedBlocks: 0,
-      estimatedTime: 20,
-      difficulty: "medium",
-      learningObjectives: [
-        "Понять что такое деньги и их роль в экономике",
-        "Изучить 5 основных функций денег",
-        "Различать виды денег и их особенности",
-      ],
-    };
-    const loaded = await getTopicWithCache(lastTopicId, fallback as any);
-    navigation.navigate("TheoryBlock", { topic: loaded as any, blockIndex });
+    
+    try {
+      const loaded = await contentLoader.loadTopic(lastTopicId);
+      navigation.navigate("TheoryBlock", { topic: loaded as any, blockIndex });
+    } catch (error) {
+      console.error("Failed to load topic:", error);
+      // Fallback на тему "Деньги"
+      const fallback = getTopicFallback("money");
+      if (fallback) {
+        navigation.navigate("TheoryBlock", { topic: fallback as any, blockIndex });
+      }
+    }
   };
 
   return (
