@@ -43,6 +43,7 @@ import { ChartIcon } from "../ui/icons/ChartIcon";
 import { SearchIcon } from "../ui/icons/SearchIcon";
 import HeroPhoto from "../ui/HeroPhoto";
 import { useAdvancedAnalytics } from "../hooks/useAdvancedAnalytics";
+import { useAppTheme } from "../theme/ThemeProvider";
 
 interface HomeScreenProps {
   navigation: NavigationProp<RootStackParamList, "Home">;
@@ -52,6 +53,7 @@ interface HomeScreenProps {
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { getProfile, getHighPriorityRecommendations } = useAdvancedAnalytics();
+  const { mode } = useAppTheme();
   const bp = useBreakpoint();
   const heroSize = bp === "desktop" ? 400 : bp === "tablet" ? 320 : 260;
 
@@ -173,7 +175,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+      <StatusBar
+        barStyle={mode === "dark" ? "light-content" : "dark-content"}
+        backgroundColor={colors.background}
+      />
       <Container>
         <TopNav />
         <Row style={{ marginTop: ds.spacing.xl }}>
@@ -193,7 +198,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                       size={14}
                       color={colors.primary}
                     />
-                    <Text style={styles.chipText}>{t("sectionsList.economy")}</Text>
+                    <Text style={styles.chipText}>
+                      {t("sectionsList.economy")}
+                    </Text>
                   </View>
                   <View
                     style={[

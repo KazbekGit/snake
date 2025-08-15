@@ -8,6 +8,7 @@ import {
   Dimensions,
   Image,
   Alert,
+  StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -40,6 +41,7 @@ import {
 } from "../utils/progressStorage";
 import { logEvent } from "../utils/analytics";
 import { t } from "../i18n";
+import { useAppTheme } from "../theme/ThemeProvider";
 
 const { width, height } = Dimensions.get("window");
 
@@ -57,6 +59,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
   route,
 }) => {
   const { topic } = route.params;
+  const { mode } = useAppTheme();
   const [topicProgress, setTopicProgress] = useState<TopicProgress | null>(
     null
   );
@@ -231,6 +234,11 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
       <LinearGradient
         colors={[...colors.gradients.primary]}
         style={styles.background}
@@ -239,252 +247,261 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
           <TopNav />
         </Container>
         <View style={{ paddingTop: ds.spacing.lg }}>
-        {/** derive safe completed blocks for UI conditions */}
-        {(() => {
-          const _ = topicProgress?.completedBlocks ?? 0;
-          return null;
-        })()}
-        {/* Header */}
-        <Animated.View style={[styles.header, headerAnimatedStyle]}>
-          <TouchableOpacity
-            onPress={handleBack}
-            accessibilityRole="button"
-            accessibilityLabel="Назад"
-            style={styles.backButton}
-            testID="back-button"
-          >
-            <Ionicons name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
+          {/** derive safe completed blocks for UI conditions */}
+          {(() => {
+            const _ = topicProgress?.completedBlocks ?? 0;
+            return null;
+          })()}
+          {/* Header */}
+          <Animated.View style={[styles.header, headerAnimatedStyle]}>
+            <TouchableOpacity
+              onPress={handleBack}
+              accessibilityRole="button"
+              accessibilityLabel="Назад"
+              style={styles.backButton}
+              testID="back-button"
+            >
+              <Ionicons name="arrow-back" size={24} color="white" />
+            </TouchableOpacity>
 
-          <View style={styles.headerInfo}>
-            <Typography variant="caption" style={styles.sectionName}>
-              Экономика
-            </Typography>
-            <Typography variant="title" style={styles.topicTitle}>
-              {currentTopic.title}
-            </Typography>
-          </View>
+            <View style={styles.headerInfo}>
+              <Typography variant="caption" style={styles.sectionName}>
+                Экономика
+              </Typography>
+              <Typography variant="title" style={styles.topicTitle}>
+                {currentTopic.title}
+              </Typography>
+            </View>
 
-          <TouchableOpacity style={styles.menuButton}>
-            <Ionicons name="ellipsis-vertical" size={24} color="white" />
-          </TouchableOpacity>
-        </Animated.View>
-
-        <ScrollView
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
-          {/* Cover Image */}
-          <Animated.View style={[styles.imageContainer, imageAnimatedStyle]}>
-            <Image
-              source={{ uri: coverUri || currentTopic.coverImage }}
-              style={styles.coverImage}
-              resizeMode="cover"
-              accessible
-              accessibilityLabel={`Обложка темы ${currentTopic.title}`}
-            />
-            <LinearGradient
-              colors={["transparent", "rgba(0,0,0,0.7)"]}
-              style={styles.imageOverlay}
-            />
+            <TouchableOpacity style={styles.menuButton}>
+              <Ionicons name="ellipsis-vertical" size={24} color="white" />
+            </TouchableOpacity>
           </Animated.View>
 
-          {/* Content */}
-          <Animated.View style={[styles.content, contentAnimatedStyle]}>
-            {/* Description */}
-            <View style={styles.descriptionContainer}>
-              <Typography variant="body" style={styles.description}>
-                {currentTopic.description}
-              </Typography>
-            </View>
-
-            {/* Learning Objectives */}
-            <View style={styles.objectivesContainer}>
-              <Typography variant="subtitle" style={styles.objectivesTitle}>
-                Что ты узнаешь:
-              </Typography>
-              {currentTopic.learningObjectives?.map((objective, index) => (
-                <View key={index} style={styles.objectiveItem}>
-                  <View style={styles.objectiveIcon}>
-                    <Ionicons
-                      name="checkmark-circle"
-                      size={20}
-                      color={colors.success}
-                    />
-                  </View>
-                  <Typography variant="body" style={styles.objectiveText}>
-                    {objective}
-                  </Typography>
-                </View>
-              ))}
-            </View>
-
-            {/* Topic Info Cards */}
-            <Row style={styles.infoCardsContainer}>
-              <Col spanMobile={4}>
-                <View style={styles.infoCard}>
-                  <TimeIcon size={24} color={colors.primary} />
-                  <Typography variant="button" style={styles.infoCardValue}>
-                    {currentTopic.estimatedTime || 15} мин
-                  </Typography>
-                  <Typography variant="caption" style={styles.infoCardLabel}>
-                    Время изучения
-                  </Typography>
-                </View>
-              </Col>
-              <Col spanMobile={4}>
-                <View style={styles.infoCard}>
-                  <LayersIcon size={24} color={colors.primary} />
-                  <Typography variant="button" style={styles.infoCardValue}>
-                    {currentTopic.totalBlocks ||
-                      currentTopic.contentBlocks?.length ||
-                      4}
-                  </Typography>
-                  <Typography variant="caption" style={styles.infoCardLabel}>
-                    Блоков теории
-                  </Typography>
-                </View>
-              </Col>
-              <Col spanMobile={4}>
-                <View style={styles.infoCard}>
-                  <StarOutlineIcon size={24} color={colors.primary} />
-                  <Typography variant="button" style={styles.infoCardValue}>
-                    {getDifficultyText(currentTopic.difficulty || "medium")}
-                  </Typography>
-                  <Typography variant="caption" style={styles.infoCardLabel}>
-                    Сложность
-                  </Typography>
-                </View>
-              </Col>
-            </Row>
-
-            {/* Difficulty Badge */}
-            <View style={styles.difficultyContainer}>
-              <View
-                style={[
-                  styles.difficultyBadge,
-                  {
-                    backgroundColor: getDifficultyColor(
-                      currentTopic.difficulty || "medium"
-                    ),
-                  },
-                ]}
-              >
-                <Typography variant="button" style={styles.difficultyBadgeText}>
-                  {getDifficultyText(currentTopic.difficulty || "medium")}
-                </Typography>
-              </View>
-            </View>
-
-            {/* Progress Indicator */}
-            <View style={styles.progressContainer}>
-              <View style={styles.progressHeader}>
-                <Typography variant="body" style={styles.progressText}>
-                  Прогресс изучения
-                </Typography>
-                <Typography variant="button" style={styles.progressPercentage}>
-                  {Math.round(
-                    ((topicProgress?.completedBlocks ?? 0) /
-                      Math.max(
-                        currentTopic.totalBlocks ||
-                          currentTopic.contentBlocks?.length ||
-                          1,
-                        1
-                      ) || 0) * 100
-                  )}
-                  %
-                </Typography>
-              </View>
-              <View style={styles.progressBar}>
-                <View
-                  style={[
-                    styles.progressFill,
-                    {
-                      width: `${Math.round(
-                        ((topicProgress?.completedBlocks ?? 0) /
-                          Math.max(
-                            currentTopic.totalBlocks ||
-                              currentTopic.contentBlocks?.length ||
-                              1,
-                            1
-                          ) || 0) * 100
-                      )}%`,
-                      backgroundColor: colors.primary,
-                    },
-                  ]}
-                />
-              </View>
-            </View>
-
-            {/* Start Button */}
-            <Animated.View
-              style={[styles.buttonContainer, buttonAnimatedStyle]}
-            >
-              <TouchableOpacity
-                style={styles.startButton}
-                onPress={handleStartLearning}
-                activeOpacity={0.8}
-                testID="start-learning-button"
-                accessibilityRole="button"
-                accessibilityLabel={
-                  (topicProgress?.completedBlocks ?? 0) > 0
-                    ? "Продолжить изучение"
-                    : "Начать изучение"
-                }
-              >
-                <LinearGradient
-                  colors={[...colors.gradients.primary]}
-                  style={styles.startButtonGradient}
-                  pointerEvents="none"
-                >
-                  <Ionicons name="play" size={24} color="white" />
-                  <Typography variant="button" style={styles.startButtonText}>
-                    {(topicProgress?.completedBlocks ?? 0) > 0
-                      ? "Продолжить изучение"
-                      : "Начать изучение"}
-                  </Typography>
-                </LinearGradient>
-              </TouchableOpacity>
-
-              {/* Подсказка под кнопкой */}
-              <Typography variant="caption" style={styles.buttonHint}>
-                {(topicProgress?.completedBlocks ?? 0) > 0
-                  ? `Продолжить с блока ${
-                      (topicProgress?.lastBlockIndex ?? 0) + 1
-                    }`
-                  : "Начать изучение темы с первого блока"}
-              </Typography>
-
-              {/* Reset progress */}
-              {topicProgress && (
-                <TouchableOpacity
-                  onPress={confirmResetProgress}
-                  style={styles.resetButton}
-                  testID="reset-progress-button"
-                >
-                  <Typography variant="caption" style={styles.resetButtonText}>
-                    Сбросить прогресс
-                  </Typography>
-                </TouchableOpacity>
-              )}
+          <ScrollView
+            style={styles.scrollView}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+          >
+            {/* Cover Image */}
+            <Animated.View style={[styles.imageContainer, imageAnimatedStyle]}>
+              <Image
+                source={{ uri: coverUri || currentTopic.coverImage }}
+                style={styles.coverImage}
+                resizeMode="cover"
+                accessible
+                accessibilityLabel={`Обложка темы ${currentTopic.title}`}
+              />
+              <LinearGradient
+                colors={["transparent", "rgba(0,0,0,0.7)"]}
+                style={styles.imageOverlay}
+              />
             </Animated.View>
 
-            {/* Premium Badge (if applicable) */}
-            {currentTopic.isPremium && (
-              <View style={styles.premiumBadge}>
-                <Ionicons
-                  name="star-outline"
-                  size={16}
-                  color={colors.premium}
-                />
-                <Typography variant="body" style={styles.premiumText}>
-                  Premium контент
+            {/* Content */}
+            <Animated.View style={[styles.content, contentAnimatedStyle]}>
+              {/* Description */}
+              <View style={styles.descriptionContainer}>
+                <Typography variant="body" style={styles.description}>
+                  {currentTopic.description}
                 </Typography>
               </View>
-            )}
-          </Animated.View>
-        </ScrollView>
+
+              {/* Learning Objectives */}
+              <View style={styles.objectivesContainer}>
+                <Typography variant="subtitle" style={styles.objectivesTitle}>
+                  Что ты узнаешь:
+                </Typography>
+                {currentTopic.learningObjectives?.map((objective, index) => (
+                  <View key={index} style={styles.objectiveItem}>
+                    <View style={styles.objectiveIcon}>
+                      <Ionicons
+                        name="checkmark-circle"
+                        size={20}
+                        color={colors.success}
+                      />
+                    </View>
+                    <Typography variant="body" style={styles.objectiveText}>
+                      {objective}
+                    </Typography>
+                  </View>
+                ))}
+              </View>
+
+              {/* Topic Info Cards */}
+              <Row style={styles.infoCardsContainer}>
+                <Col spanMobile={4}>
+                  <View style={styles.infoCard}>
+                    <TimeIcon size={24} color={colors.primary} />
+                    <Typography variant="button" style={styles.infoCardValue}>
+                      {currentTopic.estimatedTime || 15} мин
+                    </Typography>
+                    <Typography variant="caption" style={styles.infoCardLabel}>
+                      Время изучения
+                    </Typography>
+                  </View>
+                </Col>
+                <Col spanMobile={4}>
+                  <View style={styles.infoCard}>
+                    <LayersIcon size={24} color={colors.primary} />
+                    <Typography variant="button" style={styles.infoCardValue}>
+                      {currentTopic.totalBlocks ||
+                        currentTopic.contentBlocks?.length ||
+                        4}
+                    </Typography>
+                    <Typography variant="caption" style={styles.infoCardLabel}>
+                      Блоков теории
+                    </Typography>
+                  </View>
+                </Col>
+                <Col spanMobile={4}>
+                  <View style={styles.infoCard}>
+                    <StarOutlineIcon size={24} color={colors.primary} />
+                    <Typography variant="button" style={styles.infoCardValue}>
+                      {getDifficultyText(currentTopic.difficulty || "medium")}
+                    </Typography>
+                    <Typography variant="caption" style={styles.infoCardLabel}>
+                      Сложность
+                    </Typography>
+                  </View>
+                </Col>
+              </Row>
+
+              {/* Difficulty Badge */}
+              <View style={styles.difficultyContainer}>
+                <View
+                  style={[
+                    styles.difficultyBadge,
+                    {
+                      backgroundColor: getDifficultyColor(
+                        currentTopic.difficulty || "medium"
+                      ),
+                    },
+                  ]}
+                >
+                  <Typography
+                    variant="button"
+                    style={styles.difficultyBadgeText}
+                  >
+                    {getDifficultyText(currentTopic.difficulty || "medium")}
+                  </Typography>
+                </View>
+              </View>
+
+              {/* Progress Indicator */}
+              <View style={styles.progressContainer}>
+                <View style={styles.progressHeader}>
+                  <Typography variant="body" style={styles.progressText}>
+                    Прогресс изучения
+                  </Typography>
+                  <Typography
+                    variant="button"
+                    style={styles.progressPercentage}
+                  >
+                    {Math.round(
+                      ((topicProgress?.completedBlocks ?? 0) /
+                        Math.max(
+                          currentTopic.totalBlocks ||
+                            currentTopic.contentBlocks?.length ||
+                            1,
+                          1
+                        ) || 0) * 100
+                    )}
+                    %
+                  </Typography>
+                </View>
+                <View style={styles.progressBar}>
+                  <View
+                    style={[
+                      styles.progressFill,
+                      {
+                        width: `${Math.round(
+                          ((topicProgress?.completedBlocks ?? 0) /
+                            Math.max(
+                              currentTopic.totalBlocks ||
+                                currentTopic.contentBlocks?.length ||
+                                1,
+                              1
+                            ) || 0) * 100
+                        )}%`,
+                        backgroundColor: colors.primary,
+                      },
+                    ]}
+                  />
+                </View>
+              </View>
+
+              {/* Start Button */}
+              <Animated.View
+                style={[styles.buttonContainer, buttonAnimatedStyle]}
+              >
+                <TouchableOpacity
+                  style={styles.startButton}
+                  onPress={handleStartLearning}
+                  activeOpacity={0.8}
+                  testID="start-learning-button"
+                  accessibilityRole="button"
+                  accessibilityLabel={
+                    (topicProgress?.completedBlocks ?? 0) > 0
+                      ? "Продолжить изучение"
+                      : "Начать изучение"
+                  }
+                >
+                  <LinearGradient
+                    colors={[...colors.gradients.primary]}
+                    style={styles.startButtonGradient}
+                    pointerEvents="none"
+                  >
+                    <Ionicons name="play" size={24} color="white" />
+                    <Typography variant="button" style={styles.startButtonText}>
+                      {(topicProgress?.completedBlocks ?? 0) > 0
+                        ? "Продолжить изучение"
+                        : "Начать изучение"}
+                    </Typography>
+                  </LinearGradient>
+                </TouchableOpacity>
+
+                {/* Подсказка под кнопкой */}
+                <Typography variant="caption" style={styles.buttonHint}>
+                  {(topicProgress?.completedBlocks ?? 0) > 0
+                    ? `Продолжить с блока ${
+                        (topicProgress?.lastBlockIndex ?? 0) + 1
+                      }`
+                    : "Начать изучение темы с первого блока"}
+                </Typography>
+
+                {/* Reset progress */}
+                {topicProgress && (
+                  <TouchableOpacity
+                    onPress={confirmResetProgress}
+                    style={styles.resetButton}
+                    testID="reset-progress-button"
+                  >
+                    <Typography
+                      variant="caption"
+                      style={styles.resetButtonText}
+                    >
+                      Сбросить прогресс
+                    </Typography>
+                  </TouchableOpacity>
+                )}
+              </Animated.View>
+
+              {/* Premium Badge (if applicable) */}
+              {currentTopic.isPremium && (
+                <View style={styles.premiumBadge}>
+                  <Ionicons
+                    name="star-outline"
+                    size={16}
+                    color={colors.premium}
+                  />
+                  <Typography variant="body" style={styles.premiumText}>
+                    Premium контент
+                  </Typography>
+                </View>
+              )}
+            </Animated.View>
+          </ScrollView>
         </View>
       </LinearGradient>
     </SafeAreaView>

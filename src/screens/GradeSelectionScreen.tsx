@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  StatusBar,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,6 +14,7 @@ import { ds } from "../ui/theme";
 import { colors } from "../constants/colors";
 import { NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/AppNavigator";
+import { useAppTheme } from "../theme/ThemeProvider";
 
 const { width } = Dimensions.get("window");
 
@@ -54,6 +56,7 @@ const GRADES = [
 export const GradeSelectionScreen: React.FC<GradeSelectionScreenProps> = ({
   navigation,
 }) => {
+  const { mode } = useAppTheme();
   const [selectedGrade, setSelectedGrade] = useState<number | null>(null);
 
   const handleGradeSelect = (grade: number) => {
@@ -66,6 +69,11 @@ export const GradeSelectionScreen: React.FC<GradeSelectionScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
       <LinearGradient
         colors={[...colors.gradients.primary]}
         style={styles.gradient}

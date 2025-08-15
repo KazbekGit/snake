@@ -10,13 +10,28 @@ interface Props extends TextProps {
   color?: string;
 }
 
-export const Typography: React.FC<Props> = ({ variant = "body", color = colors.text, style, children, ...rest }) => {
+export const Typography: React.FC<Props> = ({
+  variant = "body",
+  color = ds.colors.text,
+  style,
+  children,
+  ...rest
+}) => {
   const v = ds.typography[variant];
   return (
-    <Text {...rest} style={[{ color, fontSize: v.fontSize, lineHeight: v.lineHeight, fontWeight: v.fontWeight }, style]}>
+    <Text
+      {...rest}
+      style={[
+        {
+          color,
+          fontSize: v.fontSize,
+          lineHeight: v.lineHeight,
+          fontWeight: v.fontWeight,
+        },
+        style,
+      ]}
+    >
       {children}
     </Text>
   );
 };
-
-

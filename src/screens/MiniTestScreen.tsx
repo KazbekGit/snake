@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
+  StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -31,6 +32,7 @@ import { moneyTopic } from "../data";
 import { saveTestResult } from "../utils/progressStorage";
 import { logEvent } from "../utils/analytics";
 import { useAdvancedAnalytics } from "../hooks/useAdvancedAnalytics";
+import { useAppTheme } from "../theme/ThemeProvider";
 import { useThrottle } from "../hooks/useThrottle";
 
 const { width, height } = Dimensions.get("window");
@@ -45,7 +47,9 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
   route,
 }) => {
   const { topic, blockId } = route.params;
-  const { startTestAttempt, addQuestionAttempt, completeTestAttempt } = useAdvancedAnalytics();
+  const { mode } = useAppTheme();
+  const { startTestAttempt, addQuestionAttempt, completeTestAttempt } =
+    useAdvancedAnalytics();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -83,7 +87,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
         try {
           await startTestAttempt(topic.id);
         } catch (error) {
-          console.error('Failed to start test attempt:', error);
+          console.error("Failed to start test attempt:", error);
         }
       })();
     }
@@ -173,16 +177,18 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
       const selectedOptionId = currentQuestion.options?.[answers[0]]?.id;
       const correctAnswerId = currentQuestion.correctAnswer;
       const timeSpent = 5000; // TODO: Реальное время ответа
-      
+
       await addQuestionAttempt(
         currentQuestion.id || `question_${currentQuestionIndex}`,
-        selectedOptionId || '',
-        Array.isArray(correctAnswerId) ? correctAnswerId[0] || '' : correctAnswerId || '',
+        selectedOptionId || "",
+        Array.isArray(correctAnswerId)
+          ? correctAnswerId[0] || ""
+          : correctAnswerId || "",
         timeSpent,
         0 // hintsUsed
       );
     } catch (error) {
-      console.error('Failed to add question attempt:', error);
+      console.error("Failed to add question attempt:", error);
     }
 
     setShowExplanation(true);
@@ -232,7 +238,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
     try {
       await completeTestAttempt();
     } catch (error) {
-      console.error('Failed to complete test attempt:', error);
+      console.error("Failed to complete test attempt:", error);
     }
 
     setTestCompleted(true);
@@ -465,6 +471,11 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
   if (testCompleted) {
     return (
       <SafeAreaView style={styles.container}>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="transparent"
+          translucent
+        />
         <LinearGradient
           colors={[...colors.gradients.primary]}
           style={styles.background}
@@ -511,6 +522,11 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
       <LinearGradient
         colors={[...colors.gradients.primary]}
         style={styles.background}

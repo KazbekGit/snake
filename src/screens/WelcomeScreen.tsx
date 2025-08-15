@@ -7,6 +7,7 @@ import {
   Dimensions,
   Animated,
   Image,
+  StatusBar,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,6 +26,7 @@ import HeroPhoto from "../ui/HeroPhoto";
 import { Typography } from "../ui/Typography";
 import { useI18n } from "../hooks/useI18n";
 import { LanguageSwitcher } from "../ui/LanguageSwitcher";
+import { useAppTheme } from "../theme/ThemeProvider";
 
 const { width, height } = Dimensions.get("window");
 
@@ -34,6 +36,7 @@ interface WelcomeScreenProps {
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
   const { t } = useI18n();
+  const { mode } = useAppTheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
@@ -70,6 +73,11 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar
+        barStyle={mode === "dark" ? "light-content" : "dark-content"}
+        backgroundColor="transparent"
+        translucent
+      />
       <View style={styles.gradient}>
         <Container>
           <TopNav>

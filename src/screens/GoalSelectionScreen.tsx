@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  StatusBar,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Typography } from "../ui/Typography";
@@ -7,6 +13,7 @@ import { ds } from "../ui/theme";
 import { colors } from "../constants/colors";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/AppNavigator";
+import { useAppTheme } from "../theme/ThemeProvider";
 import { LEARNING_GOALS } from "../constants/sections";
 
 interface GoalSelectionScreenProps {
@@ -61,6 +68,7 @@ export const GoalSelectionScreen: React.FC<GoalSelectionScreenProps> = ({
   route,
 }) => {
   const { grade } = route.params;
+  const { mode } = useAppTheme();
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
 
   const handleGoalSelect = (goalId: string) => {
@@ -75,6 +83,11 @@ export const GoalSelectionScreen: React.FC<GoalSelectionScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
       <LinearGradient
         colors={[...colors.gradients.primary]}
         style={styles.gradient}

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
+  StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -30,6 +31,7 @@ import { markBlockCompleted, addStudyTime } from "../utils/progressStorage";
 import { logEvent } from "../utils/analytics";
 import { useAdvancedAnalytics } from "../hooks/useAdvancedAnalytics";
 import { getCachedUri } from "../utils/imageCache";
+import { useAppTheme } from "../theme/ThemeProvider";
 
 const { width, height } = Dimensions.get("window");
 
@@ -48,7 +50,9 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
   route,
 }) => {
   const { topic, blockIndex = 0 } = route.params;
-  const { startStudySession, endStudySession, addInteraction } = useAdvancedAnalytics();
+  const { mode } = useAppTheme();
+  const { startStudySession, endStudySession, addInteraction } =
+    useAdvancedAnalytics();
   const [currentBlockIndex, setCurrentBlockIndex] = useState(blockIndex);
   const [studyStartTime, setStudyStartTime] = useState<number>(Date.now());
   const [mediaUri, setMediaUri] = useState<string | null>(null);
@@ -109,11 +113,14 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
       try {
         await startStudySession(currentTopic.id);
         await addInteraction({
-          type: 'block_view',
-          data: { blockIndex: currentBlockIndex, blockTitle: currentBlock.title }
+          type: "block_view",
+          data: {
+            blockIndex: currentBlockIndex,
+            blockTitle: currentBlock.title,
+          },
         });
       } catch (error) {
-        console.error('Failed to start study session:', error);
+        console.error("Failed to start study session:", error);
       }
     })();
 
@@ -161,15 +168,15 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
     // Записываем взаимодействие с блоком
     try {
       await addInteraction({
-        type: 'block_complete',
-        data: { 
-          blockIndex: currentBlockIndex, 
+        type: "block_complete",
+        data: {
+          blockIndex: currentBlockIndex,
           blockTitle: currentBlock.title,
-          timeSpent: Date.now() - studyStartTime
-        }
+          timeSpent: Date.now() - studyStartTime,
+        },
       });
     } catch (error) {
-      console.error('Failed to add interaction:', error);
+      console.error("Failed to add interaction:", error);
     }
 
     if (currentBlockIndex < totalBlocks - 1) {
@@ -185,7 +192,7 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
       try {
         await endStudySession(currentBlockIndex + 1, totalBlocks);
       } catch (error) {
-        console.error('Failed to end study session:', error);
+        console.error("Failed to end study session:", error);
       }
 
       // Переходим к тесту
@@ -305,6 +312,11 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
       <LinearGradient
         colors={[...colors.gradients.primary]}
         style={styles.background}

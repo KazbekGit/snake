@@ -1,21 +1,31 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAdvancedAnalytics } from '../hooks/useAdvancedAnalytics';
-import { useI18n } from '../hooks/useI18n';
-import { ds } from '../ui/theme';
-import { Typography } from '../ui/Typography';
-import { TopNav } from '../ui/TopNav';
-import { Container, Row, Col } from '../ui/Grid';
-import { RecommendationCard } from '../ui/RecommendationCard';
-import { AdvancedStatsCard } from '../ui/AdvancedStatsCard';
-import { Button } from '../ui/Button';
-import { ChartIcon } from '../ui/icons/ChartIcon';
-import { LightbulbIcon } from '../ui/icons/LightbulbIcon';
-import { SettingsIcon } from '../ui/icons/SettingsIcon';
+import React, { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+  Alert,
+  StatusBar,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useAdvancedAnalytics } from "../hooks/useAdvancedAnalytics";
+import { useI18n } from "../hooks/useI18n";
+import { useAppTheme } from "../theme/ThemeProvider";
+import { ds } from "../ui/theme";
+import { Typography } from "../ui/Typography";
+import { TopNav } from "../ui/TopNav";
+import { Container, Row, Col } from "../ui/Grid";
+import { RecommendationCard } from "../ui/RecommendationCard";
+import { AdvancedStatsCard } from "../ui/AdvancedStatsCard";
+import { Button } from "../ui/Button";
+import { ChartIcon } from "../ui/icons/ChartIcon";
+import { LightbulbIcon } from "../ui/icons/LightbulbIcon";
+import { SettingsIcon } from "../ui/icons/SettingsIcon";
 
 export const AdvancedAnalyticsScreen: React.FC = () => {
   const { t } = useI18n();
+  const { mode } = useAppTheme();
   const {
     isLoading,
     getProfile,
@@ -27,10 +37,12 @@ export const AdvancedAnalyticsScreen: React.FC = () => {
     getStreakEmoji,
     getScoreColor,
     clearAllData,
-    loadAnalyticsData
+    loadAnalyticsData,
   } = useAdvancedAnalytics();
 
-  const [activeTab, setActiveTab] = useState<'stats' | 'recommendations'>('stats');
+  const [activeTab, setActiveTab] = useState<"stats" | "recommendations">(
+    "stats"
+  );
 
   const profile = getProfile();
   const recommendations = getRecommendations();
@@ -39,33 +51,31 @@ export const AdvancedAnalyticsScreen: React.FC = () => {
 
   const handleClearData = () => {
     Alert.alert(
-      'Очистить данные',
-      'Вы уверены, что хотите удалить все данные аналитики? Это действие нельзя отменить.',
+      "Очистить данные",
+      "Вы уверены, что хотите удалить все данные аналитики? Это действие нельзя отменить.",
       [
-        { text: 'Отмена', style: 'cancel' },
+        { text: "Отмена", style: "cancel" },
         {
-          text: 'Удалить',
-          style: 'destructive',
+          text: "Удалить",
+          style: "destructive",
           onPress: async () => {
             try {
               await clearAllData();
-              Alert.alert('Успешно', 'Все данные аналитики удалены');
+              Alert.alert("Успешно", "Все данные аналитики удалены");
             } catch (error) {
-              Alert.alert('Ошибка', 'Не удалось удалить данные');
+              Alert.alert("Ошибка", "Не удалось удалить данные");
             }
-          }
-        }
+          },
+        },
       ]
     );
   };
 
   const handleRecommendationPress = (recommendation: any) => {
     // TODO: Навигация к соответствующей теме или действию
-    Alert.alert(
-      recommendation.title,
-      recommendation.description,
-      [{ text: 'Понятно', style: 'default' }]
-    );
+    Alert.alert(recommendation.title, recommendation.description, [
+      { text: "Понятно", style: "default" },
+    ]);
   };
 
   if (isLoading) {
@@ -83,6 +93,11 @@ export const AdvancedAnalyticsScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar
+        barStyle={mode === "dark" ? "light-content" : "dark-content"}
+        backgroundColor="transparent"
+        translucent
+      />
       <TopNav />
       <Container>
         <Row>
@@ -94,8 +109,11 @@ export const AdvancedAnalyticsScreen: React.FC = () => {
                   Продвинутая аналитика
                 </Typography>
               </View>
-              
-              <TouchableOpacity onPress={handleClearData} style={styles.settingsButton}>
+
+              <TouchableOpacity
+                onPress={handleClearData}
+                style={styles.settingsButton}
+              >
                 <SettingsIcon size={24} color={ds.colors.textSecondary} />
               </TouchableOpacity>
             </View>
@@ -103,26 +121,49 @@ export const AdvancedAnalyticsScreen: React.FC = () => {
             {/* Табы */}
             <View style={styles.tabsContainer}>
               <TouchableOpacity
-                style={[styles.tab, activeTab === 'stats' && styles.activeTab]}
-                onPress={() => setActiveTab('stats')}
+                style={[styles.tab, activeTab === "stats" && styles.activeTab]}
+                onPress={() => setActiveTab("stats")}
               >
-                <ChartIcon size={20} color={activeTab === 'stats' ? ds.colors.primary : ds.colors.textSecondary} />
-                <Typography 
-                  variant="subtitle" 
-                  style={[styles.tabText, activeTab === 'stats' && styles.activeTabText]}
+                <ChartIcon
+                  size={20}
+                  color={
+                    activeTab === "stats"
+                      ? ds.colors.primary
+                      : ds.colors.textSecondary
+                  }
+                />
+                <Typography
+                  variant="subtitle"
+                  style={[
+                    styles.tabText,
+                    activeTab === "stats" && styles.activeTabText,
+                  ]}
                 >
                   Статистика
                 </Typography>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.tab, activeTab === 'recommendations' && styles.activeTab]}
-                onPress={() => setActiveTab('recommendations')}
+                style={[
+                  styles.tab,
+                  activeTab === "recommendations" && styles.activeTab,
+                ]}
+                onPress={() => setActiveTab("recommendations")}
               >
-                <LightbulbIcon size={20} color={activeTab === 'recommendations' ? ds.colors.primary : ds.colors.textSecondary} />
-                <Typography 
-                  variant="subtitle" 
-                  style={[styles.tabText, activeTab === 'recommendations' && styles.activeTabText]}
+                <LightbulbIcon
+                  size={20}
+                  color={
+                    activeTab === "recommendations"
+                      ? ds.colors.primary
+                      : ds.colors.textSecondary
+                  }
+                />
+                <Typography
+                  variant="subtitle"
+                  style={[
+                    styles.tabText,
+                    activeTab === "recommendations" && styles.activeTabText,
+                  ]}
                 >
                   Рекомендации ({recommendations.length})
                 </Typography>
@@ -130,8 +171,11 @@ export const AdvancedAnalyticsScreen: React.FC = () => {
             </View>
 
             {/* Контент */}
-            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-              {activeTab === 'stats' ? (
+            <ScrollView
+              style={styles.content}
+              showsVerticalScrollIndicator={false}
+            >
+              {activeTab === "stats" ? (
                 // Вкладка статистики
                 <View>
                   {profile ? (
@@ -167,14 +211,19 @@ export const AdvancedAnalyticsScreen: React.FC = () => {
                       {/* Высокий приоритет */}
                       {highPriorityRecs.length > 0 && (
                         <View style={styles.section}>
-                          <Typography variant="title" style={styles.sectionTitle}>
+                          <Typography
+                            variant="title"
+                            style={styles.sectionTitle}
+                          >
                             🔥 Высокий приоритет
                           </Typography>
                           {highPriorityRecs.map((recommendation, index) => (
                             <RecommendationCard
                               key={index}
                               recommendation={recommendation}
-                              onPress={() => handleRecommendationPress(recommendation)}
+                              onPress={() =>
+                                handleRecommendationPress(recommendation)
+                              }
                             />
                           ))}
                         </View>
@@ -183,32 +232,43 @@ export const AdvancedAnalyticsScreen: React.FC = () => {
                       {/* Средний приоритет */}
                       {mediumPriorityRecs.length > 0 && (
                         <View style={styles.section}>
-                          <Typography variant="title" style={styles.sectionTitle}>
+                          <Typography
+                            variant="title"
+                            style={styles.sectionTitle}
+                          >
                             ⚡ Средний приоритет
                           </Typography>
                           {mediumPriorityRecs.map((recommendation, index) => (
                             <RecommendationCard
                               key={index}
                               recommendation={recommendation}
-                              onPress={() => handleRecommendationPress(recommendation)}
+                              onPress={() =>
+                                handleRecommendationPress(recommendation)
+                              }
                             />
                           ))}
                         </View>
                       )}
 
                       {/* Низкий приоритет */}
-                      {recommendations.filter(r => r.priority === 'low').length > 0 && (
+                      {recommendations.filter((r) => r.priority === "low")
+                        .length > 0 && (
                         <View style={styles.section}>
-                          <Typography variant="title" style={styles.sectionTitle}>
+                          <Typography
+                            variant="title"
+                            style={styles.sectionTitle}
+                          >
                             ✨ Низкий приоритет
                           </Typography>
                           {recommendations
-                            .filter(r => r.priority === 'low')
+                            .filter((r) => r.priority === "low")
                             .map((recommendation, index) => (
                               <RecommendationCard
                                 key={index}
                                 recommendation={recommendation}
-                                onPress={() => handleRecommendationPress(recommendation)}
+                                onPress={() =>
+                                  handleRecommendationPress(recommendation)
+                                }
                               />
                             ))}
                         </View>
@@ -220,7 +280,8 @@ export const AdvancedAnalyticsScreen: React.FC = () => {
                         Нет рекомендаций
                       </Typography>
                       <Typography style={styles.emptyDescription}>
-                        Продолжайте обучение, чтобы получить персонализированные рекомендации
+                        Продолжайте обучение, чтобы получить персонализированные
+                        рекомендации
                       </Typography>
                       <Button
                         label="Обновить"
@@ -246,14 +307,14 @@ const styles = StyleSheet.create({
     backgroundColor: ds.colors.background,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: ds.spacing.lg,
   },
   titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   title: {
     marginLeft: ds.spacing.sm,
@@ -263,7 +324,7 @@ const styles = StyleSheet.create({
     padding: ds.spacing.sm,
   },
   tabsContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: ds.colors.card,
     borderRadius: ds.radius.lg,
     padding: ds.spacing.xs,
@@ -271,9 +332,9 @@ const styles = StyleSheet.create({
   },
   tab: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: ds.spacing.sm,
     paddingHorizontal: ds.spacing.md,
     borderRadius: ds.radius.md,
@@ -287,7 +348,7 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     color: ds.colors.primary,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   content: {
     flex: 1,
@@ -298,20 +359,20 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: ds.colors.text,
     marginBottom: ds.spacing.md,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   emptyState: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: ds.spacing.xl * 2,
   },
   emptyTitle: {
     color: ds.colors.text,
     marginBottom: ds.spacing.md,
-    textAlign: 'center',
+    textAlign: "center",
   },
   emptyDescription: {
     color: ds.colors.textSecondary,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: ds.spacing.lg,
     paddingHorizontal: ds.spacing.lg,
   },
@@ -320,7 +381,7 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

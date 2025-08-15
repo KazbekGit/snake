@@ -8,6 +8,16 @@ const money: TopicContent = require("./topics/money.json");
 const market: TopicContent = require("./topics/market.json");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const humanNature: TopicContent = require("./topics/human-nature.json");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const personSociety: TopicContent = require("./topics/person-society.json");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const socialRelations: TopicContent = require("./topics/social-relations.json");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const politics: TopicContent = require("./topics/politics.json");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const law: TopicContent = require("./topics/law.json");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const spiritualCulture: TopicContent = require("./topics/spiritual-culture.json");
 
 export function getTopicFallback(topicId: string): TopicContent | null {
   switch (topicId) {
@@ -17,6 +27,16 @@ export function getTopicFallback(topicId: string): TopicContent | null {
       return market;
     case "human-nature":
       return humanNature;
+    case "person-society":
+      return personSociety;
+    case "social-relations":
+      return socialRelations;
+    case "politics":
+      return politics;
+    case "law":
+      return law;
+    case "spiritual-culture":
+      return spiritualCulture;
     default:
       return null;
   }
@@ -30,6 +50,11 @@ export const availableTopics = {
   money,
   market,
   "human-nature": humanNature,
+  "person-society": personSociety,
+  "social-relations": socialRelations,
+  politics,
+  law,
+  "spiritual-culture": spiritualCulture,
 };
 
 // Утилита для получения списка всех тем
@@ -39,7 +64,7 @@ export function getAllTopics(): TopicContent[] {
 
 // Утилита для получения тем по секции
 export function getTopicsBySection(sectionId: string): TopicContent[] {
-  return getAllTopics().filter(topic => topic.sectionId === sectionId);
+  return getAllTopics().filter((topic) => topic.sectionId === sectionId);
 }
 
 // Утилита для получения темы по ID
