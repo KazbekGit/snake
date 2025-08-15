@@ -22,6 +22,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { Container, Row, Col } from "../ui/Grid";
 import { TopNav } from "../ui/TopNav";
 import { Typography } from "../ui/Typography";
+import { ds } from "../ui/theme";
 import { CheckIcon } from "../ui/icons/CheckIcon";
 import { BookIcon } from "../ui/icons/BookIcon";
 import { TimeIcon } from "../ui/icons/TimeIcon";
@@ -170,34 +171,21 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({
       <LinearGradient colors={[colors.primary, colors.primaryDark]} style={styles.background}>
         <Container>
           <TopNav />
-          {/* Header */}
-          <View style={styles.header}>
-            <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-              <Ionicons name="arrow-back" size={24} color="white" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>{t("statsTitle")}</Text>
-            <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity onPress={toggle} style={styles.backButton}>
-                <Ionicons name="moon" size={18} color="white" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setLocale("en")} style={styles.backButton} accessibilityLabel="Switch to English">
-                <Ionicons name="language" size={18} color="white" />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <Row style={{ marginTop: ds.spacing.xl }}>
 
-          <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-            <Animated.View style={[styles.content, animatedStyle]}>
-              {/* Main Statistics */}
-              <View style={styles.mainStatsContainer}>
-                <Typography variant="title">Общая статистика</Typography>
-                <Row>
-                  {[0, 1, 2, 3, 4].map((i) => (
-                    <Col key={i} spanDesktop={6} spanTablet={6} spanMobile={12}>
-                      <View style={styles.statCard}>
-                        <View style={styles.statIconContainer}>
-                          {i === 0 && <BookIcon size={28} color={colors.primary} />}
-                          {i === 1 && <CheckIcon size={28} color={colors.success} />}
+          <Col spanDesktop={12} spanTablet={12} spanMobile={12}>
+            <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+              <Animated.View style={[styles.content, animatedStyle]}>
+                {/* Main Statistics */}
+                <View style={styles.mainStatsContainer}>
+                  <Typography variant="title">Общая статистика</Typography>
+                  <Row>
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <Col key={i} spanDesktop={6} spanTablet={6} spanMobile={12}>
+                        <View style={styles.statCard}>
+                          <View style={styles.statIconContainer}>
+                            {i === 0 && <BookIcon size={28} color={colors.primary} />}
+                            {i === 1 && <CheckIcon size={28} color={colors.success} />}
                           {i === 2 && <TimeIcon size={28} color={colors.warning} />}
                           {i === 3 && (
                             <Ionicons name="flame-outline" size={28} color={colors.error} />
@@ -344,6 +332,8 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({
               </View>
             </Animated.View>
           </ScrollView>
+          </Col>
+        </Row>
         </Container>
       </LinearGradient>
     </SafeAreaView>
@@ -358,29 +348,7 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  headerTitle: {
-    fontSize: 18,
-    color: "white",
-    fontWeight: "bold",
-  },
-  placeholder: {
-    width: 40,
-  },
+
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
