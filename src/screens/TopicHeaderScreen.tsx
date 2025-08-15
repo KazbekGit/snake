@@ -17,6 +17,7 @@ import { LayersIcon } from "../ui/icons/LayersIcon";
 import { StarOutlineIcon } from "../ui/icons/StarOutlineIcon";
 import { Container } from "../ui/Grid";
 import { TopNav } from "../ui/TopNav";
+import { ds } from "../ui/theme";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -235,6 +236,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
         <Container>
           <TopNav />
         </Container>
+        <View style={{ paddingTop: ds.spacing.lg }}>
         {/** derive safe completed blocks for UI conditions */}
         {(() => {
           const _ = topicProgress?.completedBlocks ?? 0;
@@ -455,6 +457,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
             )}
           </Animated.View>
         </ScrollView>
+        </View>
       </LinearGradient>
     </SafeAreaView>
   );

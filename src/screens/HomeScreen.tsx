@@ -32,6 +32,7 @@ import { Container, Row, Col } from "../ui/Grid";
 import { TopNav } from "../ui/TopNav";
 import { PersonIcon } from "../ui/icons/PersonIcon";
 import { Typography } from "../ui/Typography";
+import { ds } from "../ui/theme";
 import { BankIcon } from "../ui/icons/BankIcon";
 import { GroupIcon } from "../ui/icons/GroupIcon";
 import { GovernmentIcon } from "../ui/icons/GovernmentIcon";
@@ -40,6 +41,7 @@ import { CultureIcon } from "../ui/icons/CultureIcon";
 import { UserIcon } from "../ui/icons/UserIcon";
 import { ChartIcon } from "../ui/icons/ChartIcon";
 import { SearchIcon } from "../ui/icons/SearchIcon";
+import { Teacher } from "../ui/illustrations/Teacher";
 
 interface HomeScreenProps {
   navigation: NavigationProp<RootStackParamList, "Home">;
@@ -201,76 +203,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
       <Container>
         <TopNav />
+        <Row style={{ marginTop: ds.spacing.xl }}>
 
-        {/* Верхняя панель с прогрессом */}
-        <View style={styles.header}>
-          {/* Заголовок страницы */}
-          <Typography variant="title">{t("dashboard")}</Typography>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.navigate("Welcome")}
-          >
-            <Text style={styles.backButtonText}>← Назад</Text>
-          </TouchableOpacity>
-          <View style={styles.progressContainer}>
-            <LinearGradient
-              colors={[...colors.gradients.primary]}
-              style={styles.progressCard}
-            >
-              <View style={styles.progressHeader}>
-                <Text style={styles.progressTitle}>{t("yourProgress")}</Text>
-                <View style={styles.headerButtons}>
-                  <TouchableOpacity onPress={handleStatisticsPress} style={styles.headerButton}>
-                    <ChartIcon size={20} color={colors.textLight} />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={handleProfilePress} style={styles.headerButton}>
-                    <UserIcon size={20} color={colors.textLight} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.progressStats}>
-                <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>
-                    {mockUserProgress.completedSections}
-                  </Text>
-                  <Text style={styles.statLabel}>
-                    из {mockUserProgress.totalSections} разделов
-                  </Text>
-                </View>
-                <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{mockUserProgress.xp}</Text>
-                  <Text style={styles.statLabel}>XP</Text>
-                </View>
-                <View style={styles.statItem}>
-                  <Text style={styles.statNumber}>{mockUserProgress.streak}</Text>
-                  <Text style={styles.statLabel}>дней подряд</Text>
-                </View>
-              </View>
-              {/* CTA Continue */}
-              <TouchableOpacity
-                onPress={handleContinuePress}
-                style={{
-                  marginTop: 12,
-                  alignSelf: "flex-end",
-                  backgroundColor: "rgba(255,255,255,0.15)",
-                  paddingHorizontal: 14,
-                  paddingVertical: 8,
-                  borderRadius: 12,
-                }}
-              >
-                <Text style={{ color: "white", fontWeight: "600" }}>
-                  {t("continue")} ▶
-                </Text>
-              </TouchableOpacity>
-            </LinearGradient>
-          </View>
-        </View>
-
-        <Row>
-          <Col spanDesktop={12} spanTablet={12} spanMobile={12}>
-            <View style={{ marginTop: 10 }}>
-              <DashboardCard
+          <Col spanDesktop={7} spanTablet={7} spanMobile={12}>
+            <DashboardCard
                 title={t("continueStudy")}
                 right={
                   <View style={styles.chipsRow}>
@@ -337,50 +273,50 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   </View>
                 </View>
               </DashboardCard>
+          </Col>
+          <Col spanDesktop={5} spanTablet={5} spanMobile={12}>
+            {/* Teacher Illustration */}
+            <View style={styles.illustrationContainer}>
+              <Teacher />
             </View>
           </Col>
         </Row>
 
-        {/* Основной контент */}
-        <ScrollView
-          style={styles.content}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.sectionsContainer}>
+        {/* Sections */}
+        <Row style={{ marginTop: ds.spacing.xl }}>
+          <Col spanDesktop={12} spanTablet={12} spanMobile={12}>
             <View style={styles.sectionsHeader}>
-              <Text style={styles.sectionsTitle}>Разделы обществознания</Text>
+              <Typography variant="title">{t("sectionsTitle")}</Typography>
               <TouchableOpacity onPress={handleSearchPress}>
-                <SearchIcon color={colors.text} />
+                <SearchIcon size={ds.spacing.xxl} color={colors.navy} />
               </TouchableOpacity>
             </View>
-
-            {sections.map((section) => {
-              const iconMap: Record<string, JSX.Element> = {
-                "person-society": <PersonIcon size={28} color="#FFFFFF" />,
-                economy: <BankIcon size={28} color="#FFFFFF" />,
-                "social-relations": <GroupIcon size={28} color="#FFFFFF" />,
-                politics: <GovernmentIcon size={28} color="#FFFFFF" />,
-                law: <JusticeIcon size={28} color="#FFFFFF" />,
-                "spiritual-culture": <CultureIcon size={28} color="#FFFFFF" />,
-              };
-              return (
-                <View key={section.id} style={{ marginBottom: 12 }}>
-                  <SectionCard
-                    iconNode={iconMap[section.id]}
-                    title={section.title}
-                    description={section.description}
-                    colorFrom={
-                      SECTION_COLORS[section.id as keyof typeof SECTION_COLORS]
-                    }
-                    progress={section.progress}
-                    onPress={() => handleSectionPress(section)}
-                  />
-                </View>
-              );
-            })}
-          </View>
-        </ScrollView>
+          </Col>
+          {sections.map((section) => {
+            const iconMap: Record<string, JSX.Element> = {
+              "person-society": <PersonIcon size={28} color="#FFFFFF" />,
+              economy: <BankIcon size={28} color="#FFFFFF" />,
+              "social-relations": <GroupIcon size={28} color="#FFFFFF" />,
+              politics: <GovernmentIcon size={28} color="#FFFFFF" />,
+              law: <JusticeIcon size={28} color="#FFFFFF" />,
+              "spiritual-culture": <CultureIcon size={28} color="#FFFFFF" />,
+            };
+            return (
+              <Col key={section.id} spanDesktop={4} spanTablet={6} spanMobile={12} style={{ marginBottom: ds.spacing.lg }}>
+                <SectionCard
+                  iconNode={iconMap[section.id]}
+                  title={section.title}
+                  description={section.description}
+                  colorFrom={
+                    SECTION_COLORS[section.id as keyof typeof SECTION_COLORS]
+                  }
+                  progress={section.progress}
+                  onPress={() => handleSectionPress(section)}
+                />
+              </Col>
+            );
+          })}
+        </Row>
       </Container>
     </SafeAreaView>
   );
@@ -391,210 +327,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 10,
-  },
-  progressContainer: {
-    borderRadius: 16,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  pageTitle: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: colors.text,
-    marginBottom: 8,
-  },
-  progressCard: {
-    padding: 20,
-  },
-  progressHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  progressTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: colors.textLight,
-  },
-  profileButton: {
-    fontSize: 24,
-  },
-  progressStats: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  statItem: {
-    alignItems: "center",
-  },
-  statNumber: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: colors.textLight,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: colors.textLight,
-    opacity: 0.8,
-    textAlign: "center",
-  },
-  content: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  sectionsContainer: {
-    gap: 16,
-  },
+
   sectionsHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: ds.spacing.lg,
   },
-  sectionsTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: colors.text,
-  },
-  searchButton: {
-    fontSize: 24,
-  },
-  sectionCard: {
-    borderRadius: 16,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  sectionGradient: {
-    padding: 20,
-  },
-  sectionContent: {
-    gap: 16,
-  },
-  sectionHeader: {
-    flexDirection: "row",
+  illustrationContainer: {
     alignItems: "center",
+    justifyContent: "center",
+    height: 200,
   },
-  sectionIcon: {
-    fontSize: 32,
-    marginRight: 16,
-  },
-  sectionInfo: {
-    flex: 1,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: colors.textLight,
-    marginBottom: 4,
-  },
-  sectionDescription: {
-    fontSize: 14,
-    color: colors.textLight,
-    opacity: 0.9,
-    lineHeight: 20,
-  },
-  completedIcon: {
-    fontSize: 20,
-  },
-  progressBarContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  progressBar: {
-    flex: 1,
-    height: 6,
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
-    borderRadius: 3,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    borderRadius: 3,
-  },
-  progressText: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: colors.textLight,
-    minWidth: 35,
-  },
-  backButton: {
-    position: "absolute",
-    left: 20,
-    top: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: colors.primary,
-    zIndex: 10,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
-  backButtonText: {
-    color: colors.textLight,
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  headerButtons: {
-    flexDirection: "row",
-    gap: 10,
-  },
-  headerButton: {
-    padding: 8,
-    borderRadius: 15,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-  },
-  headerButtonText: {
-    fontSize: 24,
-    color: colors.textLight,
-  },
-  continueCard: {
-    marginTop: 10,
-    marginHorizontal: 20,
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 16,
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  continueHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  continueTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.text,
-  },
+
   chipsRow: {
     flexDirection: "row",
     gap: 8,
@@ -654,17 +399,7 @@ const styles = StyleSheet.create({
     gap: 10,
     justifyContent: "space-between",
   },
-  bigCta: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  bigCtaText: {
-    color: "white",
-    fontWeight: "700",
-  },
+
 });
 
 export default HomeScreen;
