@@ -28,6 +28,7 @@ import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { moneyTopic } from "../data";
 import { saveTestResult } from "../utils/progressStorage";
 import { logEvent } from "../utils/analytics";
+import { useAdvancedAnalytics } from "../hooks/useAdvancedAnalytics";
 import { useThrottle } from "../hooks/useThrottle";
 
 const { width, height } = Dimensions.get("window");
@@ -42,6 +43,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
   route,
 }) => {
   const { topic, blockId } = route.params;
+  const { startTestAttempt, addQuestionAttempt, completeTestAttempt } = useAdvancedAnalytics();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -72,6 +74,17 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
 
     questionOpacity.value = withTiming(1, { duration: 600 });
     questionTranslateY.value = withSpring(0, { damping: 15, stiffness: 100 });
+
+    // Инициализируем тестовую попытку при первом рендере
+    if (currentQuestionIndex === 0) {
+      (async () => {
+        try {
+          await startTestAttempt(topic.id);
+        } catch (error) {
+          console.error('Failed to start test attempt:', error);
+        }
+      })();
+    }
   }, [currentQuestionIndex]);
 
   const handleAnswerSelectUnthrottled = (answerIndex: number) => {
@@ -153,6 +166,23 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
       // Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error); // Временно отключено для веб
     }
 
+    // Записываем попытку ответа в аналитику
+    try {
+      const selectedOptionId = currentQuestion.options?.[answers[0]]?.id;
+      const correctAnswerId = currentQuestion.correctAnswer;
+      const timeSpent = 5000; // TODO: Реальное время ответа
+      
+      await addQuestionAttempt(
+        currentQuestion.id || `question_${currentQuestionIndex}`,
+        selectedOptionId || '',
+        correctAnswerId || '',
+        timeSpent,
+        0 // hintsUsed
+      );
+    } catch (error) {
+      console.error('Failed to add question attempt:', error);
+    }
+
     setShowExplanation(true);
     explanationOpacity.value = withTiming(1, { duration: 500 });
   };
@@ -195,6 +225,13 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
       score,
       totalQuestions,
     });
+
+    // Завершаем тестовую попытку в аналитике
+    try {
+      await completeTestAttempt();
+    } catch (error) {
+      console.error('Failed to complete test attempt:', error);
+    }
 
     setTestCompleted(true);
     console.log(

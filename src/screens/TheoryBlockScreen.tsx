@@ -26,6 +26,7 @@ import { Topic, ContentBlock } from "../types";
 import { moneyTopic } from "../data";
 import { markBlockCompleted, addStudyTime } from "../utils/progressStorage";
 import { logEvent } from "../utils/analytics";
+import { useAdvancedAnalytics } from "../hooks/useAdvancedAnalytics";
 import { getCachedUri } from "../utils/imageCache";
 
 const { width, height } = Dimensions.get("window");
@@ -45,6 +46,7 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
   route,
 }) => {
   const { topic, blockIndex = 0 } = route.params;
+  const { startStudySession, endStudySession, addInteraction } = useAdvancedAnalytics();
   const [currentBlockIndex, setCurrentBlockIndex] = useState(blockIndex);
   const [studyStartTime, setStudyStartTime] = useState<number>(Date.now());
   const [mediaUri, setMediaUri] = useState<string | null>(null);
@@ -100,6 +102,19 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
     // Записываем время начала изучения
     setStudyStartTime(Date.now());
 
+    // Инициализируем сессию изучения
+    (async () => {
+      try {
+        await startStudySession(currentTopic.id);
+        await addInteraction({
+          type: 'block_view',
+          data: { blockIndex: currentBlockIndex, blockTitle: currentBlock.title }
+        });
+      } catch (error) {
+        console.error('Failed to start study session:', error);
+      }
+    })();
+
     // Лог события просмотра блока
     logEvent("open_block", {
       topicId: currentTopic.id,
@@ -141,6 +156,20 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
       await addStudyTime(currentTopic.id, studyTimeMinutes);
     }
 
+    // Записываем взаимодействие с блоком
+    try {
+      await addInteraction({
+        type: 'block_complete',
+        data: { 
+          blockIndex: currentBlockIndex, 
+          blockTitle: currentBlock.title,
+          timeSpent: Date.now() - studyStartTime
+        }
+      });
+    } catch (error) {
+      console.error('Failed to add interaction:', error);
+    }
+
     if (currentBlockIndex < totalBlocks - 1) {
       // Переходим к следующему блоку
       logEvent("next_block", {
@@ -150,6 +179,13 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
       });
       setCurrentBlockIndex(currentBlockIndex + 1);
     } else {
+      // Завершаем сессию изучения
+      try {
+        await endStudySession(currentBlockIndex + 1, totalBlocks);
+      } catch (error) {
+        console.error('Failed to end study session:', error);
+      }
+
       // Переходим к тесту
       console.log("Переходим к тесту");
       logEvent("start_test", { topicId: currentTopic.id });

@@ -42,6 +42,7 @@ import { UserIcon } from "../ui/icons/UserIcon";
 import { ChartIcon } from "../ui/icons/ChartIcon";
 import { SearchIcon } from "../ui/icons/SearchIcon";
 import { Teacher } from "../ui/illustrations/Teacher";
+import { useAdvancedAnalytics } from "../hooks/useAdvancedAnalytics";
 
 interface HomeScreenProps {
   navigation: NavigationProp<RootStackParamList, "Home">;
@@ -50,6 +51,8 @@ interface HomeScreenProps {
 // Используем данные из централизованного источника
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+  const { getProfile, getHighPriorityRecommendations } = useAdvancedAnalytics();
+  
   const [sections] = useState<Section[]>([
     {
       id: "person-society",
@@ -252,6 +255,49 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           </Col>
         </Row>
 
+        {/* Recommendations */}
+        {(() => {
+          const highPriorityRecs = getHighPriorityRecommendations();
+          if (highPriorityRecs.length > 0) {
+            return (
+              <Row style={{ marginTop: ds.spacing.xl }}>
+                <Col spanDesktop={12} spanTablet={12} spanMobile={12}>
+                  <View style={styles.sectionsHeader}>
+                    <Typography variant="title">🔥 Рекомендации</Typography>
+                    <TouchableOpacity onPress={() => navigation.navigate("AdvancedAnalytics" as any)}>
+                      <ChartIcon size={ds.spacing.xxl} color={colors.navy} />
+                    </TouchableOpacity>
+                  </View>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.recommendationsContainer}>
+                    {highPriorityRecs.slice(0, 3).map((rec, index) => (
+                      <View key={index} style={styles.recommendationItem}>
+                        <View style={styles.recommendationCard}>
+                          <Text style={styles.recommendationIcon}>
+                            {rec.type === 'review_weak_topic' ? '📚' :
+                             rec.type === 'continue_streak' ? '🔥' :
+                             rec.type === 'try_new_topic' ? '🆕' :
+                             rec.type === 'practice_mistakes' ? '❌' : '💡'}
+                          </Text>
+                          <Typography variant="subtitle" style={styles.recommendationTitle}>
+                            {rec.title}
+                          </Typography>
+                          <Typography style={styles.recommendationDescription}>
+                            {rec.description}
+                          </Typography>
+                          <View style={styles.recommendationFooter}>
+                            <Text style={styles.recommendationTime}>{rec.estimatedTime} мин</Text>
+                          </View>
+                        </View>
+                      </View>
+                    ))}
+                  </ScrollView>
+                </Col>
+              </Row>
+            );
+          }
+          return null;
+        })()}
+
         {/* Sections */}
         <Row style={{ marginTop: ds.spacing.xl }}>
           <Col spanDesktop={12} spanTablet={12} spanMobile={12}>
@@ -368,6 +414,46 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     justifyContent: "space-between",
+  },
+  recommendationsContainer: {
+    marginBottom: ds.spacing.lg,
+  },
+  recommendationItem: {
+    marginRight: ds.spacing.md,
+    width: 280,
+  },
+  recommendationCard: {
+    backgroundColor: ds.colors.surface,
+    borderRadius: ds.radius.lg,
+    padding: ds.spacing.lg,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  recommendationIcon: {
+    fontSize: 24,
+    marginBottom: ds.spacing.sm,
+  },
+  recommendationTitle: {
+    color: ds.colors.text,
+    marginBottom: ds.spacing.xs,
+    fontWeight: '600',
+  },
+  recommendationDescription: {
+    color: ds.colors.textSecondary,
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: ds.spacing.md,
+  },
+  recommendationFooter: {
+    alignItems: 'flex-end',
+  },
+  recommendationTime: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: ds.colors.primary,
   },
 
 });

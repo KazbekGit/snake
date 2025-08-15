@@ -10,6 +10,7 @@ import { TopicHeaderScreen } from "../screens/TopicHeaderScreen";
 import { TheoryBlockScreen } from "../screens/TheoryBlockScreen";
 import { MiniTestScreen } from "../screens/MiniTestScreen";
 import { StatisticsScreen } from "../screens/StatisticsScreen";
+import { AdvancedAnalyticsScreen } from "../screens/AdvancedAnalyticsScreen";
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -20,6 +21,7 @@ export type RootStackParamList = {
   TheoryBlock: { topic: any; blockIndex: number };
   MiniTest: { topic: any; blockId: string };
   Statistics: undefined;
+  AdvancedAnalytics: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -62,6 +64,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="TheoryBlock" component={TheoryBlockScreen as any} />
         <Stack.Screen name="MiniTest" component={MiniTestScreen as any} />
         <Stack.Screen name="Statistics" component={StatisticsScreen as any} />
+        <Stack.Screen name="AdvancedAnalytics" component={AdvancedAnalyticsScreen as any} />
       </Stack.Navigator>
     </NavigationContainer>
   );
