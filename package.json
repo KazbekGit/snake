@@ -43,6 +43,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-hooks": "^8.0.1",
     "@testing-library/react-native": "^13.2.2",
     "@types/jest": "^30.0.0",
     "@types/minimatch": "^6.0.0",

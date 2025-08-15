@@ -23,6 +23,8 @@ import { BookIcon } from "../ui/icons/BookIcon";
 import { ChartIcon } from "../ui/icons/ChartIcon";
 import { Teacher } from "../ui/illustrations/Teacher";
 import { Typography } from "../ui/Typography";
+import { useI18n } from "../hooks/useI18n";
+import { LanguageSwitcher } from "../ui/LanguageSwitcher";
 
 const { width, height } = Dimensions.get("window");
 
@@ -31,6 +33,7 @@ interface WelcomeScreenProps {
 }
 
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
+  const { t } = useI18n();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
@@ -69,7 +72,9 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.gradient}>
         <Container>
-          <TopNav />
+          <TopNav>
+            <LanguageSwitcher />
+          </TopNav>
           <Animated.View
             style={[
               styles.content,
@@ -86,31 +91,30 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
                     <Text style={styles.logoEmoji}>📚</Text>
                   </View>
                   <Typography variant="heroTitle" style={{ color: colors.navy, textAlign: "center", marginBottom: 5 }}>
-                    Обществознание 8–11 классы
+                    {t('appTitle')}
                   </Typography>
                   <Typography variant="subtitle" style={{ color: colors.navy, textAlign: "center" }}>
-                    Интерактивные уроки, теория и тесты
+                    {t('appSubtitle')}
                   </Typography>
                   <View style={styles.descriptionContainer}>
                     <Typography style={{ color: colors.navy, textAlign: "center", paddingHorizontal: 20 }}>
-                      Подготовка к школе и экзаменам с визуальными материалами и
-                      мини‑тестами.
+                      {t('appSubtitle')}
                     </Typography>
                   </View>
                   <View style={styles.buttonContainer}>
                     <Button
-                      label="Начать обучение"
+                      label={t('startButton')}
                       onPress={handleStartLearning}
                     />
                     <View style={{ height: ds.spacing.sm }} />
                     <Button
-                      label="Мои курсы"
+                      label={t('continueLearning')}
                       onPress={handleLogin}
                       variant="ghost"
                     />
                     <View style={{ height: ds.spacing.xs }} />
                     <Button
-                      label="Тестирование"
+                      label={t('testTitle')}
                       onPress={handleLogin}
                       variant="ghost"
                     />
@@ -128,19 +132,19 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
               <Col spanDesktop={4} spanTablet={4} spanMobile={12}>
                 <Card style={styles.bottomCard}>
                   <CheckIcon />
-                  <Text style={styles.bottomLabel}>Тесты</Text>
+                  <Text style={styles.bottomLabel}>{t('testTitle')}</Text>
                 </Card>
               </Col>
               <Col spanDesktop={4} spanTablet={4} spanMobile={12}>
                 <Card style={styles.bottomCard}>
                   <BookIcon />
-                  <Text style={styles.bottomLabel}>Теория</Text>
+                  <Text style={styles.bottomLabel}>{t('topics')}</Text>
                 </Card>
               </Col>
               <Col spanDesktop={4} spanTablet={4} spanMobile={12}>
                 <Card style={styles.bottomCard}>
                   <ChartIcon />
-                  <Text style={styles.bottomLabel}>Статистика</Text>
+                  <Text style={styles.bottomLabel}>{t('statistics')}</Text>
                 </Card>
               </Col>
             </Row>
