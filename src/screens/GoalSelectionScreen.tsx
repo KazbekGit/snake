@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Typography } from "../ui/Typography";
+import { ds } from "../ui/theme";
 import { colors } from "../constants/colors";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/AppNavigator";
@@ -89,12 +90,16 @@ export const GoalSelectionScreen: React.FC<GoalSelectionScreenProps> = ({
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
-            <Text style={styles.backButtonText}>← Назад</Text>
+            <Typography variant="button" style={styles.backButtonText}>
+              ← Назад
+            </Typography>
           </TouchableOpacity>
-          <Text style={styles.title}>Выберите цель обучения</Text>
-          <Text style={styles.subtitle}>
+          <Typography variant="heroTitle" style={styles.title}>
+            Выберите цель обучения
+          </Typography>
+          <Typography variant="body" style={styles.subtitle}>
             {grade} класс • Мы адаптируем материал под ваши задачи
-          </Text>
+          </Typography>
         </View>
 
         {/* Карточки целей */}
@@ -119,20 +124,28 @@ export const GoalSelectionScreen: React.FC<GoalSelectionScreenProps> = ({
                   style={styles.cardGradient}
                 >
                   <View style={styles.cardHeader}>
-                    <Text style={styles.goalIcon}>{goal.icon}</Text>
+                    <Typography variant="heroTitle" style={styles.goalIcon}>
+                      {goal.icon}
+                    </Typography>
                     <View style={styles.goalInfo}>
-                      <Text style={styles.goalTitle}>{goal.title}</Text>
-                      <Text style={styles.goalDescription}>
+                      <Typography variant="title" style={styles.goalTitle}>
+                        {goal.title}
+                      </Typography>
+                      <Typography variant="body" style={styles.goalDescription}>
                         {goal.description}
-                      </Text>
+                      </Typography>
                     </View>
                   </View>
 
                   <View style={styles.featuresContainer}>
                     {goal.features.map((feature, index) => (
                       <View key={index} style={styles.featureItem}>
-                        <Text style={styles.featureIcon}>✓</Text>
-                        <Text style={styles.featureText}>{feature}</Text>
+                        <Typography variant="body" style={styles.featureIcon}>
+                          ✓
+                        </Typography>
+                        <Typography variant="body" style={styles.featureText}>
+                          {feature}
+                        </Typography>
                       </View>
                     ))}
                   </View>
@@ -144,9 +157,9 @@ export const GoalSelectionScreen: React.FC<GoalSelectionScreenProps> = ({
 
         {/* Дополнительная информация */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>
+          <Typography variant="caption" style={styles.footerText}>
             Вы всегда сможете изменить цель в настройках
-          </Text>
+          </Typography>
         </View>
       </LinearGradient>
     </SafeAreaView>
@@ -162,121 +175,95 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
-    paddingTop: 40,
-    paddingBottom: 30,
-    paddingHorizontal: 20,
+    paddingTop: ds.spacing.xl,
+    paddingBottom: ds.spacing.lg,
+    paddingHorizontal: ds.spacing.lg,
     position: "relative",
   },
   backButton: {
     position: "absolute",
-    left: 20,
-    top: 40,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    left: ds.spacing.lg,
+    top: ds.spacing.xl,
+    paddingHorizontal: ds.spacing.md,
+    paddingVertical: ds.spacing.sm,
+    borderRadius: ds.radius.full,
     backgroundColor: colors.primary,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    ...ds.shadows.card,
   },
   backButtonText: {
     color: colors.textLight,
-    fontSize: 16,
-    fontWeight: "600",
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
     color: colors.textLight,
     textAlign: "center",
-    marginBottom: 10,
+    marginBottom: ds.spacing.sm,
   },
   subtitle: {
-    fontSize: 16,
     color: colors.textLight,
     textAlign: "center",
     opacity: 0.9,
-    lineHeight: 22,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingHorizontal: ds.spacing.lg,
+    paddingBottom: ds.spacing.lg,
   },
   goalsContainer: {
-    gap: 20,
+    gap: ds.spacing.lg,
   },
   goalCard: {
-    borderRadius: 16,
+    borderRadius: ds.radius.lg,
     overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    ...ds.shadows.card,
   },
   selectedCard: {
     transform: [{ scale: 1.02 }],
   },
   cardGradient: {
-    padding: 20,
+    padding: ds.spacing.lg,
   },
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: ds.spacing.lg,
   },
   goalIcon: {
-    fontSize: 40,
-    marginRight: 16,
+    marginRight: ds.spacing.md,
   },
   goalInfo: {
     flex: 1,
   },
   goalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
     color: colors.textLight,
-    marginBottom: 4,
+    marginBottom: ds.spacing.xs,
   },
   goalDescription: {
-    fontSize: 14,
     color: colors.textLight,
     opacity: 0.9,
-    lineHeight: 20,
   },
   featuresContainer: {
-    gap: 12,
+    gap: ds.spacing.sm,
   },
   featureItem: {
     flexDirection: "row",
     alignItems: "center",
   },
   featureIcon: {
-    fontSize: 16,
     color: colors.textLight,
-    marginRight: 12,
-    fontWeight: "bold",
+    marginRight: ds.spacing.sm,
   },
   featureText: {
-    fontSize: 14,
     color: colors.textLight,
     opacity: 0.9,
     flex: 1,
   },
   footer: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingHorizontal: ds.spacing.lg,
+    paddingBottom: ds.spacing.lg,
   },
   footerText: {
-    fontSize: 14,
     color: colors.textLight,
     opacity: 0.7,
     textAlign: "center",

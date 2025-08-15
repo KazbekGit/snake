@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
@@ -9,6 +8,8 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Typography } from "../ui/Typography";
+import { ds } from "../ui/theme";
 import { colors } from "../constants/colors";
 import { NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "../navigation/AppNavigator";
@@ -75,12 +76,16 @@ export const GradeSelectionScreen: React.FC<GradeSelectionScreenProps> = ({
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
-            <Text style={styles.backButtonText}>← Назад</Text>
+            <Typography variant="button" style={styles.backButtonText}>
+              ← Назад
+            </Typography>
           </TouchableOpacity>
-          <Text style={styles.title}>Выберите ваш класс</Text>
-          <Text style={styles.subtitle}>
+          <Typography variant="heroTitle" style={styles.title}>
+            Выберите ваш класс
+          </Typography>
+          <Typography variant="body" style={styles.subtitle}>
             Мы подберем материал специально для вас
-          </Text>
+          </Typography>
         </View>
 
         {/* Карточки классов */}
@@ -105,11 +110,15 @@ export const GradeSelectionScreen: React.FC<GradeSelectionScreenProps> = ({
                   style={styles.cardGradient}
                 >
                   <View style={styles.cardContent}>
-                    <Text style={styles.gradeIcon}>{grade.icon}</Text>
-                    <Text style={styles.gradeTitle}>{grade.title}</Text>
-                    <Text style={styles.gradeDescription}>
+                    <Typography variant="heroTitle" style={styles.gradeIcon}>
+                      {grade.icon}
+                    </Typography>
+                    <Typography variant="title" style={styles.gradeTitle}>
+                      {grade.title}
+                    </Typography>
+                    <Typography variant="body" style={styles.gradeDescription}>
                       {grade.description}
-                    </Text>
+                    </Typography>
                   </View>
                 </LinearGradient>
               </TouchableOpacity>
@@ -119,9 +128,9 @@ export const GradeSelectionScreen: React.FC<GradeSelectionScreenProps> = ({
 
         {/* Дополнительная информация */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>
+          <Typography variant="caption" style={styles.footerText}>
             Материал адаптирован под программу каждого класса
-          </Text>
+          </Typography>
         </View>
       </LinearGradient>
     </SafeAreaView>
@@ -137,97 +146,75 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
-    paddingTop: 40,
-    paddingBottom: 30,
-    paddingHorizontal: 20,
+    paddingTop: ds.spacing.xl,
+    paddingBottom: ds.spacing.lg,
+    paddingHorizontal: ds.spacing.lg,
     position: "relative",
   },
   backButton: {
     position: "absolute",
-    left: 20,
-    top: 40,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    left: ds.spacing.lg,
+    top: ds.spacing.xl,
+    paddingHorizontal: ds.spacing.md,
+    paddingVertical: ds.spacing.sm,
+    borderRadius: ds.radius.full,
     backgroundColor: colors.primary,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    ...ds.shadows.card,
   },
   backButtonText: {
     color: colors.textLight,
-    fontSize: 16,
-    fontWeight: "600",
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
     color: colors.textLight,
     textAlign: "center",
-    marginBottom: 10,
+    marginBottom: ds.spacing.sm,
   },
   subtitle: {
-    fontSize: 16,
     color: colors.textLight,
     textAlign: "center",
     opacity: 0.9,
-    lineHeight: 22,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingHorizontal: ds.spacing.lg,
+    paddingBottom: ds.spacing.lg,
   },
   gradesContainer: {
-    gap: 16,
+    gap: ds.spacing.md,
   },
   gradeCard: {
-    borderRadius: 16,
+    borderRadius: ds.radius.lg,
     overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    ...ds.shadows.card,
   },
   selectedCard: {
     transform: [{ scale: 1.05 }],
   },
   cardGradient: {
-    padding: 24,
+    padding: ds.spacing.xl,
   },
   cardContent: {
     alignItems: "center",
   },
   gradeIcon: {
-    fontSize: 48,
-    marginBottom: 16,
+    marginBottom: ds.spacing.md,
   },
   gradeTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
     color: colors.textLight,
-    marginBottom: 8,
+    marginBottom: ds.spacing.sm,
   },
   gradeDescription: {
-    fontSize: 16,
     color: colors.textLight,
     opacity: 0.9,
     textAlign: "center",
   },
   footer: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    paddingHorizontal: ds.spacing.lg,
+    paddingBottom: ds.spacing.lg,
   },
   footerText: {
-    fontSize: 14,
     color: colors.textLight,
     opacity: 0.7,
     textAlign: "center",
