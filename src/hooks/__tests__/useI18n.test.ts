@@ -9,6 +9,9 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   setItem: jest.fn(),
 }));
 
+// Helper function to wait for async operations
+const waitForAsync = (ms = 0) => new Promise(resolve => setTimeout(resolve, ms));
+
 describe('useI18n', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -25,9 +28,9 @@ describe('useI18n', () => {
   it('should load saved locale from AsyncStorage', async () => {
     (AsyncStorage.getItem as jest.Mock).mockResolvedValue('en');
     
-    const { result, waitForNextUpdate } = renderHook(() => useI18n());
+    const { result } = renderHook(() => useI18n());
     
-    await waitForNextUpdate();
+    await waitForAsync(10);
     
     expect(result.current.locale).toBe('en');
     expect(result.current.isLoading).toBe(false);
@@ -37,9 +40,9 @@ describe('useI18n', () => {
   it('should handle invalid saved locale', async () => {
     (AsyncStorage.getItem as jest.Mock).mockResolvedValue('invalid');
     
-    const { result, waitForNextUpdate } = renderHook(() => useI18n());
+    const { result } = renderHook(() => useI18n());
     
-    await waitForNextUpdate();
+    await waitForAsync(10);
     
     expect(result.current.locale).toBe('ru'); // Default
     expect(result.current.isLoading).toBe(false);
@@ -48,21 +51,23 @@ describe('useI18n', () => {
   it('should handle AsyncStorage error gracefully', async () => {
     (AsyncStorage.getItem as jest.Mock).mockRejectedValue(new Error('Storage error'));
     
-    const { result, waitForNextUpdate } = renderHook(() => useI18n());
+    const { result } = renderHook(() => useI18n());
     
-    await waitForNextUpdate();
+    await waitForAsync(10);
     
     expect(result.current.locale).toBe('ru'); // Default
     expect(result.current.isLoading).toBe(false);
   });
 
   it('should change locale and save to AsyncStorage', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useI18n());
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
     
-    await waitForNextUpdate();
+    const { result } = renderHook(() => useI18n());
     
-    act(() => {
-      result.current.changeLocale('en');
+    await waitForAsync(10);
+    
+    await act(async () => {
+      await result.current.changeLocale('en');
     });
     
     expect(result.current.locale).toBe('en');
@@ -70,24 +75,29 @@ describe('useI18n', () => {
   });
 
   it('should handle locale change error', async () => {
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
     (AsyncStorage.setItem as jest.Mock).mockRejectedValue(new Error('Save error'));
     
-    const { result, waitForNextUpdate } = renderHook(() => useI18n());
+    const { result } = renderHook(() => useI18n());
     
-    await waitForNextUpdate();
+    await waitForAsync(10);
     
-    act(() => {
-      result.current.changeLocale('en');
+    await act(async () => {
+      await result.current.changeLocale('en');
     });
+    
+    await waitForAsync(10);
     
     // Should still change locale even if save fails
     expect(result.current.locale).toBe('en');
   });
 
   it('should translate strings correctly', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useI18n());
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
     
-    await waitForNextUpdate();
+    const { result } = renderHook(() => useI18n());
+    
+    await waitForAsync(10);
     
     expect(result.current.t('back')).toBe('Назад');
     expect(result.current.t('continue')).toBe('Продолжить');
@@ -95,18 +105,22 @@ describe('useI18n', () => {
   });
 
   it('should translate with parameters', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useI18n());
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
     
-    await waitForNextUpdate();
+    const { result } = renderHook(() => useI18n());
+    
+    await waitForAsync(10);
     
     expect(result.current.t('blockProgress', { current: 1, total: 4 })).toBe('Блок 1 из 4');
     expect(result.current.t('questionNumber', { current: 2, total: 5 })).toBe('Вопрос 2 из 5');
   });
 
   it('should translate nested objects', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useI18n());
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
     
-    await waitForNextUpdate();
+    const { result } = renderHook(() => useI18n());
+    
+    await waitForAsync(10);
     
     const sections = result.current.tn('sectionsList');
     expect(sections).toEqual({
@@ -120,27 +134,33 @@ describe('useI18n', () => {
   });
 
   it('should switch languages and update translations', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useI18n());
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
     
-    await waitForNextUpdate();
+    const { result } = renderHook(() => useI18n());
+    
+    await waitForAsync(10);
     
     // Initial Russian
     expect(result.current.t('back')).toBe('Назад');
     expect(result.current.t('continue')).toBe('Продолжить');
     
     // Switch to English
-    act(() => {
-      result.current.changeLocale('en');
+    await act(async () => {
+      await result.current.changeLocale('en');
     });
+    
+    await waitForAsync(10);
     
     expect(result.current.t('back')).toBe('Back');
     expect(result.current.t('continue')).toBe('Continue');
   });
 
   it('should return stable function references', async () => {
-    const { result, waitForNextUpdate, rerender } = renderHook(() => useI18n());
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
     
-    await waitForNextUpdate();
+    const { result, rerender } = renderHook(() => useI18n());
+    
+    await waitForAsync(10);
     
     const initialT = result.current.t;
     const initialTn = result.current.tn;

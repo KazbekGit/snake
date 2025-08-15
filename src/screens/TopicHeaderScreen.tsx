@@ -15,8 +15,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { TimeIcon } from "../ui/icons/TimeIcon";
 import { LayersIcon } from "../ui/icons/LayersIcon";
 import { StarOutlineIcon } from "../ui/icons/StarOutlineIcon";
-import { Container } from "../ui/Grid";
+import { Container, Row, Col } from "../ui/Grid";
 import { TopNav } from "../ui/TopNav";
+import { Typography } from "../ui/Typography";
 import { ds } from "../ui/theme";
 import Animated, {
   useSharedValue,
@@ -230,7 +231,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={[colors.primary, colors.primaryDark]}
+        colors={[...colors.gradients.primary]}
         style={styles.background}
       >
         <Container>
@@ -255,8 +256,12 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
           </TouchableOpacity>
 
           <View style={styles.headerInfo}>
-            <Text style={styles.sectionName}>Экономика</Text>
-            <Text style={styles.topicTitle}>{currentTopic.title}</Text>
+            <Typography variant="caption" style={styles.sectionName}>
+              Экономика
+            </Typography>
+            <Typography variant="title" style={styles.topicTitle}>
+              {currentTopic.title}
+            </Typography>
           </View>
 
           <TouchableOpacity style={styles.menuButton}>
@@ -288,12 +293,16 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
           <Animated.View style={[styles.content, contentAnimatedStyle]}>
             {/* Description */}
             <View style={styles.descriptionContainer}>
-              <Text style={styles.description}>{currentTopic.description}</Text>
+              <Typography variant="body" style={styles.description}>
+                {currentTopic.description}
+              </Typography>
             </View>
 
             {/* Learning Objectives */}
             <View style={styles.objectivesContainer}>
-              <Text style={styles.objectivesTitle}>Что ты узнаешь:</Text>
+              <Typography variant="subtitle" style={styles.objectivesTitle}>
+                Что ты узнаешь:
+              </Typography>
               {currentTopic.learningObjectives?.map((objective, index) => (
                 <View key={index} style={styles.objectiveItem}>
                   <View style={styles.objectiveIcon}>
@@ -303,39 +312,51 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                       color={colors.success}
                     />
                   </View>
-                  <Text style={styles.objectiveText}>{objective}</Text>
+                  <Typography variant="body" style={styles.objectiveText}>
+                    {objective}
+                  </Typography>
                 </View>
               ))}
             </View>
 
             {/* Topic Info Cards */}
-            <View style={styles.infoCardsContainer}>
-              <View style={styles.infoCard}>
-                <TimeIcon size={24} color={colors.primary} />
-                <Text style={styles.infoCardValue}>
-                  {currentTopic.estimatedTime || 15} мин
-                </Text>
-                <Text style={styles.infoCardLabel}>Время изучения</Text>
-              </View>
-
-              <View style={styles.infoCard}>
-                <LayersIcon size={24} color={colors.primary} />
-                <Text style={styles.infoCardValue}>
-                  {currentTopic.totalBlocks ||
-                    currentTopic.contentBlocks?.length ||
-                    4}
-                </Text>
-                <Text style={styles.infoCardLabel}>Блоков теории</Text>
-              </View>
-
-              <View style={styles.infoCard}>
-                <StarOutlineIcon size={24} color={colors.primary} />
-                <Text style={styles.infoCardValue}>
-                  {getDifficultyText(currentTopic.difficulty || "medium")}
-                </Text>
-                <Text style={styles.infoCardLabel}>Сложность</Text>
-              </View>
-            </View>
+            <Row style={styles.infoCardsContainer}>
+              <Col size={4}>
+                <View style={styles.infoCard}>
+                  <TimeIcon size={24} color={colors.primary} />
+                  <Typography variant="button" style={styles.infoCardValue}>
+                    {currentTopic.estimatedTime || 15} мин
+                  </Typography>
+                  <Typography variant="caption" style={styles.infoCardLabel}>
+                    Время изучения
+                  </Typography>
+                </View>
+              </Col>
+              <Col size={4}>
+                <View style={styles.infoCard}>
+                  <LayersIcon size={24} color={colors.primary} />
+                  <Typography variant="button" style={styles.infoCardValue}>
+                    {currentTopic.totalBlocks ||
+                      currentTopic.contentBlocks?.length ||
+                      4}
+                  </Typography>
+                  <Typography variant="caption" style={styles.infoCardLabel}>
+                    Блоков теории
+                  </Typography>
+                </View>
+              </Col>
+              <Col size={4}>
+                <View style={styles.infoCard}>
+                  <StarOutlineIcon size={24} color={colors.primary} />
+                  <Typography variant="button" style={styles.infoCardValue}>
+                    {getDifficultyText(currentTopic.difficulty || "medium")}
+                  </Typography>
+                  <Typography variant="caption" style={styles.infoCardLabel}>
+                    Сложность
+                  </Typography>
+                </View>
+              </Col>
+            </Row>
 
             {/* Difficulty Badge */}
             <View style={styles.difficultyContainer}>
@@ -349,17 +370,19 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                   },
                 ]}
               >
-                <Text style={styles.difficultyBadgeText}>
+                <Typography variant="button" style={styles.difficultyBadgeText}>
                   {getDifficultyText(currentTopic.difficulty || "medium")}
-                </Text>
+                </Typography>
               </View>
             </View>
 
             {/* Progress Indicator */}
             <View style={styles.progressContainer}>
               <View style={styles.progressHeader}>
-                <Text style={styles.progressText}>Прогресс изучения</Text>
-                <Text style={styles.progressPercentage}>
+                <Typography variant="body" style={styles.progressText}>
+                  Прогресс изучения
+                </Typography>
+                <Typography variant="button" style={styles.progressPercentage}>
                   {Math.round(
                     ((topicProgress?.completedBlocks ?? 0) /
                       Math.max(
@@ -370,7 +393,7 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                       ) || 0) * 100
                   )}
                   %
-                </Text>
+                </Typography>
               </View>
               <View style={styles.progressBar}>
                 <View
@@ -410,27 +433,27 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                 }
               >
                 <LinearGradient
-                  colors={[colors.primary, colors.primaryDark]}
+                  colors={[...colors.gradients.primary]}
                   style={styles.startButtonGradient}
                   pointerEvents="none"
                 >
                   <Ionicons name="play" size={24} color="white" />
-                  <Text style={styles.startButtonText}>
+                  <Typography variant="button" style={styles.startButtonText}>
                     {(topicProgress?.completedBlocks ?? 0) > 0
                       ? "Продолжить изучение"
                       : "Начать изучение"}
-                  </Text>
+                  </Typography>
                 </LinearGradient>
               </TouchableOpacity>
 
               {/* Подсказка под кнопкой */}
-              <Text style={styles.buttonHint}>
+              <Typography variant="caption" style={styles.buttonHint}>
                 {(topicProgress?.completedBlocks ?? 0) > 0
                   ? `Продолжить с блока ${
                       (topicProgress?.lastBlockIndex ?? 0) + 1
                     }`
                   : "Начать изучение темы с первого блока"}
-              </Text>
+              </Typography>
 
               {/* Reset progress */}
               {topicProgress && (
@@ -439,7 +462,9 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                   style={styles.resetButton}
                   testID="reset-progress-button"
                 >
-                  <Text style={styles.resetButtonText}>Сбросить прогресс</Text>
+                  <Typography variant="caption" style={styles.resetButtonText}>
+                    Сбросить прогресс
+                  </Typography>
                 </TouchableOpacity>
               )}
             </Animated.View>
@@ -452,7 +477,9 @@ export const TopicHeaderScreen: React.FC<TopicHeaderScreenProps> = ({
                   size={16}
                   color={colors.premium}
                 />
-                <Text style={styles.premiumText}>Premium контент</Text>
+                <Typography variant="body" style={styles.premiumText}>
+                  Premium контент
+                </Typography>
               </View>
             )}
           </Animated.View>
@@ -475,13 +502,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: ds.spacing.lg,
+    paddingVertical: ds.spacing.md,
   },
   backButton: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: ds.radius.full,
     backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
@@ -491,20 +518,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   sectionName: {
-    fontSize: 14,
     color: "rgba(255,255,255,0.8)",
-    fontWeight: "500",
+    marginBottom: ds.spacing.xs,
   },
   topicTitle: {
-    fontSize: 18,
     color: "white",
-    fontWeight: "bold",
     textAlign: "center",
   },
   menuButton: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: ds.radius.full,
     backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
@@ -513,7 +537,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 40,
+    paddingBottom: ds.spacing.xl,
   },
   imageContainer: {
     width: width,
@@ -533,168 +557,141 @@ const styles = StyleSheet.create({
   },
   content: {
     backgroundColor: "white",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    borderTopLeftRadius: ds.radius.xl,
+    borderTopRightRadius: ds.radius.xl,
     marginTop: -30,
-    paddingHorizontal: 20,
-    paddingTop: 30,
+    paddingHorizontal: ds.spacing.lg,
+    paddingTop: ds.spacing.xl,
   },
   descriptionContainer: {
-    marginBottom: 24,
+    marginBottom: ds.spacing.xl,
   },
   description: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: colors.text,
     textAlign: "center",
+    color: colors.text,
   },
   objectivesContainer: {
-    marginBottom: 24,
+    marginBottom: ds.spacing.xl,
   },
   objectivesTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: colors.text,
-    marginBottom: 16,
+    marginBottom: ds.spacing.md,
     textAlign: "center",
+    color: colors.text,
   },
   objectiveItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
+    marginBottom: ds.spacing.sm,
   },
   objectiveIcon: {
-    marginRight: 12,
+    marginRight: ds.spacing.sm,
   },
   objectiveText: {
-    fontSize: 14,
-    color: colors.textSecondary,
     flex: 1,
-    lineHeight: 20,
+    color: colors.textSecondary,
   },
   infoCardsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 24,
+    marginBottom: ds.spacing.xl,
   },
   infoCard: {
-    flex: 1,
     alignItems: "center",
-    padding: 16,
+    padding: ds.spacing.md,
     backgroundColor: colors.card,
-    borderRadius: 12,
-    marginHorizontal: 4,
+    borderRadius: ds.radius.lg,
+    marginHorizontal: ds.spacing.xs,
+    ...ds.shadows.card,
   },
   infoCardValue: {
-    fontSize: 16,
-    fontWeight: "bold",
+    marginTop: ds.spacing.sm,
     color: colors.text,
-    marginTop: 8,
   },
   infoCardLabel: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    marginTop: 4,
+    marginTop: ds.spacing.xs,
     textAlign: "center",
+    color: colors.textSecondary,
   },
   difficultyContainer: {
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: ds.spacing.xl,
   },
   difficultyBadge: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingHorizontal: ds.spacing.md,
+    paddingVertical: ds.spacing.sm,
+    borderRadius: ds.radius.full,
   },
   difficultyBadgeText: {
     color: "white",
-    fontSize: 14,
-    fontWeight: "600",
   },
   progressContainer: {
-    marginBottom: 32,
+    marginBottom: ds.spacing.xl,
   },
   progressHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: ds.spacing.sm,
   },
   progressText: {
-    fontSize: 14,
     color: colors.textSecondary,
   },
   progressPercentage: {
-    fontSize: 14,
-    fontWeight: "bold",
     color: colors.primary,
   },
   progressBar: {
     height: 6,
     backgroundColor: colors.border,
-    borderRadius: 3,
+    borderRadius: ds.radius.sm,
     overflow: "hidden",
   },
   progressFill: {
     height: "100%",
-    borderRadius: 3,
+    borderRadius: ds.radius.sm,
   },
   buttonContainer: {
-    marginBottom: 16,
+    marginBottom: ds.spacing.md,
   },
   startButton: {
-    borderRadius: 16,
+    borderRadius: ds.radius.lg,
     overflow: "hidden",
-    elevation: 4,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    ...ds.shadows.card,
   },
   startButtonGradient: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 32,
+    paddingVertical: ds.spacing.md,
+    paddingHorizontal: ds.spacing.xl,
   },
   startButtonText: {
     color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-    marginLeft: 12,
+    marginLeft: ds.spacing.sm,
   },
   buttonHint: {
-    fontSize: 12,
-    color: colors.textSecondary,
     textAlign: "center",
-    marginTop: 8,
+    marginTop: ds.spacing.sm,
     fontStyle: "italic",
+    color: colors.textSecondary,
   },
   resetButton: {
     alignSelf: "center",
-    marginTop: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 10,
+    marginTop: ds.spacing.sm,
+    paddingHorizontal: ds.spacing.sm,
+    paddingVertical: ds.spacing.xs,
+    borderRadius: ds.radius.md,
     backgroundColor: colors.card,
   },
   resetButtonText: {
     color: colors.textSecondary,
-    fontSize: 12,
-    fontWeight: "600",
   },
   premiumBadge: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 8,
+    paddingVertical: ds.spacing.sm,
   },
   premiumText: {
-    fontSize: 14,
     color: colors.premium,
-    fontWeight: "600",
-    marginLeft: 4,
+    marginLeft: ds.spacing.xs,
   },
 });
 

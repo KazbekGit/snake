@@ -11,6 +11,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import { Typography } from "../ui/Typography";
+import { ds } from "../ui/theme";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -235,7 +237,9 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
           resizeMode="cover"
         />
         <View style={styles.mediaOverlay}>
-          <Text style={styles.mediaAltText}>{media.altText}</Text>
+          <Typography variant="caption" style={styles.mediaAltText}>
+            {media.altText}
+          </Typography>
         </View>
       </Animated.View>
     );
@@ -250,12 +254,20 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
       <View style={styles.mnemonicContainer}>
         <View style={styles.mnemonicHeader}>
           <Ionicons name="bulb-outline" size={24} color={colors.warning} />
-          <Text style={styles.mnemonicTitle}>Мнемоника для запоминания</Text>
+          <Typography variant="subtitle" style={styles.mnemonicTitle}>
+            Мнемоника для запоминания
+          </Typography>
         </View>
         <View style={styles.mnemonicContent}>
-          <Text style={styles.mnemonicPhrase}>"{mnemonic.phrase}"</Text>
-          <Text style={styles.mnemonicExplanation}>{mnemonic.explanation}</Text>
-          <Text style={styles.mnemonicHint}>💡 {mnemonic.visualHint}</Text>
+          <Typography variant="body" style={styles.mnemonicPhrase}>
+            "{mnemonic.phrase}"
+          </Typography>
+          <Typography variant="body" style={styles.mnemonicExplanation}>
+            {mnemonic.explanation}
+          </Typography>
+          <Typography variant="body" style={styles.mnemonicHint}>
+            💡 {mnemonic.visualHint}
+          </Typography>
         </View>
       </View>
     );
@@ -267,7 +279,9 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
 
     return (
       <View style={styles.keyTermsContainer}>
-        <Text style={styles.keyTermsTitle}>Ключевые термины:</Text>
+        <Typography variant="subtitle" style={styles.keyTermsTitle}>
+          Ключевые термины:
+        </Typography>
         {currentBlock.keyTerms.map((term, index) => (
           <View key={index} style={styles.keyTermItem}>
             <View
@@ -276,9 +290,13 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
                 { backgroundColor: term.highlightColor },
               ]}
             >
-              <Text style={styles.keyTermText}>{term.term}</Text>
+              <Typography variant="button" style={styles.keyTermText}>
+                {term.term}
+              </Typography>
             </View>
-            <Text style={styles.keyTermDefinition}>{term.definition}</Text>
+            <Typography variant="body" style={styles.keyTermDefinition}>
+              {term.definition}
+            </Typography>
           </View>
         ))}
       </View>
@@ -288,21 +306,22 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={[colors.primary, colors.primaryDark]}
+        colors={[...colors.gradients.primary]}
         style={styles.background}
       >
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-            accessibilityRole="button" accessibilityLabel="Назад"
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
 
           <View style={styles.headerInfo}>
-            <Text style={styles.topicTitle}>{topic.title}</Text>
-            <Text style={styles.blockProgress}>
+            <Typography variant="body" style={styles.topicTitle}>
+              {topic.title}
+            </Typography>
+            <Typography variant="caption" style={styles.blockProgress}>
               Блок {currentBlockIndex + 1} из {totalBlocks}
-            </Text>
+            </Typography>
           </View>
 
           <TouchableOpacity style={styles.menuButton}>
@@ -315,7 +334,9 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
           <View style={styles.progressBar}>
             <View style={[styles.progressFill, { width: `${progress}%` }]} />
           </View>
-          <Text style={styles.progressText}>{Math.round(progress)}%</Text>
+          <Typography variant="caption" style={styles.progressText}>
+            {Math.round(progress)}%
+          </Typography>
         </View>
         {renderDots()}
 
@@ -328,7 +349,9 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
           <Animated.View style={[styles.content, contentAnimatedStyle]}>
             {/* Block Title */}
             <View style={styles.titleContainer}>
-              <Text style={styles.blockTitle}>{currentBlock.title}</Text>
+              <Typography variant="heroTitle" style={styles.blockTitle}>
+                {currentBlock.title}
+              </Typography>
             </View>
 
             {/* Media (if before content) */}
@@ -337,7 +360,9 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
 
             {/* Main Content */}
             <View style={styles.mainContent}>
-              <Text style={styles.contentText}>{currentBlock.content}</Text>
+              <Typography variant="body" style={styles.contentText}>
+                {currentBlock.content}
+              </Typography>
             </View>
 
             {/* Example */}
@@ -349,11 +374,13 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
                     size={20}
                     color={colors.warning}
                   />
-                  <Text style={styles.exampleTitle}>Пример из жизни</Text>
+                  <Typography variant="subtitle" style={styles.exampleTitle}>
+                    Пример из жизни
+                  </Typography>
                 </View>
-                <Text style={styles.exampleText}>
+                <Typography variant="body" style={styles.exampleText}>
                   {(currentBlock as any).example}
-                </Text>
+                </Typography>
               </View>
             )}
 
@@ -382,7 +409,9 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
               disabled={currentBlockIndex === 0}
             >
               <Ionicons name="chevron-back" size={24} color="white" />
-              <Text style={styles.navButtonText}>Назад</Text>
+              <Typography variant="button" style={styles.navButtonText}>
+                Назад
+              </Typography>
             </TouchableOpacity>
 
             <Animated.View
@@ -400,14 +429,14 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
                 }
               >
                 <LinearGradient
-                  colors={[colors.primary, colors.primaryDark]}
+                  colors={[...colors.gradients.primary]}
                   style={styles.nextButtonGradient}
                 >
-                  <Text style={styles.nextButtonText}>
+                  <Typography variant="button" style={styles.nextButtonText}>
                     {currentBlockIndex < totalBlocks - 1
                       ? "Следующий блок"
                       : "Перейти к тесту"}
-                  </Text>
+                  </Typography>
                   <Ionicons
                     name={
                       currentBlockIndex < totalBlocks - 1
@@ -421,11 +450,11 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
               </TouchableOpacity>
 
               {/* Подсказка под кнопкой */}
-              <Text style={styles.buttonHint}>
+              <Typography variant="caption" style={styles.buttonHint}>
                 {currentBlockIndex < totalBlocks - 1
                   ? `Следующий: блок ${currentBlockIndex + 2} из ${totalBlocks}`
                   : "Далее: тест"}
-              </Text>
+              </Typography>
             </Animated.View>
           </View>
         </View>
@@ -446,13 +475,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: ds.spacing.lg,
+    paddingVertical: ds.spacing.md,
   },
   backButton: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: ds.radius.full,
     backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
@@ -462,19 +491,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   topicTitle: {
-    fontSize: 16,
     color: "white",
-    fontWeight: "bold",
   },
   blockProgress: {
-    fontSize: 12,
     color: "rgba(255,255,255,0.8)",
-    marginTop: 2,
+    marginTop: ds.spacing.xs,
   },
   menuButton: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: ds.radius.full,
     backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
@@ -482,63 +508,51 @@ const styles = StyleSheet.create({
   progressContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: ds.spacing.lg,
+    paddingVertical: ds.spacing.md,
   },
   progressBar: {
     flex: 1,
     height: 4,
     backgroundColor: "rgba(255,255,255,0.3)",
-    borderRadius: 2,
-    marginRight: 10,
+    borderRadius: ds.radius.sm,
+    marginRight: ds.spacing.sm,
     overflow: "hidden",
   },
   progressFill: {
     height: "100%",
     backgroundColor: "white",
-    borderRadius: 2,
+    borderRadius: ds.radius.sm,
   },
   progressText: {
-    fontSize: 12,
     color: "white",
-    fontWeight: "600",
     minWidth: 30,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingBottom: ds.spacing.lg,
   },
   content: {
     backgroundColor: "white",
-    margin: 20,
-    borderRadius: 20,
-    padding: 20,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    margin: ds.spacing.lg,
+    borderRadius: ds.radius.xl,
+    padding: ds.spacing.lg,
+    ...ds.shadows.card,
   },
   titleContainer: {
-    marginBottom: 20,
+    marginBottom: ds.spacing.lg,
   },
   blockTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
     color: colors.text,
     textAlign: "center",
   },
   mediaContainer: {
-    marginVertical: 20,
-    borderRadius: 12,
+    marginVertical: ds.spacing.lg,
+    borderRadius: ds.radius.lg,
     overflow: "hidden",
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    ...ds.shadows.card,
   },
   mediaImage: {
     width: "100%",
@@ -550,122 +564,98 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: "rgba(0,0,0,0.7)",
-    padding: 10,
+    padding: ds.spacing.sm,
   },
   mediaAltText: {
     color: "white",
-    fontSize: 12,
     textAlign: "center",
   },
   mainContent: {
-    marginBottom: 20,
+    marginBottom: ds.spacing.lg,
   },
   contentText: {
-    fontSize: 16,
-    lineHeight: 24,
     color: colors.text,
     textAlign: "justify",
   },
   exampleContainer: {
     backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
+    borderRadius: ds.radius.lg,
+    padding: ds.spacing.md,
+    marginBottom: ds.spacing.lg,
   },
   exampleHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: ds.spacing.sm,
   },
   exampleTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
     color: colors.text,
-    marginLeft: 8,
+    marginLeft: ds.spacing.sm,
   },
   exampleText: {
-    fontSize: 14,
-    lineHeight: 20,
     color: colors.textSecondary,
     fontStyle: "italic",
   },
   keyTermsContainer: {
-    marginBottom: 20,
+    marginBottom: ds.spacing.lg,
   },
   keyTermsTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
     color: colors.text,
-    marginBottom: 12,
+    marginBottom: ds.spacing.sm,
   },
   keyTermItem: {
-    marginBottom: 12,
+    marginBottom: ds.spacing.sm,
   },
   keyTermBadge: {
     alignSelf: "flex-start",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    marginBottom: 4,
+    paddingHorizontal: ds.spacing.sm,
+    paddingVertical: ds.spacing.xs,
+    borderRadius: ds.radius.full,
+    marginBottom: ds.spacing.xs,
   },
   keyTermText: {
     color: "white",
-    fontSize: 14,
-    fontWeight: "600",
   },
   keyTermDefinition: {
-    fontSize: 14,
     color: colors.textSecondary,
-    lineHeight: 20,
   },
   mnemonicContainer: {
     backgroundColor: colors.warning + "10",
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: ds.radius.lg,
+    padding: ds.spacing.md,
     borderLeftWidth: 4,
     borderLeftColor: colors.warning,
   },
   mnemonicHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
+    marginBottom: ds.spacing.sm,
   },
   mnemonicTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
     color: colors.text,
-    marginLeft: 8,
+    marginLeft: ds.spacing.sm,
   },
   mnemonicContent: {
-    gap: 8,
+    gap: ds.spacing.sm,
   },
   mnemonicPhrase: {
-    fontSize: 16,
-    fontWeight: "bold",
     color: colors.warning,
     textAlign: "center",
   },
   mnemonicExplanation: {
-    fontSize: 14,
     color: colors.textSecondary,
-    lineHeight: 20,
   },
   mnemonicHint: {
-    fontSize: 14,
     color: colors.textSecondary,
     fontStyle: "italic",
   },
   footer: {
     backgroundColor: "white",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    elevation: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    borderTopLeftRadius: ds.radius.xl,
+    borderTopRightRadius: ds.radius.xl,
+    paddingHorizontal: ds.spacing.lg,
+    paddingVertical: ds.spacing.md,
+    ...ds.shadows.card,
   },
   navigationButtons: {
     flexDirection: "row",
@@ -675,9 +665,9 @@ const styles = StyleSheet.create({
   navButton: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
+    paddingHorizontal: ds.spacing.md,
+    paddingVertical: ds.spacing.sm,
+    borderRadius: ds.radius.lg,
     backgroundColor: colors.primary,
   },
   prevButton: {
@@ -688,48 +678,43 @@ const styles = StyleSheet.create({
   },
   navButtonText: {
     color: "white",
-    fontSize: 16,
-    fontWeight: "600",
-    marginLeft: 8,
+    marginLeft: ds.spacing.sm,
   },
   nextButtonContainer: {
     flex: 1,
-    marginLeft: 16,
+    marginLeft: ds.spacing.md,
   },
   nextButton: {
-    borderRadius: 12,
+    borderRadius: ds.radius.lg,
     overflow: "hidden",
   },
   nextButtonGradient: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    paddingVertical: ds.spacing.sm,
+    paddingHorizontal: ds.spacing.lg,
   },
   nextButtonText: {
     color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-    marginRight: 8,
+    marginRight: ds.spacing.sm,
   },
   buttonHint: {
-    fontSize: 12,
     color: colors.textSecondary,
     textAlign: "center",
-    marginTop: 8,
+    marginTop: ds.spacing.sm,
     fontStyle: "italic",
   },
   dotsContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 10,
+    marginTop: ds.spacing.sm,
   },
   dot: {
     width: 8,
     height: 8,
-    borderRadius: 4,
-    marginHorizontal: 4,
+    borderRadius: ds.radius.full,
+    marginHorizontal: ds.spacing.xs,
   },
   dotActive: {
     backgroundColor: "white",

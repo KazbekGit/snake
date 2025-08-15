@@ -11,6 +11,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import { Typography } from "../ui/Typography";
+import { ds } from "../ui/theme";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -268,14 +270,14 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
             }}
           >
             <LinearGradient
-              colors={[colors.primary, colors.primaryDark]}
+              colors={[...colors.gradients.primary]}
               style={styles.flipCardGradient}
             >
-              <Text style={styles.flipCardText}>
+              <Typography variant="body" style={styles.flipCardText}>
                 {showExplanation
                   ? (currentQuestion as any).back
                   : (currentQuestion as any).front}
-              </Text>
+              </Typography>
               <Ionicons
                 name="refresh"
                 size={24}
@@ -285,9 +287,9 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
             </LinearGradient>
           </TouchableOpacity>
           {(currentQuestion as any).visualHint && (
-            <Text style={styles.flipHint}>
+            <Typography variant="caption" style={styles.flipHint}>
               {(currentQuestion as any).visualHint}
-            </Text>
+            </Typography>
           )}
         </View>
       );
@@ -295,7 +297,9 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
 
     return (
       <View style={styles.questionContainer}>
-        <Text style={styles.questionText}>{(currentQuestion as any).text}</Text>
+        <Typography variant="subtitle" style={styles.questionText}>
+          {(currentQuestion as any).text}
+        </Typography>
 
         <View style={styles.optionsContainer}>
           {optionsSafe.map((option: any, index: number) => {
@@ -323,9 +327,9 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
                 disabled={showExplanation}
               >
                 <View style={styles.optionContent}>
-                  <Text style={styles.optionText}>
+                  <Typography variant="body" style={styles.optionText}>
                     {String(option.text ?? option)}
-                  </Text>
+                  </Typography>
                   {showExplanation && isCorrect && (
                     <Ionicons
                       name="checkmark-circle"
@@ -362,14 +366,14 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
             size={24}
             color={isCorrect ? colors.success : colors.warning}
           />
-          <Text style={styles.explanationTitle}>
+          <Typography variant="subtitle" style={styles.explanationTitle}>
             {isCorrect ? "Правильно!" : "Попробуй еще раз"}
-          </Text>
+          </Typography>
         </View>
 
-        <Text style={styles.explanationText}>
+        <Typography variant="body" style={styles.explanationText}>
           {currentQuestion.explanation}
-        </Text>
+        </Typography>
 
         {(currentQuestion as any).visualExample && (
           <View style={styles.visualExampleContainer}>
@@ -378,9 +382,9 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
               style={styles.visualExampleImage}
               resizeMode="cover"
             />
-            <Text style={styles.visualExampleText}>
+            <Typography variant="caption" style={styles.visualExampleText}>
               {(currentQuestion as any).visualExample.altText}
-            </Text>
+            </Typography>
           </View>
         )}
       </Animated.View>
@@ -409,7 +413,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
                 : colors.success
             }
           />
-          <Text style={styles.resultTitle}>
+          <Typography variant="heroTitle" style={styles.resultTitle}>
             {isExcellent
               ? "Отлично!"
               : isGood
@@ -417,14 +421,16 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
               : isSatisfactory
               ? "Удовлетворительно"
               : "Нужно подтянуть"}
-          </Text>
+          </Typography>
         </View>
 
         <View style={styles.scoreContainer}>
-          <Text style={styles.scoreText}>
+          <Typography variant="body" style={styles.scoreText}>
             {score} из {totalQuestions}
-          </Text>
-          <Text style={styles.percentageText}>{percentage}%</Text>
+          </Typography>
+          <Typography variant="heroTitle" style={styles.percentageText}>
+            {percentage}%
+          </Typography>
         </View>
 
         <View style={styles.resultProgressBar}>
@@ -443,7 +449,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
           />
         </View>
 
-        <Text style={styles.resultMessage}>
+        <Typography variant="body" style={styles.resultMessage}>
           {isExcellent
             ? "Ты отлично усвоил материал! 🎉"
             : isGood
@@ -451,7 +457,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
             : isSatisfactory
             ? "Есть что подтянуть, но основа понятна."
             : "Рекомендуем повторить материал еще раз."}
-        </Text>
+        </Typography>
       </Animated.View>
     );
   };
@@ -460,14 +466,16 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
     return (
       <SafeAreaView style={styles.container}>
         <LinearGradient
-          colors={[colors.primary, colors.primaryDark]}
+          colors={[...colors.gradients.primary]}
           style={styles.background}
         >
           <View style={styles.header}>
             <TouchableOpacity onPress={handleBack} style={styles.backButton}>
               <Ionicons name="arrow-back" size={24} color="white" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Результаты теста</Text>
+            <Typography variant="title" style={styles.headerTitle}>
+              Результаты теста
+            </Typography>
             <View style={styles.placeholder} />
           </View>
 
@@ -486,12 +494,12 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
               activeOpacity={0.8}
             >
               <LinearGradient
-                colors={[colors.primary, colors.primaryDark]}
+                colors={[...colors.gradients.primary]}
                 style={styles.continueButtonGradient}
               >
-                <Text style={styles.continueButtonText}>
+                <Typography variant="button" style={styles.continueButtonText}>
                   Продолжить изучение
-                </Text>
+                </Typography>
                 <Ionicons name="arrow-forward" size={24} color="white" />
               </LinearGradient>
             </TouchableOpacity>
@@ -504,7 +512,7 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={[colors.primary, colors.primaryDark]}
+        colors={[...colors.gradients.primary]}
         style={styles.background}
       >
         <View style={styles.header}>
@@ -516,7 +524,9 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
           >
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Проверь понимание</Text>
+          <Typography variant="title" style={styles.headerTitle}>
+            Проверь понимание
+          </Typography>
           <View style={styles.placeholder} />
         </View>
 
@@ -532,9 +542,9 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
             ]}
           />
         </View>
-        <Text style={styles.progressText}>
+        <Typography variant="caption" style={styles.progressText}>
           {currentQuestionIndex + 1} из {totalQuestions}
-        </Text>
+        </Typography>
 
         <ScrollView
           style={styles.scrollView}
@@ -561,14 +571,14 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
               }
             >
               <LinearGradient
-                colors={[colors.primary, colors.primaryDark]}
+                colors={[...colors.gradients.primary]}
                 style={styles.nextButtonGradient}
               >
-                <Text style={styles.nextButtonText}>
+                <Typography variant="button" style={styles.nextButtonText}>
                   {currentQuestionIndex < totalQuestions - 1
                     ? "Следующий вопрос"
                     : "Завершить тест"}
-                </Text>
+                </Typography>
                 <Ionicons
                   name={
                     currentQuestionIndex < totalQuestions - 1
@@ -582,11 +592,11 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
             </TouchableOpacity>
 
             {/* Подсказка под кнопкой */}
-            <Text style={styles.buttonHint}>
+            <Typography variant="caption" style={styles.buttonHint}>
               {currentQuestionIndex < totalQuestions - 1
                 ? `Вопрос ${currentQuestionIndex + 2} из ${totalQuestions}`
                 : "Посмотреть результаты теста"}
-            </Text>
+            </Typography>
           </View>
         )}
       </LinearGradient>
@@ -606,21 +616,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: ds.spacing.lg,
+    paddingVertical: ds.spacing.md,
   },
   backButton: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: ds.radius.full,
     backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
   },
   headerTitle: {
-    fontSize: 18,
     color: "white",
-    fontWeight: "bold",
   },
   placeholder: {
     width: 40,
@@ -628,62 +636,54 @@ const styles = StyleSheet.create({
   progressContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: ds.spacing.lg,
+    paddingVertical: ds.spacing.md,
   },
   progressBar: {
     flex: 1,
     height: 4,
     backgroundColor: "rgba(255,255,255,0.3)",
-    borderRadius: 2,
-    marginRight: 10,
+    borderRadius: ds.radius.sm,
+    marginRight: ds.spacing.sm,
     overflow: "hidden",
   },
   progressFill: {
     height: "100%",
     backgroundColor: "white",
-    borderRadius: 2,
+    borderRadius: ds.radius.sm,
   },
   progressText: {
-    fontSize: 12,
     color: "white",
-    fontWeight: "600",
     minWidth: 40,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingBottom: ds.spacing.lg,
   },
   content: {
     backgroundColor: "white",
-    margin: 20,
-    borderRadius: 20,
-    padding: 20,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    margin: ds.spacing.lg,
+    borderRadius: ds.radius.xl,
+    padding: ds.spacing.lg,
+    ...ds.shadows.card,
   },
   questionContainer: {
-    marginBottom: 20,
+    marginBottom: ds.spacing.lg,
   },
   questionText: {
-    fontSize: 18,
-    fontWeight: "bold",
     color: colors.text,
-    marginBottom: 20,
+    marginBottom: ds.spacing.lg,
     textAlign: "center",
   },
   optionsContainer: {
-    gap: 12,
+    gap: ds.spacing.sm,
   },
   option: {
     backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: ds.radius.lg,
+    padding: ds.spacing.md,
     borderWidth: 2,
     borderColor: "transparent",
   },
@@ -705,72 +705,60 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   optionText: {
-    fontSize: 16,
     color: colors.text,
     flex: 1,
   },
   flipCardContainer: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: ds.spacing.lg,
   },
   flipCard: {
     width: width - 80,
     height: 120,
-    borderRadius: 16,
+    borderRadius: ds.radius.lg,
     overflow: "hidden",
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    ...ds.shadows.card,
   },
   flipCardGradient: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
+    padding: ds.spacing.lg,
   },
   flipCardText: {
-    fontSize: 18,
-    fontWeight: "bold",
     color: "white",
     textAlign: "center",
-    marginBottom: 8,
+    marginBottom: ds.spacing.sm,
   },
   flipIcon: {
     position: "absolute",
-    bottom: 10,
-    right: 10,
+    bottom: ds.spacing.sm,
+    right: ds.spacing.sm,
   },
   flipHint: {
-    fontSize: 14,
     color: colors.textSecondary,
     textAlign: "center",
-    marginTop: 12,
+    marginTop: ds.spacing.sm,
     fontStyle: "italic",
   },
   explanationContainer: {
     backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 16,
-    marginTop: 20,
+    borderRadius: ds.radius.lg,
+    padding: ds.spacing.md,
+    marginTop: ds.spacing.lg,
   },
   explanationHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
+    marginBottom: ds.spacing.sm,
   },
   explanationTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
     color: colors.text,
-    marginLeft: 8,
+    marginLeft: ds.spacing.sm,
   },
   explanationText: {
-    fontSize: 14,
     color: colors.textSecondary,
-    lineHeight: 20,
-    marginBottom: 12,
+    marginBottom: ds.spacing.sm,
   },
   visualExampleContainer: {
     alignItems: "center",
@@ -778,133 +766,112 @@ const styles = StyleSheet.create({
   visualExampleImage: {
     width: "100%",
     height: 120,
-    borderRadius: 8,
-    marginBottom: 8,
+    borderRadius: ds.radius.md,
+    marginBottom: ds.spacing.sm,
   },
   visualExampleText: {
-    fontSize: 12,
     color: colors.textSecondary,
     textAlign: "center",
     fontStyle: "italic",
   },
   resultContainer: {
     backgroundColor: "white",
-    margin: 20,
-    borderRadius: 20,
-    padding: 30,
+    margin: ds.spacing.lg,
+    borderRadius: ds.radius.xl,
+    padding: ds.spacing.xl,
     alignItems: "center",
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    ...ds.shadows.card,
   },
   resultHeader: {
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: ds.spacing.xl,
   },
   resultTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
     color: colors.text,
-    marginTop: 12,
+    marginTop: ds.spacing.sm,
     textAlign: "center",
   },
   scoreContainer: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: ds.spacing.lg,
   },
   scoreText: {
-    fontSize: 18,
     color: colors.textSecondary,
-    marginBottom: 4,
+    marginBottom: ds.spacing.xs,
   },
   percentageText: {
-    fontSize: 36,
-    fontWeight: "bold",
     color: colors.primary,
   },
   headerProgressBar: {
     flex: 1,
     height: 4,
     backgroundColor: "rgba(255,255,255,0.3)",
-    borderRadius: 2,
-    marginRight: 10,
+    borderRadius: ds.radius.sm,
+    marginRight: ds.spacing.sm,
     overflow: "hidden",
   },
   headerProgressFill: {
     height: "100%",
     backgroundColor: "white",
-    borderRadius: 2,
+    borderRadius: ds.radius.sm,
   },
   resultProgressBar: {
     width: "100%",
     height: 8,
     backgroundColor: colors.border,
-    borderRadius: 4,
-    marginBottom: 20,
+    borderRadius: ds.radius.md,
+    marginBottom: ds.spacing.lg,
     overflow: "hidden",
   },
   resultProgressFill: {
     height: "100%",
   },
   resultMessage: {
-    fontSize: 16,
     color: colors.textSecondary,
     textAlign: "center",
-    lineHeight: 24,
   },
   footer: {
     backgroundColor: "white",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    elevation: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
+    borderTopLeftRadius: ds.radius.xl,
+    borderTopRightRadius: ds.radius.xl,
+    paddingHorizontal: ds.spacing.lg,
+    paddingVertical: ds.spacing.md,
+    ...ds.shadows.card,
   },
   nextButton: {
-    borderRadius: 12,
+    borderRadius: ds.radius.lg,
     overflow: "hidden",
   },
   nextButtonGradient: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 24,
+    paddingVertical: ds.spacing.md,
+    paddingHorizontal: ds.spacing.lg,
   },
   nextButtonText: {
     color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-    marginRight: 8,
+    marginRight: ds.spacing.sm,
   },
   continueButton: {
-    borderRadius: 12,
+    borderRadius: ds.radius.lg,
     overflow: "hidden",
   },
   continueButtonGradient: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 24,
+    paddingVertical: ds.spacing.md,
+    paddingHorizontal: ds.spacing.lg,
   },
   continueButtonText: {
     color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-    marginRight: 8,
+    marginRight: ds.spacing.sm,
   },
   buttonHint: {
-    fontSize: 12,
     color: colors.textSecondary,
     textAlign: "center",
-    marginTop: 8,
+    marginTop: ds.spacing.sm,
     fontStyle: "italic",
   },
 });

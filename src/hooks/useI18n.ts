@@ -28,10 +28,12 @@ export function useI18n() {
   }, []);
 
   const changeLocale = useCallback(async (locale: 'ru' | 'en') => {
+    // Always update the locale state first
+    setCurrentLocale(locale);
+    setLocale(locale);
+    
     try {
       await AsyncStorage.setItem(LOCALE_STORAGE_KEY, locale);
-      setCurrentLocale(locale);
-      setLocale(locale);
     } catch (error) {
       console.error('Failed to save locale:', error);
     }
@@ -39,11 +41,11 @@ export function useI18n() {
 
   const translate = useCallback((key: string, params?: Record<string, string | number>) => {
     return t(key, params);
-  }, []);
+  }, [currentLocale]);
 
   const translateNested = useCallback((key: string) => {
     return tn(key);
-  }, []);
+  }, [currentLocale]);
 
   return {
     locale: currentLocale,
