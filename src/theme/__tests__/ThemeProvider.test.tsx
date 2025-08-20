@@ -1,6 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
 import { AppThemeProvider, useAppTheme } from "../ThemeProvider";
+import { View, Text } from "react-native";
 
 // Mock AsyncStorage
 jest.mock("@react-native-async-storage/async-storage", () => ({
@@ -12,7 +13,7 @@ describe("ThemeProvider", () => {
   it("should render without crashing", () => {
     const { getByText } = render(
       <AppThemeProvider>
-        <div>Test Content</div>
+        <Text>Test Content</Text>
       </AppThemeProvider>
     );
 
@@ -22,7 +23,7 @@ describe("ThemeProvider", () => {
   it("should provide theme context", () => {
     const TestComponent = () => {
       const { mode } = useAppTheme();
-      return <div data-testid="theme-mode">{mode}</div>;
+      return <Text testID="theme-mode">{mode}</Text>;
     };
 
     const { getByTestId } = render(

@@ -363,6 +363,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 style={{ marginBottom: ds.spacing.lg }}
               >
                 <SectionCard
+                  testID={`section-${section.id}`}
                   iconNode={iconMap[section.id]}
                   title={section.title}
                   description={section.description}

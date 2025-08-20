@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useState,
+  useRef,
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors as baseColors } from "../constants/colors";
@@ -40,14 +41,18 @@ export const AppThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [mode, setMode] = useState<ThemeMode>("light");
+  const initializedRef = useRef(false);
 
   useEffect(() => {
     (async () => {
       try {
         const saved = await AsyncStorage.getItem(STORAGE_KEY);
         const m = (saved === "dark" ? "dark" : "light") as ThemeMode;
-        applyTheme(m);
-        setMode(m);
+        if (!initializedRef.current) {
+          applyTheme(m);
+          setMode(m);
+          initializedRef.current = true;
+        }
       } catch {
         applyTheme("light");
       }
@@ -58,6 +63,7 @@ export const AppThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     const next: ThemeMode = mode === "light" ? "dark" : "light";
     applyTheme(next);
     setMode(next);
+    initializedRef.current = true;
     try {
       await AsyncStorage.setItem(STORAGE_KEY, next);
     } catch {}

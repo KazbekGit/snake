@@ -17,7 +17,7 @@ export const Typography: React.FC<Props> = ({
   children,
   ...rest
 }) => {
-  const v = ds.typography[variant];
+  const v = ds.typography[variant] || ds.typography.body;
   return (
     <Text
       {...rest}

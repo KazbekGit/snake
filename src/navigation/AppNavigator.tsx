@@ -19,7 +19,7 @@ export type RootStackParamList = {
   Home: undefined;
   Topic: { topic: any };
   TheoryBlock: { topic: any; blockIndex: number };
-  MiniTest: { topic: any; blockId: string };
+  MiniTest: { topic: any; blockId?: string };
   Statistics: undefined;
   AdvancedAnalytics: undefined;
 };
@@ -64,7 +64,10 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="TheoryBlock" component={TheoryBlockScreen as any} />
         <Stack.Screen name="MiniTest" component={MiniTestScreen as any} />
         <Stack.Screen name="Statistics" component={StatisticsScreen as any} />
-        <Stack.Screen name="AdvancedAnalytics" component={AdvancedAnalyticsScreen as any} />
+        <Stack.Screen
+          name="AdvancedAnalytics"
+          component={AdvancedAnalyticsScreen as any}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

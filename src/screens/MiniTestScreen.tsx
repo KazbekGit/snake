@@ -64,12 +64,23 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
   const explanationOpacity = useSharedValue(0);
   const resultScale = useSharedValue(0.8);
 
-  // Используем реальные вопросы из темы "Деньги" (t("contentTopics.money.title"))
-  const questions = moneyTopic.quiz.questions;
+  // Перетасованные вопросы мини-теста
+  const [shuffledQuestions, setShuffledQuestions] = useState<any[]>([]);
+
+  useEffect(() => {
+    const sourceQuestions = moneyTopic?.quiz?.questions ?? [];
+    // Простое перемешивание (подходит для учебных целей)
+    const shuffled = [...sourceQuestions].sort(() => Math.random() - 0.5);
+    setShuffledQuestions(shuffled);
+  }, [topic?.id]);
+
+  const questions = shuffledQuestions.length
+    ? shuffledQuestions
+    : moneyTopic?.quiz?.questions ?? [];
 
   // Используем реальные вопросы из темы "Деньги"
-  const currentQuestion = questions[currentQuestionIndex];
-  const optionsSafe = currentQuestion.options ?? [];
+  const currentQuestion = questions[currentQuestionIndex] ?? ({} as any);
+  const optionsSafe = currentQuestion?.options ?? [];
   const totalQuestions = questions.length;
 
   useEffect(() => {

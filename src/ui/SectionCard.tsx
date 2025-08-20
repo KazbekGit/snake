@@ -12,6 +12,7 @@ interface Props {
   colorTo?: string;
   progress?: number;
   onPress?: () => void;
+  testID?: string;
 }
 
 export const SectionCard: React.FC<Props> = ({
@@ -23,9 +24,10 @@ export const SectionCard: React.FC<Props> = ({
   colorTo,
   progress = 0,
   onPress,
+  testID,
 }) => {
   return (
-    <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.9} onPress={onPress} testID={testID}>
       <View
         style={{
           borderRadius: 8,
@@ -50,27 +52,27 @@ export const SectionCard: React.FC<Props> = ({
             }}
           />
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {iconNode ? (
-            <View style={{ marginRight: 12 }}>{iconNode}</View>
-          ) : (
-            <Text style={{ fontSize: 28, marginRight: 12 }}>{icon}</Text>
-          )}
-          <View style={{ flex: 1 }}>
-            <Text
-              style={{
-                color: ds.colors.textLight,
-                fontWeight: "800",
-                fontSize: 16,
-              }}
-            >
-              {title}
-            </Text>
-            <Text style={{ color: ds.colors.textLight, opacity: 0.9 }}>
-              {description}
-            </Text>
+            {iconNode ? (
+              <View style={{ marginRight: 12 }}>{iconNode}</View>
+            ) : (
+              <Text style={{ fontSize: 28, marginRight: 12 }}>{icon}</Text>
+            )}
+            <View style={{ flex: 1 }}>
+              <Text
+                style={{
+                  color: ds.colors.textLight,
+                  fontWeight: "800",
+                  fontSize: 16,
+                }}
+              >
+                {title}
+              </Text>
+              <Text style={{ color: ds.colors.textLight, opacity: 0.9 }}>
+                {description}
+              </Text>
+            </View>
+            {progress >= 100 ? <Text style={{ color: "#fff" }}>✅</Text> : null}
           </View>
-          {progress >= 100 ? <Text style={{ color: "#fff" }}>✅</Text> : null}
-        </View>
           <View
             style={{
               height: 6,
@@ -93,4 +95,3 @@ export const SectionCard: React.FC<Props> = ({
     </TouchableOpacity>
   );
 };
-

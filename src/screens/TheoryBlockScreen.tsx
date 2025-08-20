@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
+  ActivityIndicator,
   StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -56,6 +57,7 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
   const [currentBlockIndex, setCurrentBlockIndex] = useState(blockIndex);
   const [studyStartTime, setStudyStartTime] = useState<number>(Date.now());
   const [mediaUri, setMediaUri] = useState<string | null>(null);
+  const [isMediaLoading, setIsMediaLoading] = useState<boolean>(false);
 
   // Animation values
   const contentTranslateY = useSharedValue(50);
@@ -139,6 +141,7 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
     (async () => {
       try {
         if (currentBlock.media?.url) {
+          setIsMediaLoading(true);
           const cached = await getCachedUri(currentBlock.media.url);
           setMediaUri(cached);
         } else {
@@ -146,6 +149,8 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
         }
       } catch {
         setMediaUri(null);
+      } finally {
+        setIsMediaLoading(false);
       }
     })();
   }, [currentBlockIndex]);
@@ -242,7 +247,14 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
           source={{ uri: mediaUri || media.url }}
           style={styles.mediaImage}
           resizeMode="cover"
+          onLoadStart={() => setIsMediaLoading(true)}
+          onLoadEnd={() => setIsMediaLoading(false)}
         />
+        {isMediaLoading && (
+          <View style={styles.mediaLoaderOverlay}>
+            <ActivityIndicator size="large" color="#ffffff" />
+          </View>
+        )}
         <View style={styles.mediaOverlay}>
           <Typography variant="caption" style={styles.mediaAltText}>
             {media.altText}
@@ -577,6 +589,16 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: "rgba(0,0,0,0.7)",
     padding: ds.spacing.sm,
+  },
+  mediaLoaderOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.2)",
   },
   mediaAltText: {
     color: "white",

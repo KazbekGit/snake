@@ -62,11 +62,15 @@ jest.mock("react-native-svg", () => {
   };
 });
 
-// Mock NetInfo
-jest.mock("@react-native-community/netinfo", () => ({
-  fetch: jest.fn(() => Promise.resolve({ isConnected: true })),
-  addEventListener: jest.fn(),
-}));
+// Mock NetInfo (virtual module)
+jest.mock(
+  "@react-native-community/netinfo",
+  () => ({
+    fetch: jest.fn(() => Promise.resolve({ isConnected: true })),
+    addEventListener: jest.fn(),
+  }),
+  { virtual: true }
+);
 
 // Global test setup
 global.console = {
