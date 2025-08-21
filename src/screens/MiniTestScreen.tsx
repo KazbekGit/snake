@@ -32,6 +32,7 @@ import { moneyTopic } from "../data";
 import { saveTestResult } from "../utils/progressStorage";
 import { logEvent } from "../utils/analytics";
 import { useAdvancedAnalytics } from "../hooks/useAdvancedAnalytics";
+import { gamificationManager } from "../utils/gamification";
 import { useAppTheme } from "../theme/ThemeProvider";
 import { useThrottle } from "../hooks/useThrottle";
 
@@ -181,6 +182,13 @@ export const MiniTestScreen: React.FC<MiniTestScreenProps> = ({
       // Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success); // Временно отключено для веб
     } else {
       // Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error); // Временно отключено для веб
+    }
+
+    // Обновляем геймификацию
+    try {
+      await gamificationManager.answerQuestion(correct);
+    } catch (error) {
+      console.error("Failed to update gamification:", error);
     }
 
     // Записываем попытку ответа в аналитику

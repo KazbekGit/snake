@@ -36,6 +36,7 @@ import { useAppTheme } from "../theme/ThemeProvider";
 import { YouTubeEmbed } from "../components/YouTubeEmbed";
 import { InteractiveDiagram } from "../components/InteractiveDiagram";
 import { StudyProgress } from "../components/StudyProgress";
+import { gamificationManager } from "../utils/gamification";
 
 const { width, height } = Dimensions.get("window");
 
@@ -183,6 +184,13 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
     const studyTimeMinutes = Math.round((Date.now() - studyStartTime) / 60000);
     if (studyTimeMinutes > 0) {
       await addStudyTime(currentTopic.id, studyTimeMinutes);
+
+      // Обновляем геймификацию
+      try {
+        await gamificationManager.addStudyTime(studyTimeMinutes);
+      } catch (error) {
+        console.error("Failed to update gamification:", error);
+      }
     }
 
     // Записываем взаимодействие с блоком
@@ -213,6 +221,23 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
         await endStudySession(currentBlockIndex + 1, totalBlocks);
       } catch (error) {
         console.error("Failed to end study session:", error);
+      }
+
+      // Обновляем геймификацию при завершении темы
+      try {
+        const unlockedAchievements = await gamificationManager.completeTopic(
+          currentTopic.id,
+          currentTopic.sectionId
+        );
+        if (unlockedAchievements.length > 0) {
+          console.log(
+            "Unlocked achievements:",
+            unlockedAchievements.map((a) => a.title)
+          );
+          // Здесь можно показать уведомление о новых достижениях
+        }
+      } catch (error) {
+        console.error("Failed to update gamification:", error);
       }
 
       // Переходим к тесту

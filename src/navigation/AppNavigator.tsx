@@ -13,6 +13,7 @@ import { StatisticsScreen } from "../screens/StatisticsScreen";
 import { AdvancedAnalyticsScreen } from "../screens/AdvancedAnalyticsScreen";
 import { ExamModeScreen } from "../screens/ExamModeScreen";
 import { ExamResultsScreen } from "../screens/ExamResultsScreen";
+import { AchievementsScreen } from "../screens/AchievementsScreen";
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -24,6 +25,7 @@ export type RootStackParamList = {
   MiniTest: { topic: any; blockId?: string };
   Statistics: undefined;
   AdvancedAnalytics: undefined;
+  Achievements: undefined;
   ExamMode: { sectionId: string; examType: "oge" | "ege" };
   ExamResults: {
     sectionId: string;
@@ -78,6 +80,10 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen
           name="AdvancedAnalytics"
           component={AdvancedAnalyticsScreen as any}
+        />
+        <Stack.Screen
+          name="Achievements"
+          component={AchievementsScreen as any}
         />
         <Stack.Screen name="ExamMode" component={ExamModeScreen as any} />
         <Stack.Screen name="ExamResults" component={ExamResultsScreen as any} />

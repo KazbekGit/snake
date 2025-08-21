@@ -44,6 +44,7 @@ import { SearchIcon } from "../ui/icons/SearchIcon";
 import HeroPhoto from "../ui/HeroPhoto";
 import { useAdvancedAnalytics } from "../hooks/useAdvancedAnalytics";
 import { useAppTheme } from "../theme/ThemeProvider";
+import { gamificationManager } from "../utils/gamification";
 
 interface HomeScreenProps {
   navigation: NavigationProp<RootStackParamList, "Home">;
@@ -173,6 +174,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }
   };
 
+  const handleAchievementsPress = () => {
+    navigation.navigate("Achievements");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
@@ -180,7 +185,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         backgroundColor={colors.background}
       />
       <Container>
-        <TopNav />
+        <TopNav onAchievementsPress={handleAchievementsPress} />
         <Row style={{ marginTop: ds.spacing.xl }}>
           <Col spanDesktop={7} spanTablet={7} spanMobile={12}>
             <DashboardCard

@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ViewStyle } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../constants/colors";
 import { UserIcon } from "./icons/UserIcon";
 import { ThemeToggle } from "./ThemeToggle";
@@ -7,9 +8,14 @@ import { ThemeToggle } from "./ThemeToggle";
 interface Props {
   style?: ViewStyle;
   children?: React.ReactNode;
+  onAchievementsPress?: () => void;
 }
 
-export const TopNav: React.FC<Props> = ({ style, children }) => {
+export const TopNav: React.FC<Props> = ({
+  style,
+  children,
+  onAchievementsPress,
+}) => {
   return (
     <View
       style={[
@@ -27,6 +33,14 @@ export const TopNav: React.FC<Props> = ({ style, children }) => {
       </Text>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         {children}
+        {onAchievementsPress && (
+          <TouchableOpacity
+            onPress={onAchievementsPress}
+            style={{ marginRight: 16 }}
+          >
+            <Ionicons name="trophy" size={24} color={colors.navy} />
+          </TouchableOpacity>
+        )}
         <ThemeToggle size={24} color={colors.navy} />
         <View style={{ marginLeft: 16 }}>
           <UserIcon size={28} color={colors.navy} />
