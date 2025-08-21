@@ -2,6 +2,29 @@ export interface ContentMedia {
   url: string;
   altText?: string;
   placement?: "before_content" | "after_content";
+  type?: "image" | "video";
+}
+
+export interface ContentVideo {
+  videoId: string;
+  title?: string;
+  description?: string;
+  placement?: "before_content" | "after_content";
+  platform?: "youtube" | "vimeo";
+}
+
+export interface DiagramStep {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+}
+
+export interface ContentDiagram {
+  title: string;
+  steps: DiagramStep[];
+  placement?: "before_content" | "after_content";
 }
 
 export interface ContentMnemonic {
@@ -20,6 +43,8 @@ export interface ContentBlock {
   title: string;
   content: string;
   media?: ContentMedia;
+  video?: ContentVideo;
+  diagram?: ContentDiagram;
   example?: string;
   keyTerms?: ContentKeyTerm[];
   mnemonic?: ContentMnemonic;

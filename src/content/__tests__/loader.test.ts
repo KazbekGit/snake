@@ -1,11 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { contentLoader, ContentLoader } from "../loader";
 import {
-  getTopicFallback,
+  contentLoader,
   getAllTopics,
   getTopicsBySection,
   getTopicById,
+  getTopicFallback,
 } from "../index";
+import { ContentLoader } from "../loader";
 
 // Mock AsyncStorage
 jest.mock("@react-native-async-storage/async-storage", () => ({
@@ -191,8 +192,8 @@ describe("Content Loader", () => {
       expect(topic).toBeDefined();
       expect(topic.id).toBe("money");
       expect(topic.title).toBe("Деньги");
-      expect(topic.blocks).toHaveLength(4);
-      expect(topic.quiz.questions).toHaveLength(3);
+      expect(topic.contentBlocks).toHaveLength(4);
+      expect(topic.quiz.questions).toHaveLength(8);
     });
 
     it("should load market topic", async () => {
@@ -200,8 +201,17 @@ describe("Content Loader", () => {
       expect(topic).toBeDefined();
       expect(topic.id).toBe("market");
       expect(topic.title).toBe("Рынок");
-      expect(topic.blocks).toHaveLength(4);
-      expect(topic.quiz.questions).toHaveLength(3);
+      expect(topic.contentBlocks).toHaveLength(4);
+      expect(topic.quiz.questions).toHaveLength(8);
+    });
+
+    it("should load economy-basics topic", async () => {
+      const topic = await contentLoader.loadTopic("economy-basics");
+      expect(topic).toBeDefined();
+      expect(topic.id).toBe("economy-basics");
+      expect(topic.title).toBe("Основы экономики");
+      expect(topic.contentBlocks).toHaveLength(4);
+      expect(topic.quiz.questions).toHaveLength(8);
     });
 
     it("should load human-nature topic", async () => {
@@ -209,8 +219,8 @@ describe("Content Loader", () => {
       expect(topic).toBeDefined();
       expect(topic.id).toBe("human-nature");
       expect(topic.title).toBe("Природа человека");
-      expect(topic.blocks).toHaveLength(4);
-      expect(topic.quiz.questions).toHaveLength(3);
+      expect(topic.contentBlocks).toHaveLength(4);
+      expect(topic.quiz.questions).toHaveLength(8);
     });
 
     it("should load person-society topic", async () => {
@@ -218,8 +228,8 @@ describe("Content Loader", () => {
       expect(topic).toBeDefined();
       expect(topic.id).toBe("person-society");
       expect(topic.title).toBe("Человек и общество");
-      expect(topic.blocks).toHaveLength(4);
-      expect(topic.quiz.questions).toHaveLength(3);
+      expect(topic.contentBlocks).toHaveLength(4);
+      expect(topic.quiz.questions).toHaveLength(8);
     });
 
     it("should load social-relations topic", async () => {
@@ -227,8 +237,8 @@ describe("Content Loader", () => {
       expect(topic).toBeDefined();
       expect(topic.id).toBe("social-relations");
       expect(topic.title).toBe("Социальные отношения");
-      expect(topic.blocks).toHaveLength(4);
-      expect(topic.quiz.questions).toHaveLength(3);
+      expect(topic.contentBlocks).toHaveLength(4);
+      expect(topic.quiz.questions).toHaveLength(8);
     });
 
     it("should load politics topic", async () => {
@@ -236,8 +246,8 @@ describe("Content Loader", () => {
       expect(topic).toBeDefined();
       expect(topic.id).toBe("politics");
       expect(topic.title).toBe("Политика");
-      expect(topic.blocks).toHaveLength(4);
-      expect(topic.quiz.questions).toHaveLength(3);
+      expect(topic.contentBlocks).toHaveLength(4);
+      expect(topic.quiz.questions).toHaveLength(8);
     });
 
     it("should load law topic", async () => {
@@ -245,8 +255,8 @@ describe("Content Loader", () => {
       expect(topic).toBeDefined();
       expect(topic.id).toBe("law");
       expect(topic.title).toBe("Право");
-      expect(topic.blocks).toHaveLength(4);
-      expect(topic.quiz.questions).toHaveLength(3);
+      expect(topic.contentBlocks).toHaveLength(4);
+      expect(topic.quiz.questions).toHaveLength(8);
     });
 
     it("should load spiritual-culture topic", async () => {
@@ -254,8 +264,8 @@ describe("Content Loader", () => {
       expect(topic).toBeDefined();
       expect(topic.id).toBe("spiritual-culture");
       expect(topic.title).toBe("Духовная культура");
-      expect(topic.blocks).toHaveLength(4);
-      expect(topic.quiz.questions).toHaveLength(3);
+      expect(topic.contentBlocks).toHaveLength(4);
+      expect(topic.quiz.questions).toHaveLength(8);
     });
 
     it("should return null for non-existent topic", async () => {
@@ -267,9 +277,10 @@ describe("Content Loader", () => {
   describe("Topic Utilities", () => {
     it("should return all topics", () => {
       const topics = getAllTopics();
-      expect(topics).toHaveLength(8); // Все 8 тем
+      expect(topics).toHaveLength(9); // Все 9 тем
       expect(topics.map((t) => t.id)).toContain("money");
       expect(topics.map((t) => t.id)).toContain("market");
+      expect(topics.map((t) => t.id)).toContain("economy-basics");
       expect(topics.map((t) => t.id)).toContain("human-nature");
       expect(topics.map((t) => t.id)).toContain("person-society");
       expect(topics.map((t) => t.id)).toContain("social-relations");
@@ -280,9 +291,10 @@ describe("Content Loader", () => {
 
     it("should return topics by section", () => {
       const economyTopics = getTopicsBySection("economy");
-      expect(economyTopics).toHaveLength(2);
+      expect(economyTopics).toHaveLength(3);
       expect(economyTopics.map((t) => t.id)).toContain("money");
       expect(economyTopics.map((t) => t.id)).toContain("market");
+      expect(economyTopics.map((t) => t.id)).toContain("economy-basics");
 
       const personSocietyTopics = getTopicsBySection("person-society");
       expect(personSocietyTopics).toHaveLength(1);
@@ -294,6 +306,11 @@ describe("Content Loader", () => {
       expect(moneyTopic).toBeDefined();
       expect(moneyTopic?.id).toBe("money");
       expect(moneyTopic?.title).toBe("Деньги");
+
+      const economyBasicsTopic = getTopicById("economy-basics");
+      expect(economyBasicsTopic).toBeDefined();
+      expect(economyBasicsTopic?.id).toBe("economy-basics");
+      expect(economyBasicsTopic?.title).toBe("Основы экономики");
 
       const nonExistent = getTopicById("non-existent");
       expect(nonExistent).toBeNull();
@@ -309,16 +326,13 @@ describe("Content Loader", () => {
         expect(topic).toHaveProperty("title");
         expect(topic).toHaveProperty("description");
         expect(topic).toHaveProperty("sectionId");
-        expect(topic).toHaveProperty("order");
-        expect(topic).toHaveProperty("blocks");
+        expect(topic).toHaveProperty("contentBlocks");
         expect(topic).toHaveProperty("quiz");
-
-        expect(Array.isArray(topic.blocks)).toBe(true);
-        expect(topic.blocks.length).toBeGreaterThan(0);
-
-        expect(topic.quiz).toHaveProperty("questions");
-        expect(Array.isArray(topic.quiz.questions)).toBe(true);
-        expect(topic.quiz.questions.length).toBeGreaterThan(0);
+        expect(topic).toHaveProperty("coverImage");
+        expect(topic).toHaveProperty("gradeLevel");
+        expect(topic).toHaveProperty("difficulty");
+        expect(topic).toHaveProperty("estimatedTime");
+        expect(topic).toHaveProperty("learningObjectives");
       });
     });
 
@@ -327,20 +341,23 @@ describe("Content Loader", () => {
 
       topics.forEach((topic) => {
         topic.quiz.questions.forEach((question) => {
-          expect(question).toHaveProperty("id");
-          expect(question).toHaveProperty("text");
           expect(question).toHaveProperty("type");
-          expect(question).toHaveProperty("options");
-          expect(question).toHaveProperty("correctAnswer");
-          expect(question).toHaveProperty("explanation");
 
-          expect(Array.isArray(question.options)).toBe(true);
-          expect(question.options.length).toBeGreaterThan(0);
-
-          question.options.forEach((option) => {
-            expect(option).toHaveProperty("id");
-            expect(option).toHaveProperty("text");
-          });
+          if (question.type === "single") {
+            expect(question).toHaveProperty("question");
+            expect(question).toHaveProperty("options");
+            expect(question).toHaveProperty("correctAnswer");
+            expect(question).toHaveProperty("explanation");
+          } else if (question.type === "multiple") {
+            expect(question).toHaveProperty("question");
+            expect(question).toHaveProperty("options");
+            expect(question).toHaveProperty("correctAnswer");
+            expect(question).toHaveProperty("explanation");
+          } else if (question.type === "flip_card") {
+            expect(question).toHaveProperty("front");
+            expect(question).toHaveProperty("back");
+            // explanation может быть опциональным для flip_card
+          }
         });
       });
     });
@@ -349,18 +366,254 @@ describe("Content Loader", () => {
       const topics = getAllTopics();
 
       topics.forEach((topic) => {
-        topic.blocks.forEach((block) => {
-          expect(block).toHaveProperty("id");
+        topic.contentBlocks.forEach((block) => {
           expect(block).toHaveProperty("title");
-          expect(block).toHaveProperty("type");
           expect(block).toHaveProperty("content");
 
-          if (block.type === "theory") {
-            expect(block.content).toHaveProperty("text");
-            expect(typeof block.content.text).toBe("string");
-            expect(block.content.text.length).toBeGreaterThan(0);
+          // Опциональные поля
+          if (block.keyTerms) {
+            expect(Array.isArray(block.keyTerms)).toBe(true);
+            block.keyTerms.forEach((term) => {
+              expect(typeof term).toBe("string");
+            });
+          }
+
+          if (block.mnemonic) {
+            expect(typeof block.mnemonic).toBe("string");
+          }
+
+          if (block.example) {
+            expect(typeof block.example).toBe("string");
+          }
+
+          // Проверяем видео, если есть
+          if (block.video) {
+            expect(block.video).toHaveProperty("videoId");
+            expect(typeof block.video.videoId).toBe("string");
+            expect(block.video.videoId.length).toBeGreaterThan(0);
+
+            if (block.video.title) {
+              expect(typeof block.video.title).toBe("string");
+            }
+
+            if (block.video.description) {
+              expect(typeof block.video.description).toBe("string");
+            }
+
+            if (block.video.placement) {
+              expect(["before_content", "after_content"]).toContain(
+                block.video.placement
+              );
+            }
+
+            if (block.video.platform) {
+              expect(["youtube", "vimeo"]).toContain(block.video.platform);
+            }
+          }
+
+          // Проверяем диаграммы, если есть
+          if (block.diagram) {
+            expect(block.diagram).toHaveProperty("title");
+            expect(typeof block.diagram.title).toBe("string");
+            expect(block.diagram.title.length).toBeGreaterThan(0);
+
+            expect(block.diagram).toHaveProperty("steps");
+            expect(Array.isArray(block.diagram.steps)).toBe(true);
+            expect(block.diagram.steps.length).toBeGreaterThan(0);
+
+            block.diagram.steps.forEach((step, stepIndex) => {
+              expect(step).toHaveProperty("id");
+              expect(step).toHaveProperty("title");
+              expect(step).toHaveProperty("description");
+              expect(step).toHaveProperty("icon");
+              expect(step).toHaveProperty("color");
+
+              expect(typeof step.id).toBe("string");
+              expect(typeof step.title).toBe("string");
+              expect(typeof step.description).toBe("string");
+              expect(typeof step.icon).toBe("string");
+              expect(typeof step.color).toBe("string");
+
+              expect(step.id.length).toBeGreaterThan(0);
+              expect(step.title.length).toBeGreaterThan(0);
+              expect(step.description.length).toBeGreaterThan(0);
+              expect(step.icon.length).toBeGreaterThan(0);
+              expect(step.color.length).toBeGreaterThan(0);
+            });
+
+            if (block.diagram.placement) {
+              expect(["before_content", "after_content"]).toContain(
+                block.diagram.placement
+              );
+            }
           }
         });
+      });
+    });
+
+    it("should have valid metadata", () => {
+      const topics = getAllTopics();
+
+      topics.forEach((topic) => {
+        // Проверяем обязательные поля
+        expect(typeof topic.id).toBe("string");
+        expect(typeof topic.title).toBe("string");
+        expect(typeof topic.description).toBe("string");
+        expect(typeof topic.sectionId).toBe("string");
+        expect(typeof topic.coverImage).toBe("string");
+        expect(typeof topic.gradeLevel).toBe("number");
+        expect(typeof topic.difficulty).toBe("string");
+        expect(typeof topic.estimatedTime).toBe("number");
+        expect(Array.isArray(topic.learningObjectives)).toBe(true);
+        expect(Array.isArray(topic.contentBlocks)).toBe(true);
+        expect(Array.isArray(topic.quiz.questions)).toBe(true);
+
+        // Проверяем диапазоны значений
+        expect(topic.gradeLevel).toBeGreaterThanOrEqual(8);
+        expect(topic.gradeLevel).toBeLessThanOrEqual(11);
+        expect(["easy", "medium", "hard"]).toContain(topic.difficulty);
+        expect(topic.estimatedTime).toBeGreaterThan(0);
+        expect(topic.contentBlocks.length).toBeGreaterThan(0);
+        expect(topic.quiz.questions.length).toBeGreaterThan(0);
+        expect(topic.learningObjectives.length).toBeGreaterThan(0);
+      });
+    });
+
+    it("should have valid section IDs", () => {
+      const validSectionIds = [
+        "person-society",
+        "economy",
+        "social-relations",
+        "politics",
+        "law",
+        "spiritual-culture",
+      ];
+
+      const topics = getAllTopics();
+
+      topics.forEach((topic) => {
+        expect(validSectionIds).toContain(topic.sectionId);
+      });
+    });
+
+    it("should have unique topic IDs", () => {
+      const topics = getAllTopics();
+      const ids = topics.map((t) => t.id);
+      const uniqueIds = new Set(ids);
+
+      expect(uniqueIds.size).toBe(ids.length);
+    });
+
+    it("should have valid question types", () => {
+      const validQuestionTypes = ["single", "multiple", "flip_card"];
+      const topics = getAllTopics();
+
+      topics.forEach((topic) => {
+        topic.quiz.questions.forEach((question) => {
+          expect(validQuestionTypes).toContain(question.type);
+        });
+      });
+    });
+
+    it("should have at least one single choice question per topic", () => {
+      const topics = getAllTopics();
+
+      topics.forEach((topic) => {
+        const singleQuestions = topic.quiz.questions.filter(
+          (q) => q.type === "single"
+        );
+        expect(singleQuestions.length).toBeGreaterThan(0);
+      });
+    });
+
+    it("should have valid URLs for cover images", () => {
+      const topics = getAllTopics();
+
+      topics.forEach((topic) => {
+        expect(topic.coverImage).toMatch(/^https?:\/\//);
+      });
+    });
+
+    it("should have consistent question structure", () => {
+      const topics = getAllTopics();
+
+      topics.forEach((topic) => {
+        topic.quiz.questions.forEach((question, index) => {
+          if (question.type === "single") {
+            expect(question.options).toBeDefined();
+            expect(Array.isArray(question.options)).toBe(true);
+            expect(question.options.length).toBeGreaterThan(1);
+            expect(question.correctAnswer).toBeDefined();
+            expect(typeof question.correctAnswer).toBe("string");
+            expect(question.options).toContain(question.correctAnswer);
+          } else if (question.type === "multiple") {
+            expect(question.options).toBeDefined();
+            expect(Array.isArray(question.options)).toBe(true);
+            expect(question.options.length).toBeGreaterThan(1);
+            expect(question.correctAnswer).toBeDefined();
+            expect(Array.isArray(question.correctAnswer)).toBe(true);
+            expect(question.correctAnswer.length).toBeGreaterThan(0);
+            question.correctAnswer.forEach((answer) => {
+              expect(question.options).toContain(answer);
+            });
+          } else if (question.type === "flip_card") {
+            expect(question.front).toBeDefined();
+            expect(question.back).toBeDefined();
+            expect(typeof question.front).toBe("string");
+            expect(typeof question.back).toBe("string");
+            expect(question.front.length).toBeGreaterThan(0);
+            expect(question.back.length).toBeGreaterThan(0);
+          }
+        });
+      });
+    });
+  });
+
+  describe("Content Quality", () => {
+    it("should have meaningful content in blocks", () => {
+      const topics = getAllTopics();
+
+      topics.forEach((topic) => {
+        topic.contentBlocks.forEach((block) => {
+          expect(block.title.length).toBeGreaterThan(0);
+          expect(block.content.length).toBeGreaterThan(50); // Минимальная длина контента
+        });
+      });
+    });
+
+    it("should have meaningful questions", () => {
+      const topics = getAllTopics();
+
+      topics.forEach((topic) => {
+        topic.quiz.questions.forEach((question) => {
+          if (question.type === "single" || question.type === "multiple") {
+            expect(question.question.length).toBeGreaterThan(10);
+            expect(question.explanation).toBeDefined();
+            expect(question.explanation.length).toBeGreaterThan(20);
+          } else if (question.type === "flip_card") {
+            expect(question.front.length).toBeGreaterThan(5);
+            expect(question.back.length).toBeGreaterThan(10);
+          }
+        });
+      });
+    });
+
+    it("should have balanced question types", () => {
+      const topics = getAllTopics();
+
+      topics.forEach((topic) => {
+        const questionTypes = topic.quiz.questions.map((q) => q.type);
+        const singleCount = questionTypes.filter((t) => t === "single").length;
+        const multipleCount = questionTypes.filter(
+          (t) => t === "multiple"
+        ).length;
+        const flipCardCount = questionTypes.filter(
+          (t) => t === "flip_card"
+        ).length;
+
+        // Должны быть вопросы разных типов
+        expect(singleCount).toBeGreaterThan(0);
+        expect(multipleCount + flipCardCount).toBeGreaterThan(0);
       });
     });
   });

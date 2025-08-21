@@ -7,6 +7,8 @@ const money: TopicContent = require("./topics/money.json");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const market: TopicContent = require("./topics/market.json");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const economyBasics: TopicContent = require("./topics/economy-basics.json");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const humanNature: TopicContent = require("./topics/human-nature.json");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const personSociety: TopicContent = require("./topics/person-society.json");
@@ -25,6 +27,8 @@ export function getTopicFallback(topicId: string): TopicContent | null {
       return money;
     case "market":
       return market;
+    case "economy-basics":
+      return economyBasics;
     case "human-nature":
       return humanNature;
     case "person-society":
@@ -49,6 +53,7 @@ export { contentLoader } from "./loader";
 export const availableTopics = {
   money,
   market,
+  "economy-basics": economyBasics,
   "human-nature": humanNature,
   "person-society": personSociety,
   "social-relations": socialRelations,
@@ -64,7 +69,9 @@ export function getAllTopics(): TopicContent[] {
 
 // Утилита для получения тем по секции
 export function getTopicsBySection(sectionId: string): TopicContent[] {
-  const topics = getAllTopics().filter((topic) => topic.sectionId === sectionId);
+  const topics = getAllTopics().filter(
+    (topic) => topic.sectionId === sectionId
+  );
   // Тесты ожидают, что для секции person-society будет единственная тема person-society
   if (sectionId === "person-society") {
     return topics.filter((t) => t.id === "person-society");

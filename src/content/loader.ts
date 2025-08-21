@@ -31,11 +31,12 @@ export class ContentLoader {
   // Загрузка топика с кешированием
   async loadTopic(topicId: string): Promise<TopicContent> {
     const cacheKey = `${TOPIC_PREFIX}${topicId}`;
-    
+
     // Проверяем память
     if (this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey)!;
-      if (Date.now() - cached.lastUpdated < 24 * 60 * 60 * 1000) { // 24 часа
+      if (Date.now() - cached.lastUpdated < 24 * 60 * 60 * 1000) {
+        // 24 часа
         return cached.data;
       }
     }
@@ -64,7 +65,7 @@ export class ContentLoader {
       type: "topic",
       data: fallback,
       lastUpdated: Date.now(),
-      version: "1.0.0"
+      version: "1.0.0",
     };
 
     this.cache.set(cacheKey, contentItem);
@@ -79,7 +80,7 @@ export class ContentLoader {
   // Загрузка секции
   async loadSection(sectionId: string): Promise<any> {
     const cacheKey = `${SECTION_PREFIX}${sectionId}`;
-    
+
     if (this.cache.has(cacheKey)) {
       return this.cache.get(cacheKey)!.data;
     }
@@ -100,7 +101,7 @@ export class ContentLoader {
       type: "section",
       data: fallback,
       lastUpdated: Date.now(),
-      version: "1.0.0"
+      version: "1.0.0",
     };
 
     this.cache.set(cacheKey, contentItem);
@@ -112,15 +113,15 @@ export class ContentLoader {
   // Предзагрузка ассетов топика
   private async prefetchTopicAssets(topic: TopicContent): Promise<void> {
     const urls: string[] = [];
-    
+
     if (topic.coverImage) urls.push(topic.coverImage);
-    
+
     for (const block of topic.contentBlocks || []) {
       if (block.media?.url) urls.push(block.media.url);
     }
 
     await Promise.allSettled(
-      urls.map(url => getCachedUri(url).catch(() => url))
+      urls.map((url) => getCachedUri(url).catch(() => url))
     );
   }
 
@@ -139,59 +140,77 @@ export class ContentLoader {
       "person-society": {
         id: "person-society",
         title: "Человек и общество",
-        description: "Изучаем природу человека, его место в обществе и основные социальные процессы",
-        topics: ["human-nature", "socialization", "social-groups"]
+        description:
+          "Изучаем природу человека, его место в обществе и основные социальные процессы",
+        topics: ["human-nature", "socialization", "social-groups"],
       },
-      "economy": {
-        id: "economy", 
+      economy: {
+        id: "economy",
         title: "Экономика",
-        description: "Основы экономической теории, рынок, деньги, банки и государственная экономическая политика",
-        topics: ["money", "market", "banks", "economic-policy"]
+        description:
+          "Основы экономической теории, рынок, деньги, банки и государственная экономическая политика",
+        topics: ["money", "market", "banks", "economic-policy"],
       },
       "social-relations": {
         id: "social-relations",
-        title: "Социальные отношения", 
-        description: "Социальная структура, группы, семья, конфликты и социальная политика",
-        topics: ["social-structure", "family", "conflicts", "social-policy"]
+        title: "Социальные отношения",
+        description:
+          "Социальная структура, группы, семья, конфликты и социальная политика",
+        topics: ["social-structure", "family", "conflicts", "social-policy"],
       },
-      "politics": {
+      politics: {
         id: "politics",
         title: "Политика",
-        description: "Политическая система, государство, выборы, партии и гражданское общество", 
-        topics: ["political-system", "state", "elections", "parties"]
+        description:
+          "Политическая система, государство, выборы, партии и гражданское общество",
+        topics: ["political-system", "state", "elections", "parties"],
       },
-      "law": {
+      law: {
         id: "law",
         title: "Право",
-        description: "Правовая система, Конституция РФ, права человека и судебная система",
-        topics: ["legal-system", "constitution", "human-rights", "courts"]
+        description:
+          "Правовая система, Конституция РФ, права человека и судебная система",
+        topics: ["legal-system", "constitution", "human-rights", "courts"],
       },
       "spiritual-culture": {
         id: "spiritual-culture",
         title: "Духовная культура",
-        description: "Культура, мораль, религия, образование, наука и искусство",
-        topics: ["culture", "morality", "religion", "education", "science", "art"]
-      }
+        description:
+          "Культура, мораль, религия, образование, наука и искусство",
+        topics: [
+          "culture",
+          "morality",
+          "religion",
+          "education",
+          "science",
+          "art",
+        ],
+      },
     };
 
-    return sections[sectionId as keyof typeof sections] || {
-      id: sectionId,
-      title: "Неизвестная секция",
-      description: "Описание недоступно",
-      topics: []
-    };
+    return (
+      sections[sectionId as keyof typeof sections] || {
+        id: sectionId,
+        title: "Неизвестная секция",
+        description: "Описание недоступно",
+        topics: [],
+      }
+    );
   }
 
   // Очистка кеша
   async clearCache(): Promise<void> {
     this.cache.clear();
     const keys = await AsyncStorage.getAllKeys();
-    const contentKeys = keys.filter(key => 
-      key.startsWith(CONTENT_PREFIX) || 
-      key.startsWith(TOPIC_PREFIX) || 
-      key.startsWith(SECTION_PREFIX)
-    );
-    await AsyncStorage.multiRemove(contentKeys);
+    if (keys) {
+      const contentKeys = keys.filter(
+        (key) =>
+          key.startsWith(CONTENT_PREFIX) ||
+          key.startsWith(TOPIC_PREFIX) ||
+          key.startsWith(SECTION_PREFIX)
+      );
+      await AsyncStorage.multiRemove(contentKeys);
+    }
   }
 
   // Получение статистики кеша
@@ -201,11 +220,14 @@ export class ContentLoader {
     totalSize: number;
   }> {
     const keys = await AsyncStorage.getAllKeys();
-    const contentKeys = keys.filter(key => 
-      key.startsWith(CONTENT_PREFIX) || 
-      key.startsWith(TOPIC_PREFIX) || 
-      key.startsWith(SECTION_PREFIX)
-    );
+    const contentKeys = keys
+      ? keys.filter(
+          (key) =>
+            key.startsWith(CONTENT_PREFIX) ||
+            key.startsWith(TOPIC_PREFIX) ||
+            key.startsWith(SECTION_PREFIX)
+        )
+      : [];
 
     let totalSize = 0;
     for (const key of contentKeys) {
@@ -218,7 +240,7 @@ export class ContentLoader {
     return {
       memoryItems: this.cache.size,
       storageItems: contentKeys.length,
-      totalSize
+      totalSize,
     };
   }
 }
@@ -227,7 +249,9 @@ export class ContentLoader {
 export const contentLoader = ContentLoader.getInstance();
 
 // Обратная совместимость
-export async function getCachedTopic(topicId: string): Promise<TopicContent | null> {
+export async function getCachedTopic(
+  topicId: string
+): Promise<TopicContent | null> {
   try {
     return await contentLoader.loadTopic(topicId);
   } catch {
@@ -241,9 +265,9 @@ export async function setCachedTopic(topic: TopicContent): Promise<void> {
     type: "topic",
     data: topic,
     lastUpdated: Date.now(),
-    version: "1.0.0"
+    version: "1.0.0",
   };
-  
+
   const cacheKey = `${TOPIC_PREFIX}${topic.id}`;
   await AsyncStorage.setItem(cacheKey, JSON.stringify(contentItem));
 }

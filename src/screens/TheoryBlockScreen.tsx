@@ -33,6 +33,9 @@ import { logEvent } from "../utils/analytics";
 import { useAdvancedAnalytics } from "../hooks/useAdvancedAnalytics";
 import { getCachedUri } from "../utils/imageCache";
 import { useAppTheme } from "../theme/ThemeProvider";
+import { YouTubeEmbed } from "../components/YouTubeEmbed";
+import { InteractiveDiagram } from "../components/InteractiveDiagram";
+import { StudyProgress } from "../components/StudyProgress";
 
 const { width, height } = Dimensions.get("window");
 
@@ -56,6 +59,7 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
     useAdvancedAnalytics();
   const [currentBlockIndex, setCurrentBlockIndex] = useState(blockIndex);
   const [studyStartTime, setStudyStartTime] = useState<number>(Date.now());
+  const [totalStudyTime, setTotalStudyTime] = useState<number>(0);
   const [mediaUri, setMediaUri] = useState<string | null>(null);
   const [isMediaLoading, setIsMediaLoading] = useState<boolean>(false);
 
@@ -155,6 +159,17 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
     })();
   }, [currentBlockIndex]);
 
+  // Обновляем общее время изучения каждую минуту
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentTime = Date.now();
+      const sessionTime = Math.round((currentTime - studyStartTime) / 60000);
+      setTotalStudyTime(sessionTime);
+    }, 60000); // каждую минуту
+
+    return () => clearInterval(interval);
+  }, [studyStartTime]);
+
   const handleNext = async () => {
     // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // Временно отключено для веб
     buttonScale.value = withSpring(0.95, { duration: 100 }, () => {
@@ -222,6 +237,17 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
     navigation.goBack();
   };
 
+  const handleBlockPress = (blockIndex: number) => {
+    if (blockIndex !== currentBlockIndex) {
+      logEvent("jump_block_from_progress", {
+        topicId: currentTopic.id,
+        from: currentBlockIndex,
+        to: blockIndex,
+      });
+      setCurrentBlockIndex(blockIndex);
+    }
+  };
+
   // Animated styles
   const contentAnimatedStyle = useAnimatedStyle(() => ({
     opacity: contentOpacity.value,
@@ -241,6 +267,21 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
 
     const { media } = currentBlock;
 
+    // Если это видео, используем YouTubeEmbed
+    if (media.type === "video") {
+      return (
+        <Animated.View style={[styles.mediaContainer, mediaAnimatedStyle]}>
+          <YouTubeEmbed
+            videoId={media.url.split("/").pop() || ""}
+            title={media.altText}
+            onLoadStart={() => setIsMediaLoading(true)}
+            onLoadEnd={() => setIsMediaLoading(false)}
+          />
+        </Animated.View>
+      );
+    }
+
+    // Для изображений используем обычный Image
     return (
       <Animated.View style={[styles.mediaContainer, mediaAnimatedStyle]}>
         <Image
@@ -260,6 +301,59 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
             {media.altText}
           </Typography>
         </View>
+      </Animated.View>
+    );
+  };
+
+  const renderVideo = () => {
+    if (!currentBlock.video) return null;
+
+    const { video } = currentBlock;
+
+    return (
+      <Animated.View style={[styles.mediaContainer, mediaAnimatedStyle]}>
+        <YouTubeEmbed
+          videoId={video.videoId}
+          title={video.title}
+          description={video.description}
+          onLoadStart={() => setIsMediaLoading(true)}
+          onLoadEnd={() => setIsMediaLoading(false)}
+        />
+      </Animated.View>
+    );
+  };
+
+  const renderDiagram = () => {
+    if (!currentBlock.diagram) return null;
+
+    const { diagram } = currentBlock;
+
+    const handleStepPress = (step: any) => {
+      // Логируем взаимодействие с диаграммой
+      logEvent("diagram_step_press", {
+        topicId: currentTopic.id,
+        blockIndex: currentBlockIndex,
+        stepId: step.id,
+        stepTitle: step.title,
+      });
+
+      // Добавляем взаимодействие в аналитику
+      addInteraction({
+        type: "diagram_interaction",
+        data: {
+          stepId: step.id,
+          stepTitle: step.title,
+        },
+      });
+    };
+
+    return (
+      <Animated.View style={[styles.mediaContainer, mediaAnimatedStyle]}>
+        <InteractiveDiagram
+          title={diagram.title}
+          steps={diagram.steps}
+          onStepPress={handleStepPress}
+        />
       </Animated.View>
     );
   };
@@ -371,6 +465,15 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
           contentContainerStyle={styles.scrollContent}
         >
           <Animated.View style={[styles.content, contentAnimatedStyle]}>
+            {/* Study Progress */}
+            <StudyProgress
+              currentBlock={currentBlockIndex + 1}
+              totalBlocks={totalBlocks}
+              timeSpent={totalStudyTime}
+              onBlockPress={handleBlockPress}
+              showDetails={false}
+            />
+
             {/* Block Title */}
             <View style={styles.titleContainer}>
               <Typography variant="heroTitle" style={styles.blockTitle}>
@@ -381,6 +484,14 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
             {/* Media (if before content) */}
             {(currentBlock as any).media?.placement === "before_content" &&
               renderMedia()}
+
+            {/* Video (if before content) */}
+            {(currentBlock as any).video?.placement === "before_content" &&
+              renderVideo()}
+
+            {/* Diagram (if before content) */}
+            {(currentBlock as any).diagram?.placement === "before_content" &&
+              renderDiagram()}
 
             {/* Main Content */}
             <View style={styles.mainContent}>
@@ -414,6 +525,14 @@ export const TheoryBlockScreen: React.FC<TheoryBlockScreenProps> = ({
             {/* Media (if after content) */}
             {(currentBlock as any).media?.placement === "after_content" &&
               renderMedia()}
+
+            {/* Video (if after content) */}
+            {(currentBlock as any).video?.placement === "after_content" &&
+              renderVideo()}
+
+            {/* Diagram (if after content) */}
+            {(currentBlock as any).diagram?.placement === "after_content" &&
+              renderDiagram()}
 
             {/* Mnemonic */}
             {renderMnemonic()}
